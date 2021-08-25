@@ -17,8 +17,11 @@ import {
   } from '../../fireBase/authentication-methods';
 
 
-    const LoginScreen = ({navigation}) => {
-    const firebaseUser = useContext(FirebaseUserContext);
+  const firebaseUser = useContext(FirebaseUserContext);
+
+
+  const LoginScreen = ({navigation}) => {
+    const {user, updateUser, initializingUser} = useContext(FirebaseUserContext);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLogging, setIsLogging] = useState('');

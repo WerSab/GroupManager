@@ -1,13 +1,11 @@
 import React from 'react';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import CustomDrawer from '../CustomDrawer';
-import {MainStackNavigator} from './StackNavigator';
 import {AuthStackNavigator} from './StackNavigator';
-import {TeamStackNavigator} from './StackNavigator';
 
 const Drawer = createDrawerNavigator();
 
-const DrawerNavigator = () => {
+const Navigation = () => {
   return (
     <Drawer.Navigator
       drawerContent={CustomDrawer}
@@ -19,4 +17,4 @@ const DrawerNavigator = () => {
     </Drawer.Navigator>
   );
 };
-export default DrawerNavigator;
+export default Navigation;
