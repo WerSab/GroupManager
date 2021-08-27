@@ -1,50 +1,33 @@
+import React from 'react';
 import {createContext, useEffect, useState} from 'react';
-import firestore from '@react-native-firebase/firestore';
 
-export const FirebaseUserContext = createContext({
-  user: {
-    authUser: null,
-    firestoreUser: null,
-  },
-  initializing: true,
-});
+import auth from '@react-native-firebase/auth';
+import FirestoreDataProvider from './FirestoreDataProvider';
+
+export const FirebaseUserContext = createContext([null, true]);
 
 const FirebaseUserProvider = ({children}) => {
   const [authUser, setAuthUser] = useState();
-  const [firestoreUser, setFirestoreUser] = useState();
   const [initializing, setInitializing] = useState(true);
 
   useEffect(() => {
-    auth().onAuthStateChanged(user => {
+    const unsubscribe = auth().onAuthStateChanged(user => {
       setAuthUser(user);
     });
+    /* 
+      Odpowiednik metody componentWillUnmount()
+    */
+    return () => {
+      // tutaj mozemy dac co chcemy
+      unsubscribe();
+    };
   }, []);
 
-  useEffect(() => {
-    if (authUser) {
-      const userDocument = firestore()
-        .collection('users')
-        .doc(authUser.uid)
-        .get()
-        .then(documentSnapshot => {
-          if (documentSnapshot.exists) {
-            setFirestoreUser(documentSnapshot.data());
-            setInitializing(false);
-          }
-        });
-    }
-  }, [authUser]);
-
   return (
-    <FirebaseUserContext.Provider
-      value={{
-        user: {
-          authUser: authUser,
-          firestoreUser: firestoreUser,
-          initializing: initializing,
-        },
-      }}>
-      {children}
+    <FirebaseUserContext.Provider value={[authUser, initializing]}>
+      <FirestoreDataProvider updateInitializing={setInitializing}>
+        {children}
+      </FirestoreDataProvider>
     </FirebaseUserContext.Provider>
   );
 };
