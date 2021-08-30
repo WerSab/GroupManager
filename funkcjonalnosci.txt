@@ -1,0 +1,25 @@
+Manager Grupy
+
+
+Uprawnienia Managera grupy:
+1. Zakładanie grupy (nazwa, dane, podstawowe)
+2. dodawanie kont użytkowników na podstawie adresów mailowych
+3. dodawanie eventów (nazwa, termin, miejsce, liczba uczestników), 
+4. wysyłanie do uczestników info o evencie z prośbą o potwierdzenie udziału (wstępna deklaracja, ostateczna + dokumenty eventowe formularze, zgody itd.
+5. wysyłanie przypomnień przed deadlinami dot.  potwierdzeń i dokumentów
+6. Potwierdzanie ostatecznej listy uczestników (modyfikacje listy i statusów uczestników eventów)
+
+Uprawnienia uzytkownika:
+1. dostep do karty uzytkownika z podpiętą listą potwierdzonych przez niego eventów
+2. dołączanie do eventów
+3. dostep do listy eventów
+
+
+Widoki:
+1. Lista użytkowników (grupa)
+2. Lista eventów 
+3. Karty eventów z podpiętą listą uczestników i oznaczenie statusów uczestników (wstępnie potwierdzony, ostatecznie potwierdzony)
+
+
+
+linki do nauki: https://rnfirebase.io/reference/auth#signInWithEmailAndPassword

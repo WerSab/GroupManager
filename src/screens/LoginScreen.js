@@ -1,4 +1,4 @@
-import React  from 'react';
+import React, {useContext, useState, createRef }from 'react';
 import {
     StyleSheet,
     TextInput,
@@ -10,14 +10,14 @@ import {
     KeyboardAvoidingView,
     Button,
   } from 'react-native';
-  import {FirebaseUserContext} from '../../context/FirebaseUserProvider';
+  import {FirebaseUserContext} from '../context/FireBaseUserProvider';
   import {
     loginFireBaseUser,
     signOutFirebaseUser,
-  } from '../../fireBase/authentication-methods';
+  } from '../fireBase/authentication-methods';
 
 
-  const firebaseUser = useContext(FirebaseUserContext);
+  //const firebaseUser = useContext(FirebaseUserContext);
 
 
   const LoginScreen = ({navigation}) => {
