@@ -8,7 +8,7 @@ export const FirestoreDataContext = createContext(null);
 
 const FirestoreDataProvider = ({children, updateInitializing}) => {
 
-    const authUser = useContext(FirebaseUserContext);
+    const authUser = useContext(FirebaseUserContext);//uzyskanie id usera
 
     const [data, setData] = useState(null);
 
@@ -20,19 +20,25 @@ const FirestoreDataProvider = ({children, updateInitializing}) => {
             .get()
             .then(documentSnapshot => {
               if (documentSnapshot.exists) {
+                // pobieram dane uzytkownika z bazy danych i przypisuje do stanu [data]
                 setData(documentSnapshot.data());
-                updateInitializing(false);
+                
               }
+              else{
+                console.log('Document doesnt exist');
+              }
+              updateInitializing(false);
             })
             .catch((error) => {
                 console.log('Blad: ' + JSON.stringify(error));
-            });
+            }); 
         }else{
             setData(null);
             updateInitializing(false);
         }
       }, [authUser]);
 
+      // dostarczam dane o uzytkowniku ze stanu [data] do calej aplikacji (context)
     return (
         <FirestoreDataContext.Provider value={data}>
             {children}

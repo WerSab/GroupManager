@@ -6,14 +6,19 @@ import FirestoreDataProvider from './FirestoreDataProvider';
 
 export const FirebaseUserContext = createContext([null, true]);
 
-const FirebaseUserProvider = ({children}) => {
+const FirebaseUserProvider = (props) => {
+  const children = props.children;
+  
   const [authUser, setAuthUser] = useState();
   const [initializing, setInitializing] = useState(true);
 
+  /*
+    
+  */
   useEffect(() => {
     const unsubscribe = auth().onAuthStateChanged(user => {
       setAuthUser(user);
-    });
+    });//ta metoda wywołuje użytkownika po zalogowaniu (lub nie)
     /* 
       Odpowiednik metody componentWillUnmount()
     */
