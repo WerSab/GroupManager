@@ -1,12 +1,10 @@
-import React, {useContext} from 'react';
+import React  from 'react';
 import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
-import {Text} from 'react-native';
-import FirebaseUserProvider, {
-  FirebaseUserContext,
-} from './src/context/FireBaseUserProvider';
+import FirebaseUserProvider from './src/context/FireBaseUserProvider';
 import LoginScreen from './src/screens/LoginScreen';
-//import Navigation from './src/navigation/Navigation';
+//import AuthStackNavigator from './src/navigation/StackNavigator.js'
+//import { FirebaseUserContext } from './src/context/FireBaseUserProvider';
 
 const App = () => {
   //tylko wewnątrz komponentu FirebaseUserProvider

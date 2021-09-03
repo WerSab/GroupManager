@@ -12,7 +12,7 @@ import {
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {firebase} from '../fireBase';
 
-import {Picker} from '@react-native-picker/picker';
+//import {Picker} from '@react-native-picker/picker';
 import LoginScreen from './LoginScreen';
 import {StackNavigator} from '../navigation/StackNavigator';
 

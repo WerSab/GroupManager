@@ -1,9 +1,9 @@
-import auth from '@react-native-firebase/auth';
+import auth from '@react-native-firebase/auth';/// Przykład
 
 export const loginFireBaseUser = (email, password)=>
 new Promise ((resolve, reject)=>
 auth().signInWithEmailAndPassword(email, password)
-.then((credential) => resolve(credential.user))
+.then((credential) => resolve(credential.authUser))
 .catch((error) => reject('incorrect credentials', error)),
 
 );
