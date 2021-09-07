@@ -1,4 +1,5 @@
 import React, { useContext, useState, createRef } from 'react';
+import auth from '@react-native-firebase/auth';//zrobiony import- bo krzyczało, że nie rozpoznaje auth().
 import {
   StyleSheet,
   TextInput,
@@ -15,6 +16,7 @@ import {
   loginFireBaseUser,
   signOutFirebaseUser,
 } from '../fireBase/authentication-methods';
+//import RegisterScreen from './RegisterScreen'
 
 
 //const firebaseUser = useContext(FirebaseUserContext);
@@ -68,8 +70,8 @@ const LoginScreen = ({ navigation }) => {
   } else {
     if (authUser) {
       return (
-        <View>
-          <Text>Hello{authUser.email}</Text>
+        <View style={styles.mainBody}>
+          <Text style={styles.buttonTextStyle}>Hello  {authUser.email}</Text>
           <Button
             title="Log out"
             disablefd={isSigningOut}
