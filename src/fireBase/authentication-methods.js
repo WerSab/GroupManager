@@ -7,4 +7,7 @@ auth().signInWithEmailAndPassword(email, password)
 .catch((error) => reject('incorrect credentials', error)),
 
 );
+
 export const signOutFirebaseUser = async() => auth().signOut();
+
+

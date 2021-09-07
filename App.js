@@ -2,7 +2,7 @@ import React  from 'react';
 import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
 import FirebaseUserProvider from './src/context/FireBaseUserProvider';
-import LoginScreen from './src/screens/LoginScreen';
+import RegisterScreen from './src/screens/RegisterScreen';
 //import AuthStackNavigator from './src/navigation/StackNavigator.js'
 //import { FirebaseUserContext } from './src/context/FireBaseUserProvider';
 
@@ -13,7 +13,7 @@ const App = () => {
   return (
     <NavigationContainer>
       <FirebaseUserProvider>
-        <LoginScreen/>
+        <RegisterScreen/>
       </FirebaseUserProvider>
     </NavigationContainer>
   );
