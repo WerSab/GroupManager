@@ -16,6 +16,8 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import { FIRESTORE_COLLECTION } from '../config';
+import { Picker } from '@react-native-picker/picker';
+
 
 
 const Roles = [
@@ -91,9 +93,9 @@ const RegisterScreen = ({ user, addUser, navigation, StackNavigator }) => {
         };//tworzę obiekt wyjściowy dla dokumentu firestore
         //firestore nie powinien przechowywać email and , bo posiada je autoryzacja 
         return firestore()//wykonuje się promise, którego rezultat jest zwracany do then
-        .collection(FIRESTORE_COLLECTION.USERS)
-        .doc(uid)
-        .set(data);
+          .collection(FIRESTORE_COLLECTION.USERS)
+          .doc(uid)
+          .set(data);
       })
       .then(() => {
         console.log('User updated');
@@ -113,14 +115,14 @@ const RegisterScreen = ({ user, addUser, navigation, StackNavigator }) => {
   return (
     <View style={styles.mainBody}>
       <Text style={styles.successTextStyle}>Select role</Text>
-
-      <FlatList
-        style={styles.SectionStyle}
-        data={Roles}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.title}
-        extraData={role}
-      />
+      <View style={styles.pickerStyle}>
+        <Picker
+          selectedValue={role}
+          onValueChange={itemValue => setRole(itemValue)}>
+          <Picker.Item label="Manager" value="manager" />
+          <Picker.Item label="Player" value="player" />
+        </Picker>
+      </View>
 
 
 
@@ -279,6 +281,17 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     borderColor: '#dadae8',
   },
+  pickerStyle: {
+    marginLeft: 115,
+    marginRight: 35,
+    justifyContent: 'center',
+    color: 'white',
+    height: 40,
+    width:160,
+    borderWidth: 1,
+    borderRadius: 30,
+    backgroundColor: 'white',
+  },
   errorTextStyle: {
     color: 'red',
     textAlign: 'center',
@@ -339,4 +352,11 @@ const styles = StyleSheet.create({
 
 
 
-            */
+
+              <FlatList
+              style={styles.SectionStyle}
+              data={Roles}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.title}
+              extraData={role}
+            /> */

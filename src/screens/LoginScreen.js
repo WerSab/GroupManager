@@ -40,6 +40,7 @@ const LoginScreen = ({ navigation }) => {
     setIsLogging(true);
     loginFireBaseUser(email, password)
       .then(authUser => {
+        
         setError(null);
       })
       .catch(setError)
@@ -47,6 +48,13 @@ const LoginScreen = ({ navigation }) => {
 
       auth().sendPasswordResetEmail('a@a.pl')
   };
+
+  /*
+    Startowe miejsce w aplikacji na podstawie auth usera nawiguje
+     do odpowiedniego screenu: wylogowany -> login screen, zalogowany -> home screen (na przykład) lub od razu sprawdzenie roli użytkownika
+      i w zależności od jego roli (firestore data) nawigować do odpowiedniego ekranu (np. ManagerHomeScreen lub PlayerHomeScreen etc).
+
+  */
 
   /*
     REJESTRAJCA UZYTKOWNIKA:
