@@ -9,7 +9,7 @@ StyleSheet,
 const ManagerScreen = () => {
 
     return (
-        <View style={StyleSheet.mainBody}>
+        <View style={style.mainBody}>
             <Text>Hello Manager</Text>
         </View>
     )
@@ -17,7 +17,7 @@ const ManagerScreen = () => {
 
 export default ManagerScreen;
 
-style = StyleSheet.create({
+const styles = StyleSheet.create({
     mainBody: {
         flex: 1,
         justifyContent: 'center',

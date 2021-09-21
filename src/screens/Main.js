@@ -3,6 +3,10 @@ import { StyleSheet, View, Text } from 'react-native';
 import { FIRESTORE_ROLES } from '../config';
 import { FirebaseUserContext } from '../context/FireBaseUserProvider';
 import { FirestoreDataContext } from '../context/FirestoreDataProvider';
+import LoginScreen from '../screens/LoginScreen';
+import PlayerScreen from '../screens/PlayerScreen';
+import ManagerScreen from '../screens/ManagerScreen';
+
 
 /*
   Debugowanie na urzadzeniu fizycznym:
@@ -13,16 +17,19 @@ import { FirestoreDataContext } from '../context/FirestoreDataProvider';
 */
 
 const Main = () => {
+  console.log('tt');
 
   const userContext = useContext(FirebaseUserContext);
   const authUser = userContext[0];
 
   // warunek ? spelniony : nie spelniony
-
-  if(authUser === null)
-  {
-    return <LoginScreen/>
-  }
+  console.log(authUser);
+  if(!authUser) {
+    return <LoginScreen/>;
+  } /*if(authUser === undefined || authUser === null)
+     {
+        return <LoginScreen/>;
+      }*/
   
 
   const firestoreData = useContext(FirestoreDataContext);
@@ -31,7 +38,11 @@ const Main = () => {
 
   // firestoreData.role -> nawigacja
 
-  const firestoreUserRole = firestoreData.role;
+  const firestoreUserRole = firestoreData?.role;
+  /*let firestoreUserRole = null;
+  if(firestoreData) {
+    firestoreUserRole = firestoreData.role;
+  }*/
 
   //const screenToDisplay = firestoreUserRole === "player" ? <PlayerScreen/> : <ManagerScreen/>;
   //zrobić useEffect i w zalezności od stanu (określony screen) przełączać na ekran, funkcja useEffect wywołuje się wtedy gdy zmienia się rola użytkownika
