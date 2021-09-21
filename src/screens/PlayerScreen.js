@@ -9,7 +9,7 @@ StyleSheet,
 const PlayerScreen = () => {
 
     return (
-        <View style={StyleSheet.mainBody}>
+        <View style={styles.mainBody}>
             <Text>Hello Player</Text>
         </View>
     )
@@ -17,7 +17,7 @@ const PlayerScreen = () => {
 
 export default PlayerScreen;
 
-style = StyleSheet.create({
+const styles = StyleSheet.create({
     mainBody: {
         flex: 1,
         justifyContent: 'center',
