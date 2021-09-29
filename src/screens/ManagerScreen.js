@@ -6,12 +6,16 @@ StyleSheet,
 } from 'react-native';
 
 
+
 const ManagerScreen = () => {
 
     return (
-        <View style={style.mainBody}>
-            <Text>Hello Manager</Text>
+        <>
+        {/*<CustomHeader/>*/}
+        <View style={styles.mainBody}>
+            <Text style={styles.text}>Hello Manager</Text>
         </View>
+        </>
     )
 }
 
@@ -22,6 +26,9 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         backgroundColor: '#1a112b',
-        alignContent: 'center',
+        alignItems: 'center',
     },
+    text:{
+        color: 'white',
+    }
 })

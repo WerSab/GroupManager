@@ -1,14 +1,11 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect } from "react";
 import React from 'react';
 import firestore from '@react-native-firebase/firestore';
 import { FIRESTORE_COLLECTION } from "../config";
-import { FirebaseUserContext } from "./FireBaseUserProvider";
 
 export const FirestoreDataContext = createContext(null);
 
-const FirestoreDataProvider = ({children, updateInitializing}) => {
-
-    const authUser = useContext(FirebaseUserContext);//uzyskanie id usera
+const FirestoreDataProvider = ({children, authUser, updateInitializing}) => {
 
     const [data, setData] = useState(null);
 

@@ -1,10 +1,11 @@
 import React from 'react';
-import 'react-native-gesture-handler';
-import { NavigationContainer } from '@react-navigation/native';
+//import 'react-native-gesture-handler';
 import FirebaseUserProvider from './src/context/FireBaseUserProvider';
 import RegisterScreen from './src/screens/RegisterScreen';
-import Main from './src/screens/Main';
+import MainScreen from './src/screens/MainScreen';
 import PasswordRecoveryScreen from './src/screens/PasswordRecoveryScreen';
+import StackContainer from './src/navigation/StackContainer';
+
 //import AuthStackNavigator from './src/navigation/StackNavigator.js'
 //import { FirebaseUserContext } from './src/context/FireBaseUserProvider';
 
@@ -13,11 +14,13 @@ const App = () => {
   //const firebaseUser = useContext(FirebaseUserContext);
 
   return (
-    <NavigationContainer>
-      <FirebaseUserProvider>
-        <Main />
-      </FirebaseUserProvider>
-    </NavigationContainer>
+
+    <FirebaseUserProvider>
+      <StackContainer>
+        <MainScreen/>
+      </StackContainer>
+    </FirebaseUserProvider>
+
   );
 };
 export default App;
