@@ -17,8 +17,6 @@ import {
   signOutFirebaseUser,
 } from '../fireBase/authentication-methods';
 //import RegisterScreen from './RegisterScreen'
-
-
 //const firebaseUser = useContext(FirebaseUserContext);
 
 
@@ -40,13 +38,11 @@ const LoginScreen = ({ navigation }) => {
     setIsLogging(true);
     loginFireBaseUser(email, password)
       .then(authUser => {
-        
+
         setError(null);
       })
       .catch(setError)
       .finally(() => setIsLogging(false));
-
-      auth().sendPasswordResetEmail('a@a.pl')
   };
 
   /*
@@ -71,7 +67,7 @@ const LoginScreen = ({ navigation }) => {
     return (
       <View style={styles.mainBody}>
         <View style={styles.SectionStyle}>
-        <Text style={styles.buttonTextStyle}>Loading</Text>
+          <Text style={styles.buttonTextStyle}>Loading</Text>
         </View>
       </View>
     );

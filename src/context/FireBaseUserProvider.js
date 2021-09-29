@@ -31,7 +31,7 @@ const FirebaseUserProvider = (props) => {
 
   return (
     <FirebaseUserContext.Provider value={[authUser, initializing]}>
-      <FirestoreDataProvider updateInitializing={setInitializing}>
+      <FirestoreDataProvider authUser={authUser} updateInitializing={setInitializing}>
         {children}
       </FirestoreDataProvider>
     </FirebaseUserContext.Provider>
