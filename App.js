@@ -16,9 +16,7 @@ const App = () => {
   return (
 
     <FirebaseUserProvider>
-      <StackContainer>
-        <MainScreen/>
-      </StackContainer>
+      <StackContainer/>
     </FirebaseUserProvider>
 
   );
