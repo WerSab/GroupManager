@@ -8,14 +8,16 @@ export const FirestoreDataContext = createContext(null);
 const FirestoreDataProvider = ({children, authUser, updateInitializing}) => {
 
     const [data, setData] = useState(null);
-
     useEffect(() => {
+     
+    console.log('authUser useeffect: ', authUser?.uid);
         if (authUser) {
           firestore()
             .collection(FIRESTORE_COLLECTION.USERS)
             .doc(authUser.uid)
             .get()
             .then(documentSnapshot => {
+              console.log('snapshot: ', documentSnapshot);
               if (documentSnapshot.exists) {
                 // pobieram dane uzytkownika z bazy danych i przypisuje do stanu [data]
                 setData(documentSnapshot.data());

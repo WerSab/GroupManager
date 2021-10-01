@@ -25,6 +25,7 @@ const MainScreen = ({navigation}) => {
   const initializing = userContext[1];
   const authUser = userContext[0];
 
+  console.log('auth user: ', authUser);
   if (initializing) {
     return <ActivityIndicator size="large" color="#FCA542" />
   }
@@ -37,10 +38,6 @@ const MainScreen = ({navigation}) => {
      {
         return <LoginScreen/>;
       }*/
-
-
-
-
 
   // firestoreData.role -> nawigacja
 
