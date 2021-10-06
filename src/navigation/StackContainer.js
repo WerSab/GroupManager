@@ -10,26 +10,20 @@ import RegisterScreen from '../screens/RegisterScreen';
 import ActivityIndicatorScreen from '../screens/ActivityIndicatorScreen';
 import LogoTitle from './LogoTitle';
 import { FIRESTORE_ROLES } from '../config';
-import { FirebaseUserContext } from '../context/FireBaseUserProvider';
-import { FirestoreDataContext } from '../context/FirestoreDataProvider';
+import { UserContext } from '../context/UserContextProvider';
 
-
-
+//Źle przekazywany jest authContext, to nie wina emulatora. 
+//Trzeba przekazać authUser jako kopię albo użyć kontekstu tak jak to było wcześniej.
 
 const Stack = createNativeStackNavigator();
 
 function StackContainer() {
 
-  const userContext = useContext(FirebaseUserContext);
-  const firestoreData = useContext(FirestoreDataContext);
-  const initializing = userContext[1];
-  const authUser = userContext[0];
-
+  const userContext = useContext(UserContext);
 
   const getStackScreenBasedOnRole = () => {
-    console.log('firestoreAuth: ', authUser)
-console.log('FirestoreData: ', firestoreData)
-    if (initializing) {
+
+    if (userContext.initializing) {
       return <Stack.Screen
         name="ActivityIndicatorScreen"
         component={ActivityIndicatorScreen}
@@ -40,8 +34,9 @@ console.log('FirestoreData: ', firestoreData)
       />
 
     } else {
-      if (authUser) {
-        switch (firestoreData) {
+      if (userContext.user) {
+        switch (userContext.data) {
+
           case FIRESTORE_ROLES.PLAYER: {
             return <Stack.Screen
               name="PlayerScreen"
@@ -52,13 +47,13 @@ console.log('FirestoreData: ', firestoreData)
               }}
             />
           }
-          
-          case FIRESTORE_ROLES.MANAGER:{
+          case FIRESTORE_ROLES.MANAGER: {
             return <Stack.Screen
               name="ManagerScreen"
               component={ManagerScreen}
               options={{
                 headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
+                headerStyle: { backgroundColor: '#1a112b', flex: 1, alignSelf: 'center', height: 60 },
                 headerTitleAlign: 'center'
               }}
             />
@@ -73,6 +68,7 @@ console.log('FirestoreData: ', firestoreData)
               component={LoginScreen}
               options={{
                 headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
+                headerStyle: { backgroundColor: '#1a112b', flex: 1, alignSelf: 'center', height: 60 },
                 headerTitleAlign: 'center'
               }}
             />
@@ -81,6 +77,7 @@ console.log('FirestoreData: ', firestoreData)
               component={RegisterScreen}
               options={{
                 headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
+                headerStyle: { backgroundColor: '#1a112b', flex: 1, alignSelf: 'center', height: 60 },
                 headerTitleAlign: 'center'
               }}
             />
@@ -89,6 +86,7 @@ console.log('FirestoreData: ', firestoreData)
               component={PasswordRecoveryScreen}
               options={{
                 headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
+                headerStyle: { backgroundColor: '#1a112b', flex: 1, alignSelf: 'center', height: 60 },
                 headerTitleAlign: 'center'
               }}
             />
@@ -103,38 +101,37 @@ console.log('FirestoreData: ', firestoreData)
     <NavigationContainer>
       <Stack.Navigator>
         {getStackScreenBasedOnRole()}
-
-
-        {/* {
-          FIRESTORE_ROLES === 'player' ? (
-            <>
-              <Stack.Screen 
-              name="PlayerScreen" 
-              component={PlayerScreen} 
-              options={{ headerBackVisible: false, headerTitle: props => <LogoTitle {...props}/>, 
-              headerStyle: {backgroundColor: '#1a112b',  flex:1, alignSelf: 'center', height: 60 },
-              headerTitleAlign: 'center'}} 
-              />
-
-            </>
-          ) : (
-            <>
-              <Stack.Screen 
-              name="ManagerScreen" 
-              component={ManagerScreen} 
-              options={{ headerBackVisible: false, headerTitle: props => <LogoTitle {...props}/>, 
-              headerStyle: {backgroundColor: '#1a112b',  flex:1, alignSelf: 'center', height: 60 },
-              headerTitleAlign: 'center',
-            }} 
-          
-              />
-              
-            </>
-          )
-        }*/}
-
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
 export default StackContainer;
+
+
+/* {
+          FIRESTORE_ROLES === 'player' ? (
+            <>
+              <Stack.Screen
+              name="PlayerScreen"
+              component={PlayerScreen}
+              options={{ headerBackVisible: false, headerTitle: props => <LogoTitle {...props}/>,
+              headerStyle: {backgroundColor: '#1a112b',  flex:1, alignSelf: 'center', height: 60 },
+              headerTitleAlign: 'center'}}
+              />
+
+            </>
+          ) : (
+            <>
+              <Stack.Screen
+              name="ManagerScreen"
+              component={ManagerScreen}
+              options={{ headerBackVisible: false, headerTitle: props => <LogoTitle {...props}/>,
+              headerStyle: {backgroundColor: '#1a112b',  flex:1, alignSelf: 'center', height: 60 },
+              headerTitleAlign: 'center',
+            }}
+
+              />
+
+            </>
+          )
+        }*/

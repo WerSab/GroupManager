@@ -15,9 +15,9 @@ const App = () => {
 
   return (
 
-    <FirebaseUserProvider>
+    <UserContextProvider>
       <StackContainer/>
-    </FirebaseUserProvider>
+    </UserContextProvider>
 
   );
 };

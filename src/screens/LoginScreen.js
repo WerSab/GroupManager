@@ -12,6 +12,7 @@ import {
   Button,
 } from 'react-native';
 import { FirebaseUserContext } from '../context/FireBaseUserProvider';
+import { FirestoreDataContext } from '../context/FirestoreDataProvider';
 import {
   loginFireBaseUser,
   signOutFirebaseUser,
@@ -22,10 +23,10 @@ import {
 
 const LoginScreen = ({ navigation }) => {
   const authContext = useContext(FirebaseUserContext);
+  const firestoreData = useContext(FirestoreDataContext);
   // const [authUser, initializing] = useContext(FirebaseUserContext);
   const authUser = authContext[0];
   const authUserInitializing = authContext[1];
-  console.log('firebaseUser', authUser);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLogging, setIsLogging] = useState('');
