@@ -8,9 +8,10 @@ export const FirestoreDataContext = createContext(null);
 const FirestoreDataProvider = ({children, authUser, updateInitializing}) => {
 
     const [data, setData] = useState(null);
+    
     useEffect(() => {
-     
-    console.log('authUser useeffect: ', authUser?.uid);
+
+        console.log('authUser useeffect: ', authUser?.uid);
         if (authUser) {
           firestore()
             .collection(FIRESTORE_COLLECTION.USERS)

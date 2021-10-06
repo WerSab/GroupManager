@@ -22,8 +22,9 @@ const MainScreen = ({navigation}) => {
   const userContext = useContext(FirebaseUserContext);
   const firestoreData = useContext(FirestoreDataContext);
 
-  const initializing = userContext[1];
+  
   const authUser = userContext[0];
+  const initializing = userContext[1];
 
   console.log('auth user: ', authUser);
   if (initializing) {
