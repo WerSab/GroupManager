@@ -35,7 +35,7 @@ function StackContainer() {
 
     } else {
       if (userContext.user) {
-        switch (userContext.data) {
+        switch (userContext.data.role) {
 
           case FIRESTORE_ROLES.PLAYER: {
             return <Stack.Screen
