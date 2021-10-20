@@ -1,5 +1,4 @@
 import React, { useContext, useState, createRef } from 'react';
-import auth from '@react-native-firebase/auth';//zrobiony import- bo krzyczało, że nie rozpoznaje auth().
 import {
   StyleSheet,
   TextInput,
@@ -11,22 +10,18 @@ import {
   KeyboardAvoidingView,
   Button,
 } from 'react-native';
-import { FirebaseUserContext } from '../context/FireBaseUserProvider';
-import { FirestoreDataContext } from '../context/FirestoreDataProvider';
 import {
   loginFireBaseUser,
   signOutFirebaseUser,
 } from '../fireBase/authentication-methods';
+import { UserContext } from '../context/UserContextProvider';
 //import RegisterScreen from './RegisterScreen'
-//const firebaseUser = useContext(FirebaseUserContext);
-
 
 const LoginScreen = ({ navigation }) => {
-  const authContext = useContext(FirebaseUserContext);
-  const firestoreData = useContext(FirestoreDataContext);
-  // const [authUser, initializing] = useContext(FirebaseUserContext);
-  const authUser = authContext[0];
-  const authUserInitializing = authContext[1];
+
+  const authContext = useContext(UserContext);
+  // {user, data, initializing} = useContext(UserContext);
+  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLogging, setIsLogging] = useState('');
@@ -38,7 +33,7 @@ const LoginScreen = ({ navigation }) => {
   const loginUser = () => {
     setIsLogging(true);
     loginFireBaseUser(email, password)
-      .then(authUser => {
+      .then(() => {
 
         setError(null);
       })
@@ -63,108 +58,87 @@ const LoginScreen = ({ navigation }) => {
 
   */
 
-
-  if (authUserInitializing) {
-    return (
-      <View style={styles.mainBody}>
-        <View style={styles.SectionStyle}>
-          <Text style={styles.buttonTextStyle}>Loading</Text>
-        </View>
-      </View>
-    );
-  } else {
-    if (authUser) {
-      return (
-        <View style={styles.mainBody}>
-          <Text style={styles.buttonTextStyle}>Hello  {authUser.email}</Text>
-          <Button
-            title="Log out"
-            disablefd={isSigningOut}
-            onPress={() => {
-              setIsSigningOut(true);
-              signOutFirebaseUser().finally(() => setIsSigningOut(false));
-            }}
-          />
-        </View>
-      );
-    } else {
-      return (
-        <View style={styles.mainBody}>
-          <ScrollView
-            keyboardShouldPersistTaps="handled"
-            contentContainerStyle={{
-              flex: 1,
-              justifyContent: 'center',
-              alignContent: 'center',
-            }}>
-            <View>
-              <KeyboardAvoidingView enabled>
-                <View style={styles.SectionStyle}>
-                  <TextInput
-                    style={styles.inputStyle}
-                    onChange={event => setEmail(event.nativeEvent.text)}
-                    placeholder="Enter Email" //dummy@abc.com
-                    placeholderTextColor="#8b9cb5"
-                    autoCapitalize="none"
-                    keyboardType="email-address"
-                    returnKeyType="next"
-                    onSubmitEditing={() =>
-                      passwordInputRef.current &&
-                      passwordInputRef.current.focus()
-                    }
-                    underlineColorAndroid="#f000"
-                    blurOnSubmit={false}
-                  />
-                </View>
-                <View style={styles.SectionStyle}>
-                  <TextInput
-                    style={styles.inputStyle}
-                    onChange={event => setPassword(event.nativeEvent.text)}
-                    placeholder="Enter Password" //12345
-                    placeholderTextColor="#8b9cb5"
-                    keyboardType="default"
-                    ref={passwordInputRef}
-                    onSubmitEditing={Keyboard.dismiss}
-                    blurOnSubmit={false}
-                    secureTextEntry={true}
-                    underlineColorAndroid="#f000"
-                    returnKeyType="next"
-                  />
-                </View>
-
-                <TouchableOpacity
-                  style={styles.buttonStyle}
-                  activeOpacity={0.5}
-                  disabled={isLogging}
-                  title="Log in"
-                  onPress={() => {
-                    loginUser();
-                    console.log(loginUser)
-                  }}>
-                  <Text style={styles.buttonTextStyle}>LOGIN</Text>
-                </TouchableOpacity>
-
-                <View style={{ marginTop: 10, alignItems: 'center' }}>
-                  <Text style={{ color: 'red' }}>{error}</Text>
-                </View>
-                <Text
-                  style={styles.registerTextStyle}
-                  onPress={() => navigation.navigate('RegisterScreen')}>
-                  New Here ? Register
-                </Text>
-                <Text
-                  style={styles.registerTextStyle}
-                  onPress={() => navigation.navigate('PasswordRecoveryScreen')}>
-                  Forgot password?
-                </Text>
-              </KeyboardAvoidingView>
+  return (
+    <View style={styles.mainBody}>
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={{
+          flex: 1,
+          justifyContent: 'center',
+          alignContent: 'center',
+        }}>
+        <View>
+          <KeyboardAvoidingView enabled>
+            <View style={styles.SectionStyle}>
+              <TextInput
+                style={styles.inputStyle}
+                onChange={event => setEmail(event.nativeEvent.text)}
+                placeholder="Enter Email" //dummy@abc.com
+                placeholderTextColor="#8b9cb5"
+                autoCapitalize="none"
+                keyboardType="email-address"
+                returnKeyType="next"
+                onSubmitEditing={() =>
+                  passwordInputRef.current &&
+                  passwordInputRef.current.focus()
+                }
+                underlineColorAndroid="#f000"
+                blurOnSubmit={false}
+              />
             </View>
-          </ScrollView>
+            <View style={styles.SectionStyle}>
+              <TextInput
+                style={styles.inputStyle}
+                onChange={event => setPassword(event.nativeEvent.text)}
+                placeholder="Enter Password" //12345
+                placeholderTextColor="#8b9cb5"
+                keyboardType="default"
+                ref={passwordInputRef}
+                onSubmitEditing={Keyboard.dismiss}
+                blurOnSubmit={false}
+                secureTextEntry={true}
+                underlineColorAndroid="#f000"
+                returnKeyType="next"
+              />
+            </View>
+
+            <TouchableOpacity
+              style={styles.buttonStyle}
+              activeOpacity={0.5}
+              disabled={isLogging}
+              title="Log in"
+              onPress={() => {
+                loginUser();
+                console.log(loginUser)
+              }}>
+              <Text style={styles.buttonTextStyle}>LOGIN</Text>
+            </TouchableOpacity>
+
+            <View style={{ marginTop: 10, alignItems: 'center' }}>
+              <Text style={{ color: 'red' }}>{error}</Text>
+            </View>
+            <Text
+              style={styles.registerTextStyle}
+              onPress={() => navigation.navigate('RegisterScreen')}>
+              New Here ? Register
+            </Text>
+            <Text
+              style={styles.registerTextStyle}
+              onPress={() => navigation.navigate('PasswordRecoveryScreen')}>
+              Forgot password?
+            </Text>
+          </KeyboardAvoidingView>
         </View>
-      );
-    }
-  }
+      </ScrollView>
+    </View>
+  );
 };
+
+/*
+player: x@x.pl zaqwsx
+manager: y@y.pl zaqwsx
+
+*/
 
 export default LoginScreen;
 
