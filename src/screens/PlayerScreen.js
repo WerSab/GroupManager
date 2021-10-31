@@ -10,7 +10,7 @@ const PlayerScreen = () => {
 
     return (
         <View style={styles.mainBody}>
-            <Text>Hello Player</Text>
+            <Text style={styles.text}>Hello Player</Text>
         </View>
     )
 }
@@ -23,5 +23,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: '#1a112b',
         alignContent: 'center',
+        
     },
+    text:{
+        color: 'white',
+    }
 })
