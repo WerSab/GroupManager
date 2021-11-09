@@ -21,14 +21,14 @@ export function getTournaments() {
             })
             .catch((error) => reject(error))
     })
-
-
 }
 
 /*
-
     inputs: 
         1. [1, 3, 4, 8, 24, 91, 512, -43, 21, -31]
+                   / const tab = [1, 3, 4, 8, 24, 91, 512, -43, 21, -31];
+                    const tab1 = tab.map(x => x * 8);
+                    console.log(tab1);/
         2. [
             {
                 id: '134',
@@ -36,8 +36,11 @@ export function getTournaments() {
                 age: 34
             }
         ]
+        /const map1 = array1.map(x => x.age);/
         -----------------filtr-------------------
         3. [10, 40, 20, -20, -34]
+        /const map1 = tab.filter(x => x%3==0);
+            console.log(map1);/
         4. [
             {
                 id: '134',
@@ -45,6 +48,7 @@ export function getTournaments() {
                 age: 34
             }
         ]
+        /const map1 = tab.filter(x => x.age>18)/
         5. [
             {
                 id: '134',
@@ -53,6 +57,7 @@ export function getTournaments() {
                 pets: ['dog', 'cat']
             }
         ]
+        /const map1 = tab.filter(x => x.pets=='dog');/
 
     outputs: 
         1. [] <-- kazdy element ma zostac przemnozony przez 8
@@ -65,8 +70,6 @@ export function getTournaments() {
         5. [] <-- Tablica obiektow gdzie osoba ma psa (bez kotow)
 
     .some, every (array functions)
-
-
 */
 
 // output: [{tournament1Data}, {tournament2Data}]
