@@ -11,10 +11,11 @@ import ActivityIndicatorScreen from '../screens/ActivityIndicatorScreen';
 import LogoTitle from './LogoTitle';
 import { FIRESTORE_ROLES } from '../config';
 import { UserContext } from '../context/UserContextProvider';
+import TournamentsScreen from '../screens/TournamentsScreen';
+import UsersScreen from '../screens/UsersScreen';
+import {SCREEN} from './screens';
 
-//Źle przekazywany jest authContext, to nie wina emulatora. 
-//Trzeba przekazać authUser jako kopię albo użyć kontekstu tak jak to było wcześniej.
-
+// Jeżeli mamy skomplikowane mapowanie listy to używamy:<React.Fragment key={}></React.Fragment> -> <></>
 const Stack = createNativeStackNavigator();
 
 function StackContainer() {
@@ -38,7 +39,9 @@ function StackContainer() {
         switch (userContext.data.role) {
 
           case FIRESTORE_ROLES.PLAYER: {
-            return <Stack.Screen
+            return (
+            <>
+            <Stack.Screen
               name="PlayerScreen"
               component={PlayerScreen}
               options={{
@@ -46,17 +49,41 @@ function StackContainer() {
                 headerTitleAlign: 'center'
               }}
             />
-          }
+            <Stack.Screen
+                name={SCREEN.USERSLIST}
+                component={UsersScreen}
+                options={{
+                  headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
+                  headerStyle: { backgroundColor: '#1a112b', flex: 1, alignSelf: 'center', height: 60 },
+                  headerTitleAlign: 'center'
+                }}
+              />
+              </>
+            )}
           case FIRESTORE_ROLES.MANAGER: {
-            return <Stack.Screen
-              name="ManagerScreen"
-              component={ManagerScreen}
-              options={{
-                headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
-                headerStyle: { backgroundColor: '#1a112b', flex: 1, alignSelf: 'center', height: 60 },
-                headerTitleAlign: 'center'
-              }}
-            />
+            return (
+            <>
+              <Stack.Screen
+                name="ManagerScreen"
+                component={ManagerScreen}
+                options={{
+                  headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
+                  headerStyle: { backgroundColor: '#1a112b', flex: 1, alignSelf: 'center', height: 60 },
+                  headerTitleAlign: 'center'
+                }}
+              />
+              <Stack.Screen
+                name={SCREEN.TOURNAMENTLIST}
+                component={TournamentsScreen}
+                options={{
+                  headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
+                  headerStyle: { backgroundColor: '#1a112b', flex: 1, alignSelf: 'center', height: 60 },
+                  headerTitleAlign: 'center'
+                }}
+              />
+              
+            </>
+            )
           }
         }
       } else {

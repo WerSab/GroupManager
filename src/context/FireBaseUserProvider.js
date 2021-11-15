@@ -21,7 +21,7 @@ const FirebaseUserProvider = (props) => {
       console.log('User', JSON.stringify(user));//wypisze zawartośc w postaci stringa
     });//ta metoda wywołuje użytkownika po zalogowaniu (lub nie)
     /* 
-      Odpowiednik metody componentWillUnmount()
+      Odpowiednik metody componentWillUnmount() - czyli co sie stanie gdy komponent zniknie z ekranu
     */
     return () => {
       // tutaj mozemy dac co chcemy

@@ -1,14 +1,22 @@
-import React from 'react';
+import { useNavigation } from '@react-navigation/core';
+import React, { useEffect } from 'react';
 import {
 View,
 Text,
 StyleSheet,
 } from 'react-native';
+import { SCREEN } from '../navigation/screens';
+import TournamentsScreen from './TournamentsScreen';
 
 
 
 const ManagerScreen = () => {
+const navigation = useNavigation();
+useEffect(() => {
+    navigation.navigate(SCREEN.TOURNAMENTLIST);
+}
 
+)
     return (
         <>
         {/*<CustomHeader/>*/}

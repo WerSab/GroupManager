@@ -57,7 +57,7 @@ export function getTournaments() {
                 pets: ['dog', 'cat']
             }
         ]
-        /const map1 = tab.filter(x => x.pets=='dog');/
+        /const map1 = tab.filter(x => x.pets!=='dog');/
 
     outputs: 
         1. [] <-- kazdy element ma zostac przemnozony przez 8
