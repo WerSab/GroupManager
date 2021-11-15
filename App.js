@@ -6,13 +6,13 @@ import { getTournaments } from './src/tournaments-examples';
 
 const App = () => {
 
-  useEffect(function () {
+  /*useEffect(function () {
     setTimeout(function () {
       getTournaments().then(function(result) {
         console.log(result);
       })
     }, 1500)
-  }, []);
+  }, []);*/
 
 
   return (
