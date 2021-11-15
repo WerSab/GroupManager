@@ -1,28 +1,60 @@
 import { useNavigation } from '@react-navigation/core';
 import React, { useEffect } from 'react';
 import {
-View,
-Text,
-StyleSheet,
+    View,
+    Text,
+    StyleSheet,
+    TouchableOpacity,
 } from 'react-native';
 import { SCREEN } from '../navigation/screens';
-import TournamentsScreen from './TournamentsScreen';
+import { FlatGrid, SectionGrid } from 'react-native-super-grid';
+
 
 
 
 const ManagerScreen = () => {
-const navigation = useNavigation();
-useEffect(() => {
-    navigation.navigate(SCREEN.TOURNAMENTLIST);
-}
+    const navigation = useNavigation();
+    /*useEffect(() => {
+        navigation.navigate(SCREEN.TOURNAMENTLIST);
+    }
+    
+    )*/
+    const data = [
+        { name: SCREEN.TOURNAMENTLIST },
+        { name: SCREEN.USERSLIST },
+    ]
 
-)
+    const renderItem = item => {
+        
+        return (
+            <View style={[styles.itemContainer, { backgroundColor: "white" }]}>
+                <TouchableOpacity
+                onPress = {() =>{
+                    navigation.navigate(item.name)
+                }}
+                
+                > 
+                <Text style={styles.itemName}>{item.name}</Text>
+                </TouchableOpacity>
+            </View>
+        );
+    };
     return (
         <>
-        {/*<CustomHeader/>*/}
-        <View style={styles.mainBody}>
-            <Text style={styles.text}>Hello Manager</Text>
-        </View>
+            {/*<CustomHeader/>*/}
+            <View style={styles.mainBody}>
+                <Text style={styles.text}>Hello Manager</Text>
+                <FlatGrid
+                    itemDimension={130}
+                    data={data}
+                    style={styles.gridView}
+                    // staticDimension={300}
+                    // fixed
+                    // spacing={20}
+                    renderItem={({ item }) => renderItem(item)}
+                />
+
+            </View>
         </>
     )
 }
@@ -36,7 +68,27 @@ const styles = StyleSheet.create({
         backgroundColor: '#1a112b',
         alignItems: 'center',
     },
-    text:{
+    text: {
         color: 'white',
-    }
+        fontSize: 20,
+        padding: 30, 
+    },
+    gridView: {
+        marginTop: 20,
+        flex: 1,
+    },
+    itemContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 5,
+        padding: 10,
+        height: 150,
+        backgroundColor: 'white',
+    },
+    itemName: {
+        fontSize: 16,
+        color: '#1a112b',
+        fontWeight: '600',
+    },
+    
 })
