@@ -40,7 +40,7 @@ function StackContainer() {
 
           case FIRESTORE_ROLES.PLAYER: {
             return (
-            <>
+           
             <Stack.Screen
               name="PlayerScreen"
               component={PlayerScreen}
@@ -49,16 +49,7 @@ function StackContainer() {
                 headerTitleAlign: 'center'
               }}
             />
-            <Stack.Screen
-                name={SCREEN.USERSLIST}
-                component={UsersScreen}
-                options={{
-                  headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
-                  headerStyle: { backgroundColor: '#1a112b', flex: 1, alignSelf: 'center', height: 60 },
-                  headerTitleAlign: 'center'
-                }}
-              />
-              </>
+            
             )}
           case FIRESTORE_ROLES.MANAGER: {
             return (
@@ -75,6 +66,15 @@ function StackContainer() {
               <Stack.Screen
                 name={SCREEN.TOURNAMENTLIST}
                 component={TournamentsScreen}
+                options={{
+                  headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
+                  headerStyle: { backgroundColor: '#1a112b', flex: 1, alignSelf: 'center', height: 60 },
+                  headerTitleAlign: 'center'
+                }}
+              />
+              <Stack.Screen
+                name={SCREEN.USERSLIST}
+                component={UsersScreen}
                 options={{
                   headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
                   headerStyle: { backgroundColor: '#1a112b', flex: 1, alignSelf: 'center', height: 60 },

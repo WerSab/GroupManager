@@ -49,8 +49,7 @@ const styles = StyleSheet.create({
     },
     text: {
         color: 'white',
-        fontSize: 25,
-        fontWeight: 'bold', 
+        fontSize: 20,
         padding: 30, 
     },
     container: {
@@ -63,9 +62,9 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
         marginRight: 20,
         marginLeft: 20,
-        borderRadius: 10,
+        borderRadius: 5,
         borderWidth: 1,
         textAlign: 'center',
-        fontSize: 20
+        fontSize: 16
     },
 })
