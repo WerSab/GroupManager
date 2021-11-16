@@ -12,6 +12,7 @@ import LogoTitle from './LogoTitle';
 import { FIRESTORE_ROLES } from '../config';
 import { UserContext } from '../context/UserContextProvider';
 import TournamentsScreen from '../screens/TournamentsScreen';
+import TournamentDetailsScreen from'../screens/TournamentDetailsScreen'
 import UsersScreen from '../screens/UsersScreen';
 import {SCREEN} from './screens';
 
@@ -75,6 +76,15 @@ function StackContainer() {
               <Stack.Screen
                 name={SCREEN.USERSLIST}
                 component={UsersScreen}
+                options={{
+                  headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
+                  headerStyle: { backgroundColor: '#1a112b', flex: 1, alignSelf: 'center', height: 60 },
+                  headerTitleAlign: 'center'
+                }}
+              />
+               <Stack.Screen
+                name={SCREEN.TOURNAMENTDETAILS}
+                component={TournamentDetailsScreen}
                 options={{
                   headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
                   headerStyle: { backgroundColor: '#1a112b', flex: 1, alignSelf: 'center', height: 60 },

@@ -8,4 +8,6 @@ export const SCREEN = {
     PLAYER:'PlayerScreen',
     REGISTER:'RegisterScreen',
     USERSLIST: 'UsersScreen',
+    TOURNAMENTDETAILS: 'TournamentDetailsScreen',
+    USERSDETAILS: 'UserDetailsScreen',
 };
