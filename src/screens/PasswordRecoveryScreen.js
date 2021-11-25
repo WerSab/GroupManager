@@ -74,7 +74,7 @@ const PasswordRecoveryScreen = () => {
             {error ? <Text style={{color:"white"}}>Blad: {error}</Text> : null}
 
             <Button
-                color="#FCA542"
+                color="#005a98"
                 title="Przypomnij hasło"
                 disabled={disable}
                 onPress={() => {
@@ -94,12 +94,12 @@ const styles = StyleSheet.create({
     mainBody: {
         flex: 1,
         justifyContent: 'center',
-        backgroundColor: '#1a112b',
+        backgroundColor: '#005a98',
         alignContent: 'center',
     },
     inputStyle: {
         flex: 1,
-        color: 'white',
+        color: '#005a98',
         paddingLeft: 15,
         paddingRight: 15,
         borderWidth: 1,
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
         marginBottom: 25,
     },
     buttonTextStyle: {
-        color: '#FFFFFF',
+        color: '#005a98',
         paddingVertical: 10,
         fontSize: 16,
     },

@@ -1,5 +1,5 @@
 export const SCREEN = {
-    TOURNAMENTLIST: 'TournamentsScreen',
+    TOURNAMENTLIST: 'Wydarzenia',
     ACTIVITYINDICATOR: 'ActivityIndicatorScreen',
     HEADER:'Header',
     LOGIN:'LoginScreen',
@@ -7,7 +7,8 @@ export const SCREEN = {
     PASSWORDRECOVERY:'PasswordRecoveryScreen',
     PLAYER:'PlayerScreen',
     REGISTER:'RegisterScreen',
-    USERSLIST: 'UsersScreen',
+    USERSLIST: 'Użytkownicy',
     TOURNAMENTDETAILS: 'TournamentDetailsScreen',
     USERSDETAILS: 'UserDetailsScreen',
+    ERROR: 'ErrorScreen',
 };

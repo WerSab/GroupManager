@@ -60,6 +60,9 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <View style={styles.mainBody}>
+       <Text style={styles.textStyle}>Witamy w aplikacji 
+       {'\n'}
+          Centrum Kultury i Sportu w Skawinie</Text>
       <ScrollView
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={{
@@ -68,6 +71,7 @@ const LoginScreen = ({ navigation }) => {
           alignContent: 'center',
         }}>
         <View>
+         
           <KeyboardAvoidingView enabled>
             <View style={styles.SectionStyle}>
               <TextInput
@@ -146,11 +150,12 @@ const styles = StyleSheet.create({
   mainBody: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#1a112b',
+    backgroundColor: 'white',
     alignContent: 'center',
   },
   SectionStyle: {
     flexDirection: 'row',
+    borderColor: '#3175ab',
     height: 40,
     marginTop: 20,
     marginLeft: 35,
@@ -158,10 +163,10 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   buttonStyle: {
-    backgroundColor: '#FCA542',
+    backgroundColor: '#3175ab',
     borderWidth: 0,
-    color: '#FFFFFF',
-    borderColor: '#7DE24E',
+    color: 'white',
+    borderColor: '#3175ab',
     height: 40,
     alignItems: 'center',
     borderRadius: 30,
@@ -171,26 +176,34 @@ const styles = StyleSheet.create({
     marginBottom: 25,
   },
   buttonTextStyle: {
-    color: '#FFFFFF',
+    color: 'white',
     paddingVertical: 10,
     fontSize: 16,
   },
   inputStyle: {
     flex: 1,
-    color: 'white',
+    color: '#3175ab',
     paddingLeft: 15,
     paddingRight: 15,
     borderWidth: 1,
     borderRadius: 30,
-    borderColor: '#dadae8',
+    borderColor: '#3175ab',
   },
   registerTextStyle: {
-    color: '#FFFFFF',
+    color: '#3175ab',
     textAlign: 'center',
     fontWeight: 'bold',
     fontSize: 14,
     alignSelf: 'center',
     padding: 10,
+  },
+  textStyle: {
+    color: '#3175ab',
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 25,
+    alignSelf: 'center',
+    padding: 60,
   },
   errorTextStyle: {
     color: 'red',
