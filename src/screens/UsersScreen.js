@@ -1,5 +1,6 @@
 import React from 'react';
 import { useUsers } from '../hooks/useUsers';
+import { useNavigation } from '@react-navigation/core';
 import {
     View,
     Text,
@@ -7,6 +8,7 @@ import {
     FlatList,
 } from 'react-native';
 const UsersScreen = () => {
+    const navigation = useNavigation();
     const [usersList, isLoaded, error] = useUsers();
     console.log('usersList', usersList);
 
@@ -14,7 +16,11 @@ const UsersScreen = () => {
         return (
             <>
                 <Text style={styles.listStyle}>
-                    {item.id} {item.firstName} {item.lastName}
+                    {item.firstName} {item.lastName} - {item.role}
+                    {'\n'}
+                    {item.city}, tel: {item.phone}
+                    {'\n'}
+                    {item.email}
                 </Text>
 
             </>
@@ -44,7 +50,7 @@ const styles = StyleSheet.create({
     mainBody: {
         flex: 1,
         justifyContent: 'center',
-        backgroundColor: '#1a112b',
+        backgroundColor: '#e92255',
         alignItems: 'center',
     },
     text: {
@@ -63,7 +69,7 @@ const styles = StyleSheet.create({
         marginRight: 20,
         marginLeft: 20,
         borderRadius: 5,
-        borderWidth: 1,
+        borderWidth: 0,
         textAlign: 'center',
         fontSize: 16
     },

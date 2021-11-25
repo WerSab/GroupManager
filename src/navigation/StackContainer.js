@@ -15,17 +15,33 @@ import TournamentsScreen from '../screens/TournamentsScreen';
 import TournamentDetailsScreen from'../screens/TournamentDetailsScreen'
 import UsersScreen from '../screens/UsersScreen';
 import {SCREEN} from './screens';
+import { TournamentContext } from '../context/TournamentContextProvider';
+import {Text} from 'react-native'
+import ErrorComponent from '../screens/ErrorScreen';
 
 // Jeżeli mamy skomplikowane mapowanie listy to używamy:<React.Fragment key={}></React.Fragment> -> <></>
+//
 const Stack = createNativeStackNavigator();
 
 function StackContainer() {
 
   const userContext = useContext(UserContext);
-
+  const [tournamentList, isLoaded, error] = useContext(TournamentContext);//Jak przechwycić isLoaded 
+  console.log(tournamentList, isLoaded, error);
+//dopisac error screen obsługujący błąd, do screenu dopisac propsa która bedzie błędem, error screen ma obsłużyć propsa
   const getStackScreenBasedOnRole = () => {
-
-    if (userContext.initializing) {
+    if(error) {
+      return <Stack.Screen
+      name={SCREEN.ERROR}
+      options={{
+        headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
+        headerTitleAlign: 'center'
+      }}
+      >
+        {props => <ErrorComponent {...props} errorMessage={error} />}
+      </Stack.Screen>
+    }
+    if (userContext.initializing ||!isLoaded ) {
       return <Stack.Screen
         name="ActivityIndicatorScreen"
         component={ActivityIndicatorScreen}
@@ -41,7 +57,7 @@ function StackContainer() {
 
           case FIRESTORE_ROLES.PLAYER: {
             return (
-           
+           //przekazać tournamentList do ekranów manager i player??
             <Stack.Screen
               name="PlayerScreen"
               component={PlayerScreen}
@@ -60,25 +76,27 @@ function StackContainer() {
                 component={ManagerScreen}
                 options={{
                   headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
-                  headerStyle: { backgroundColor: '#1a112b', flex: 1, alignSelf: 'center', height: 60 },
+                  headerStyle: { backgroundColor: 'white', flex: 1, alignSelf: 'center', height: 100 },
                   headerTitleAlign: 'center'
                 }}
               />
               <Stack.Screen
                 name={SCREEN.TOURNAMENTLIST}
-                component={TournamentsScreen}
-                options={{
+                  options={{
                   headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
-                  headerStyle: { backgroundColor: '#1a112b', flex: 1, alignSelf: 'center', height: 60 },
+                  headerStyle: { backgroundColor: 'white', flex: 1, alignSelf: 'center', height: 100 },
                   headerTitleAlign: 'center'
                 }}
-              />
+                >
+                  {props => <TournamentsScreen {...props} tournamentList={tournamentList} />}
+                </Stack.Screen>
+             
               <Stack.Screen
                 name={SCREEN.USERSLIST}
                 component={UsersScreen}
                 options={{
                   headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
-                  headerStyle: { backgroundColor: '#1a112b', flex: 1, alignSelf: 'center', height: 60 },
+                  headerStyle: { backgroundColor: 'white', flex: 1, alignSelf: 'center', height: 100 },
                   headerTitleAlign: 'center'
                 }}
               />
@@ -87,7 +105,7 @@ function StackContainer() {
                 component={TournamentDetailsScreen}
                 options={{
                   headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
-                  headerStyle: { backgroundColor: '#1a112b', flex: 1, alignSelf: 'center', height: 60 },
+                  headerStyle: { backgroundColor: 'white', flex: 1, alignSelf: 'center', height: 100 },
                   headerTitleAlign: 'center'
                 }}
               />
@@ -105,7 +123,7 @@ function StackContainer() {
               component={LoginScreen}
               options={{
                 headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
-                headerStyle: { backgroundColor: '#1a112b', flex: 1, alignSelf: 'center', height: 60 },
+                headerStyle: { backgroundColor: 'white', flex: 1, alignSelf: 'center', height: 100 },
                 headerTitleAlign: 'center'
               }}
             />
@@ -114,7 +132,7 @@ function StackContainer() {
               component={RegisterScreen}
               options={{
                 headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
-                headerStyle: { backgroundColor: '#1a112b', flex: 1, alignSelf: 'center', height: 60 },
+                headerStyle: { backgroundColor: 'white', flex: 1, alignSelf: 'center', height: 100 },
                 headerTitleAlign: 'center'
               }}
             />
@@ -123,7 +141,7 @@ function StackContainer() {
               component={PasswordRecoveryScreen}
               options={{
                 headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
-                headerStyle: { backgroundColor: '#1a112b', flex: 1, alignSelf: 'center', height: 60 },
+                headerStyle: { backgroundColor: 'white', flex: 1, alignSelf: 'center', height: 100 },
                 headerTitleAlign: 'center'
               }}
             />

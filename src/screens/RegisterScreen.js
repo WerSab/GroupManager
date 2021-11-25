@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
   mainBody: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#1a112b',
+    backgroundColor: '#015a92',
     alignContent: 'center',
   },
 
@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   buttonStyle: {
-    backgroundColor: '#FCA542',
+    backgroundColor: 'white',
     borderWidth: 0,
     color: '#FFFFFF',
     borderColor: '#7DE24E',
@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
     marginBottom: 25,
   },
   buttonTextStyle: {
-    color: '#FFFFFF',
+    color: '#015a92',
     paddingVertical: 10,
     fontSize: 16,
   },

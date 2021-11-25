@@ -10,10 +10,12 @@ export function useTournaments() {
     // Sprobowac uzyc useEffect hook'a w celu zaciagniecia turniejow 
     // i zwrocic z funkcji tablice ze stanami  
     useEffect(() => {
-
+        console.log("xxx")
         getTournaments()
         .then((result) => {
+            
             setTournamentList(result);
+
         })
         .catch((error) => {
             setError(error);

@@ -23,11 +23,11 @@ const ManagerScreen = () => {
         { name: SCREEN.TOURNAMENTLIST },
         { name: SCREEN.USERSLIST },
     ]
-
+   
     const renderItem = item => {
         
         return (
-            <View style={[styles.itemContainer, { backgroundColor: "white" }]}>
+            <View style={[styles.itemContainer, { backgroundColor: "#e92255" }]}>
                 <TouchableOpacity
                 onPress = {() =>{
                     navigation.navigate(item.name)
@@ -65,11 +65,11 @@ const styles = StyleSheet.create({
     mainBody: {
         flex: 1,
         justifyContent: 'center',
-        backgroundColor: '#1a112b',
+        backgroundColor: 'white',
         alignItems: 'center',
     },
     text: {
-        color: 'white',
+        color: '#e92255',
         fontSize: 20,
         padding: 30, 
     },
@@ -83,11 +83,11 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         padding: 10,
         height: 150,
-        backgroundColor: 'white',
+        backgroundColor: '#3175ab',
     },
     itemName: {
         fontSize: 16,
-        color: '#1a112b',
+        color: 'white',
         fontWeight: '600',
     },
     

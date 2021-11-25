@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useTournaments } from '../hooks/useTournaments';
 import { useNavigation } from '@react-navigation/core';
 import {
@@ -9,53 +9,46 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import { SCREEN } from '../navigation/screens';
+import { TournamentContext } from '../context/TournamentContextProvider';
 
-const TournamentsScreen = () => {
-    const [tournamentList, isLoaded, error] = useTournaments();
-    console.log('TournamentList', tournamentList);
+const TournamentsScreen = ({tournamentList}) => {
 
     const navigation = useNavigation();
-
+   
     const renderItem = item => {
         return (
-            
+            <View>
                 <TouchableOpacity
                     onPress={() => {
                         navigation.navigate(SCREEN.TOURNAMENTDETAILS, {
-                            id: item.id
-                        })
-                    }}
+                           id: item.id
+                        });
+                   }}
                 >
                     <Text style={styles.listStyle}>
-                        {item.id} {item.name}
+                        {item.name}                         
                     </Text>
                 </TouchableOpacity>
-            
+            </View>
         )
     }
 
-    if(error) {
-        return <Text>Error</Text>
-    }
-    if(!isLoaded) {
-        return <Text>Loading tournament list</Text>
-    }
-            return (
-            <>
-                {/*<CustomHeader/>*/}
-                <View style={styles.mainBody}>
-                    <Text style={styles.text}>Tournaments List</Text>
-                    <FlatList
-                        data={tournamentList}
-                        renderItem={({ item }) => renderItem(item)} //do renderItem przekazujemy wartośc funkcji renderItem
-                        keyExtractor={(item, index) => index.toString()}
-                        style={styles.container}
-                        withSearchbar={false}
-                    />
+    return (
+        <>
+            {/*<CustomHeader/>*/}
+            <View style={styles.mainBody}>
+                <Text style={styles.text}>Wydarzenia</Text>
+                <FlatList
+                    data={tournamentList}
+                    renderItem={({ item }) => renderItem(item)} //do renderItem przekazujemy wartośc funkcji renderItem
+                    keyExtractor={(item, index) => index.toString()}
+                    style={styles.container}
+                    withSearchbar={false}
+                />
 
-                </View>
-            </>
-        )
+            </View>
+        </>
+    )
 }
 
 export default TournamentsScreen;
@@ -64,7 +57,7 @@ const styles = StyleSheet.create({
     mainBody: {
         flex: 1,
         justifyContent: 'center',
-        backgroundColor: '#1a112b',
+        backgroundColor: '#005b98',
         alignItems: 'center',
     },
     text: {
@@ -76,9 +69,10 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     listStyle: {
+        flexDirection: 'column',
         padding: 15,
         marginBottom: 5,
-        color: '#27046d',
+        color: '#005b98',
         backgroundColor: "white",
         marginRight: 20,
         marginLeft: 20,
