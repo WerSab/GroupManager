@@ -13,6 +13,7 @@ import { FIRESTORE_ROLES } from '../config';
 import { UserContext } from '../context/UserContextProvider';
 import TournamentsScreen from '../screens/TournamentsScreen';
 import TournamentDetailsScreen from'../screens/TournamentDetailsScreen'
+import UsersDetailsScreen from'../screens/UsersDetailsScreen'
 import UsersScreen from '../screens/UsersScreen';
 import {SCREEN} from './screens';
 import { TournamentContext } from '../context/TournamentContextProvider';
@@ -26,7 +27,8 @@ const Stack = createNativeStackNavigator();
 function StackContainer() {
 
   const userContext = useContext(UserContext);
-  const [tournamentList, isLoaded, error] = useContext(TournamentContext);//Jak przechwycić isLoaded 
+  const [tournamentList, isLoaded, error] = useContext(TournamentContext);
+    //Jak przechwycić isLoaded 
   console.log(tournamentList, isLoaded, error);
 //dopisac error screen obsługujący błąd, do screenu dopisac propsa która bedzie błędem, error screen ma obsłużyć propsa
   const getStackScreenBasedOnRole = () => {
@@ -103,6 +105,15 @@ function StackContainer() {
                <Stack.Screen
                 name={SCREEN.TOURNAMENTDETAILS}
                 component={TournamentDetailsScreen}
+                options={{
+                  headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
+                  headerStyle: { backgroundColor: 'white', flex: 1, alignSelf: 'center', height: 100 },
+                  headerTitleAlign: 'center'
+                }}
+              />
+               <Stack.Screen
+                name={SCREEN.USERSDETAILS}
+                component={UsersDetailsScreen}
                 options={{
                   headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
                   headerStyle: { backgroundColor: 'white', flex: 1, alignSelf: 'center', height: 100 },

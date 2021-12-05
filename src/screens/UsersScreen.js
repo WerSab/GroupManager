@@ -6,7 +6,9 @@ import {
     Text,
     StyleSheet,
     FlatList,
+    TouchableOpacity,
 } from 'react-native';
+import { SCREEN } from '../navigation/screens';
 const UsersScreen = () => {
     const navigation = useNavigation();
     const [usersList, isLoaded, error] = useUsers();
@@ -15,14 +17,21 @@ const UsersScreen = () => {
     const renderItem = item => {
         return (
             <>
-                <Text style={styles.listStyle}>
-                    {item.firstName} {item.lastName} - {item.role}
-                    {'\n'}
-                    {item.city}, tel: {item.phone}
-                    {'\n'}
-                    {item.email}
-                </Text>
-
+                <TouchableOpacity
+                    onPress={() => {
+                        navigation.navigate(SCREEN.USERSDETAILS, {
+                            id: item.id
+                        });
+                    }}
+                >
+                    <Text style={styles.listStyle}>
+                        {item.firstName} {item.lastName} - {item.role}
+                        {'\n'}
+                        {item.city}, tel: {item.phone}
+                        {'\n'}
+                        {item.email}
+                    </Text>
+                </TouchableOpacity>
             </>
         )
     }
@@ -31,12 +40,12 @@ const UsersScreen = () => {
         <>
             {/*<CustomHeader/>*/}
             <View style={styles.mainBody}>
-                <Text style={styles.text}>Users List</Text>
+                <Text style={styles.text}>Użytkownicy</Text>
                 <FlatList
                     data={usersList}
                     renderItem={({ item }) => renderItem(item)} //do renderItem przekazujemy wartośc funkcji renderItem
                     keyExtractor={(item, index) => index.toString()}
-                    style={styles.container} 
+                    style={styles.container}
                     withSearchbar={false}
                 />
             </View>
@@ -50,13 +59,13 @@ const styles = StyleSheet.create({
     mainBody: {
         flex: 1,
         justifyContent: 'center',
-        backgroundColor: '#e92255',
+        backgroundColor: '#015a92',
         alignItems: 'center',
     },
     text: {
         color: 'white',
         fontSize: 20,
-        padding: 30, 
+        padding: 30,
     },
     container: {
         flex: 1,

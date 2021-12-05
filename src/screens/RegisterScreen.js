@@ -114,18 +114,7 @@ const RegisterScreen = ({ user, addUser, navigation, StackNavigator }) => {
   // jakas_super_zmienna - kebab case
   return (
     <View style={styles.mainBody}>
-      <Text style={styles.successTextStyle}>Select role</Text>
-      <View style={styles.pickerStyle}>
-        <Picker
-          selectedValue={role}
-          onValueChange={itemValue => setRole(itemValue)}>
-          <Picker.Item label="Manager" value="manager" />
-          <Picker.Item label="Player" value="player" />
-        </Picker>
-      </View>
-
-
-
+      
       <KeyboardAvoidingView enabled>
         <SafeAreaView>
           <ScrollView>
@@ -224,7 +213,7 @@ const RegisterScreen = ({ user, addUser, navigation, StackNavigator }) => {
                 onRegisterPress();
                 clearInputs();
               }}>
-              <Text style={styles.buttonTextStyle}>REGISTER</Text>
+              <Text style={styles.buttonTextStyle}>ZAREJESTRUJ</Text>
             </TouchableOpacity>
           </ScrollView>
         </SafeAreaView>
