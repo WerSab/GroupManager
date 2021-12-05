@@ -1,5 +1,5 @@
 import { FIRESTORE_COLLECTION } from './config';
-import { getCollection } from './fireBase/firestoreHelper';
+import { addToArray, getCollection } from './fireBase/firestoreHelper';
 
 //lista turniejów - tournaments FlatList
 export function getTournaments() {
@@ -22,6 +22,26 @@ export function getTournaments() {
             .catch((error) => reject(error))
     })
 }
+
+export function addParticipantToTournament(tournamentId, userId) {
+        return new Promise ((resolve, reject) => {
+        getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
+        .doc(tournamentId)
+        console.log("tournamentId", tournamentId)
+   
+        .update({
+          participants: addToArray(userId),
+                  })
+                  console.log("userId", userId)
+        .then(() => {
+            resolve();
+        })
+        .catch((error) => reject(error))
+    })
+         
+}
+
+//do nowego pliku zdefiniowac dwie funkcje remove from array & add to array
 
 /*
     inputs: 

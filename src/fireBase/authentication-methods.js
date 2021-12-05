@@ -8,6 +8,6 @@ auth().signInWithEmailAndPassword(email, password)
 
 );
 
-export const signOutFirebaseUser = async() => auth().signOut();
+export const signOutFirebaseUser = () => auth().signOut();
 
 

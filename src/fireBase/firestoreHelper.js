@@ -8,3 +8,13 @@ export function getCollection (collectionName) {
 };
 //pobieramy referencję do naszej kolekcji
 
+
+export function addToArray(element) {
+  return firestore.FieldValue.arrayUnion(element);
+}
+
+export function removeFromArray(element){
+  return firestore.FieldValue.arrayRemove(element);
+}
+
+//zrobić array remove analigicznie

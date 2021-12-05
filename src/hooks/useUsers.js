@@ -8,7 +8,7 @@ export function useUsers() {
     const [error, setError] = useState();
 
     useEffect(() => {
-
+        console.log("yyy")
         getUsers()
         .then((result) => {
             setUsersList(result);

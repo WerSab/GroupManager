@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, View, Text, StyleSheet, Alert} from 'react-native';
+import { TouchableOpacity, View, Text, StyleSheet, Alert } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import auth from '@react-native-firebase/auth';
 
@@ -9,11 +9,11 @@ const PasswordRecoveryScreen = () => {
     const [disable, setDisable] = useState(false);
 
 
-    const showAlertMessage =()=>
-    Alert.alert(
-        null,
-        "Link resetujący hasło wysłano na wprowadzony adres email"
-    )
+    const showAlertMessage = () =>
+        Alert.alert(
+            null,
+            "Link resetujący hasło wysłano na wprowadzony adres email"
+        )
 
     const recoverPassword = () => {
         setDisable(true);
@@ -71,18 +71,15 @@ const PasswordRecoveryScreen = () => {
                     autoCapitalize="sentences"
                 />
             </View>
-            {error ? <Text style={{color:"white"}}>Blad: {error}</Text> : null}
-
-            <Button
-                color="#005a98"
-                title="Przypomnij hasło"
-                disabled={disable}
+            {error ? <Text style={{ color: "white" }}>Blad: {error}</Text> : null}
+            <TouchableOpacity
+                style={styles.buttonStyle}
+                activeOpacity={0.5}
                 onPress={() => {
                     recoverPassword();
-                }}
-            >
-
-            </Button>
+                }}>
+                <Text style={styles.buttonTextStyle}>PRZYPOMNIJ HASŁO</Text>
+            </TouchableOpacity>
         </View>
     )
 
@@ -108,7 +105,7 @@ const styles = StyleSheet.create({
     },
 
     buttonStyle: {
-        backgroundColor: '#FCA542',
+        backgroundColor: 'white',
         borderWidth: 0,
         color: '#FFFFFF',
         borderColor: '#7DE24E',
@@ -119,12 +116,12 @@ const styles = StyleSheet.create({
         marginRight: 35,
         marginTop: 20,
         marginBottom: 25,
-    },
-    buttonTextStyle: {
-        color: '#005a98',
+      },
+      buttonTextStyle: {
+        color: '#015a92',
         paddingVertical: 10,
         fontSize: 16,
-    },
+      },
     SectionStyle: {
         flexDirection: 'column',
         height: 40,

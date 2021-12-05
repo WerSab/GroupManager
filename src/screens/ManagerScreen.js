@@ -1,19 +1,20 @@
 import { useNavigation } from '@react-navigation/core';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     View,
     Text,
     StyleSheet,
     TouchableOpacity,
+    Image,
 } from 'react-native';
 import { SCREEN } from '../navigation/screens';
 import { FlatGrid, SectionGrid } from 'react-native-super-grid';
-
-
-
+import signedOut from '../assets/icons/signedOut.png'
+import { signOutFirebaseUser } from '../fireBase/authentication-methods';
 
 const ManagerScreen = () => {
     const navigation = useNavigation();
+    const [isSigningOut, setIsSigningOut] = useState(false);
     /*useEffect(() => {
         navigation.navigate(SCREEN.TOURNAMENTLIST);
     }
@@ -23,18 +24,20 @@ const ManagerScreen = () => {
         { name: SCREEN.TOURNAMENTLIST },
         { name: SCREEN.USERSLIST },
     ]
-   
+
+    //const onSignOutFunction = isSigningOut ? undefined : onSignOutPress;
+
     const renderItem = item => {
-        
+
         return (
-            <View style={[styles.itemContainer, { backgroundColor: "#e92255" }]}>
+            <View style={[styles.itemContainer, { backgroundColor: "#015a92" }]}>
                 <TouchableOpacity
-                onPress = {() =>{
-                    navigation.navigate(item.name)
-                }}
-                
-                > 
-                <Text style={styles.itemName}>{item.name}</Text>
+                    onPress={() => {
+                        navigation.navigate(item.name)
+                    }}
+
+                >
+                    <Text style={styles.itemName}>{item.name}</Text>
                 </TouchableOpacity>
             </View>
         );
@@ -43,7 +46,18 @@ const ManagerScreen = () => {
         <>
             {/*<CustomHeader/>*/}
             <View style={styles.mainBody}>
-                <Text style={styles.text}>Hello Manager</Text>
+                <View style={styles.buttonContainer}>
+                    <Text style={styles.text}>Hello Manager</Text>
+                    <TouchableOpacity
+
+                        onPress={isSigningOut ? undefined : () => {
+                            setIsSigningOut(true);
+                            signOutFirebaseUser();
+                        }}
+                    >
+                        <Image style={styles.icon} source={signedOut} />
+                    </TouchableOpacity>
+                </View>
                 <FlatGrid
                     itemDimension={130}
                     data={data}
@@ -68,10 +82,26 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         alignItems: 'center',
     },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        backgroundColor: 'white',
+        width: '100%',
+
+    },
     text: {
-        color: '#e92255',
+        color: '#015a92',
         fontSize: 20,
-        padding: 30, 
+        padding: 30,
+    },
+    icon: {
+        padding: 15,
+        height: 30,
+        width: 30,
+        marginTop: 20,
+        marginLeft: 35,
+        marginRight: 15,
+        margin: 10,
     },
     gridView: {
         marginTop: 20,
@@ -83,12 +113,12 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         padding: 10,
         height: 150,
-        backgroundColor: '#3175ab',
+        backgroundColor: '#015a92',
     },
     itemName: {
         fontSize: 16,
         color: 'white',
         fontWeight: '600',
     },
-    
+
 })

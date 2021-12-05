@@ -9,7 +9,7 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import { TournamentContext } from '../context/TournamentContextProvider';
-import { getTournaments } from '../tournaments-examples';
+import { addParticipantToTournament, getTournaments } from '../tournaments-examples';
 
 function getTournamentFromContext(context, tournamentId) {
     const [tournaments] = context;
@@ -17,7 +17,6 @@ function getTournamentFromContext(context, tournamentId) {
         return tournament.id === tournamentId;
     });
 };
-
 
 const TournamentDetails = ({ route }) => {
     //const { id } = route.params;- ten lub poniższy sposób
@@ -35,7 +34,10 @@ const TournamentDetails = ({ route }) => {
                 style={styles.buttonStyle}
                 activeOpacity={0.5}
                 title="Book"
-
+                onPress={() => {
+                    return addParticipantToTournament();
+                   
+               }}
             >
                 <Text style={styles.buttonTextStyle}>Zarezerwuj</Text>
             </TouchableOpacity>
@@ -49,7 +51,7 @@ const styles = StyleSheet.create({
         flex: 1,
         //justifyContent: 'center',
         backgroundColor: '#015a92',
-        
+
     },
     text: {
         color: 'white',
