@@ -9,6 +9,7 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import { TournamentContext } from '../context/TournamentContextProvider';
+import {UserContext} from '../context/UserContextProvider';
 import { addParticipantToTournament, getTournaments } from '../tournaments-examples';
 
 function getTournamentFromContext(context, tournamentId) {
@@ -22,6 +23,7 @@ const TournamentDetails = ({ route }) => {
     //const { id } = route.params;- ten lub poniższy sposób
     const id = route.params.id;
     const tournamentContext = useContext(TournamentContext);
+    const currentUser = useContext(UserContext);
     const tournament = getTournamentFromContext(tournamentContext, id);
     console.log("tournament.name", tournament.name)
     return (
@@ -35,8 +37,8 @@ const TournamentDetails = ({ route }) => {
                 activeOpacity={0.5}
                 title="Book"
                 onPress={() => {
-                    return addParticipantToTournament();
-                   
+                    addParticipantToTournament(id, currentUser.user.uid); 
+                    //zadanie tak jak signedOut żeby dezaktywować onpress                  
                }}
             >
                 <Text style={styles.buttonTextStyle}>Zarezerwuj</Text>

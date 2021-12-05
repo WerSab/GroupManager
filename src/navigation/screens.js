@@ -1,4 +1,5 @@
 export const SCREEN = {
+    FAJNY_SCREEN: '',
     TOURNAMENTLIST: 'Wydarzenia',
     ACTIVITYINDICATOR: 'ActivityIndicatorScreen',
     HEADER:'Header',

@@ -1,3 +1,5 @@
+//pobrać wszystkich użytkowników getUsers(przenieść metodę z przykładów do lepszego miejsca)
+
 import React from 'react';
 import { useUsers } from '../hooks/useUsers';
 import { useNavigation } from '@react-navigation/core';
@@ -21,8 +23,10 @@ const UsersScreen = () => {
                     onPress={() => {
                         navigation.navigate(SCREEN.USERSDETAILS, {
                             id: item.id
+                            // przykladowo przekazuje argument user: item
                         });
                     }}
+                    //po kliknieciu w kafalek z uzytkownikiem, wyszukuje uzytkownika z tablicy users i przekazuje jego obiekt do ekranu USERDETAILS
                 >
                     <Text style={styles.listStyle}>
                         {item.firstName} {item.lastName} - {item.role}
