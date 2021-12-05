@@ -24,27 +24,24 @@ export function getTournaments() {
 }
 
 export function addParticipantToTournament(tournamentId, userId) {
-        return new Promise ((resolve, reject) => {
+    return new Promise((resolve, reject) => {
         getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
-        .doc(tournamentId)
-        console.log("tournamentId", tournamentId)
-   
-        .update({
-          participants: addToArray(userId),
-                  })
-                  console.log("userId", userId)
-        .then(() => {
-            resolve();
-        })
-        .catch((error) => reject(error))
+            .doc(tournamentId)
+            .update({
+                participants: addToArray(userId),
+            })
+            .then(() => {
+                resolve();
+            })
+            .catch((error) => reject(error));
     })
-         
+
 }
 
 //do nowego pliku zdefiniowac dwie funkcje remove from array & add to array
 
 /*
-    inputs: 
+    inputs:
         1. [1, 3, 4, 8, 24, 91, 512, -43, 21, -31]
                    / const tab = [1, 3, 4, 8, 24, 91, 512, -43, 21, -31];
                     const tab1 = tab.map(x => x * 8);
@@ -79,10 +76,10 @@ export function addParticipantToTournament(tournamentId, userId) {
         ]
         /const map1 = tab.filter(x => x.pets!=='dog');/
 
-    outputs: 
+    outputs:
         1. [] <-- kazdy element ma zostac przemnozony przez 8
-        2. [ 34, 24, 18, 13 ] <-- wyciagnac  wiek z kazdego obiektu 
-        3. 
+        2. [ 34, 24, 18, 13 ] <-- wyciagnac  wiek z kazdego obiektu
+        3.
 
         -----------------filtr-------------------
         3. [] <-- Tablica ma zawierac elementy tylko podzielne przez 3

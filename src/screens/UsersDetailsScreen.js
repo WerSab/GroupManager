@@ -9,7 +9,7 @@ import { UserContext } from '../context/UserContextProvider';
 import {getUsers}  from '../users-examples';
 
 function getUserFromContext(context, userId) {
-    const [users] = context;
+    const {data} = context;
     return users.find(function (user) {
         return user.id === userId;
     });
@@ -18,8 +18,9 @@ function getUserFromContext(context, userId) {
 function UserDetails({ route }) {
     //const { id } = route.params;- ten lub poniższy sposób
     const id = route.params.id;
+    // odczytuje obiekt user przekazany do route'a jako parametr -> const user = route.params.user;
     const userContext = useContext(UserContext);
-    const user = getUserFromContext(userContext.data, id);
+    const user = getUserFromContext(userContext, id);
     console.log("user.lastName", user.lastName);
     return (
         <View style={styles.mainBody}>
