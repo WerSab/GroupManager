@@ -4,6 +4,7 @@ import UserContextProvider from './src/context/UserContextProvider';
 import { addParticipantToTournament, getTournaments } from './src/tournaments-examples';
 import TournamentContextProvider from './src/context/TournamentContextProvider';
 import { getUsers } from './src/users-examples';
+import SelectedUserContextProvider from './src/context/SelectedUserContextProvider';
 
 
 const App = () => {
@@ -22,7 +23,9 @@ const App = () => {
 
     <UserContextProvider>
       <TournamentContextProvider>
+        <SelectedUserContextProvider>
       <StackContainer />
+      </SelectedUserContextProvider>
       </TournamentContextProvider>
     </UserContextProvider>
 

@@ -38,6 +38,18 @@ export function addParticipantToTournament(tournamentId, userId) {
 
 }
 
+export function addNewTournamentToCollection(data){
+    return new Promise((resolve, reject) => {
+        getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
+            .add(data)
+            .then(() => {
+                resolve();
+            })
+            .catch((error) => reject(error));
+    })
+}
+
+
 //do nowego pliku zdefiniowac dwie funkcje remove from array & add to array
 
 /*
