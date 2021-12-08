@@ -23,6 +23,9 @@ const ManagerScreen = () => {
     const data = [
         { name: SCREEN.TOURNAMENTLIST },
         { name: SCREEN.USERSLIST },
+        { name: SCREEN.MYTICKETS},
+        { name: SCREEN.MYBOOKINGS},
+        { name: SCREEN.MYMESSAGES},
     ]
 
     //const onSignOutFunction = isSigningOut ? undefined : onSignOutPress;

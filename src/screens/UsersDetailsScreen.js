@@ -1,34 +1,46 @@
 import React, { useContext } from 'react';
-import { useUsers } from '../hooks/useUsers';
 import {
     View,
     Text,
     StyleSheet,
-        } from 'react-native';
-import { UserContext } from '../context/UserContextProvider';
-import {getUsers}  from '../users-examples';
+} from 'react-native';
+import { SelectedUserContext } from '../context/SelectedUserContextProvider';
 
-function getUserFromContext(context, userId) {
-    const {data} = context;
+function getSelectedUserFromContext(context, userId) {
+    const [users] = context;
     return users.find(function (user) {
         return user.id === userId;
     });
 };
-
 function UserDetails({ route }) {
     //const { id } = route.params;- ten lub poniższy sposób
     const id = route.params.id;
-    // odczytuje obiekt user przekazany do route'a jako parametr -> const user = route.params.user;
-    const userContext = useContext(UserContext);
-    const user = getUserFromContext(userContext, id);
-    console.log("user.lastName", user.lastName);
+    const selectedUserContext = useContext(SelectedUserContext)
+    const selectedUser = getSelectedUserFromContext(selectedUserContext, id)
+    console.log('selectedUser', selectedUser)
     return (
-        <View style={styles.mainBody}>
+        <>
+            <View style={styles.mainBody}>
+                 <Text style={styles.text}>{selectedUser.firstName} {selectedUser.lastName}</Text>
+                <Text style={styles.listStyle}>
+                rola: {selectedUser.role}
+                {'\n'}
+                {'\n'}
+                tel: {selectedUser.phone}
+                {'\n'}
+                {'\n'}
+                adres: {'\n'}{'\n'}
+                {selectedUser.ulica}
+                {selectedUser.nrdomu}/
+                {selectedUser.mieszkanie}
+                {'\n'}
+                {selectedUser.kod} {selectedUser.city}
+                
+                
+                 </Text> 
 
-            <Text style={styles.text}>{user.firstName} {user.lastName}{'\n'}</Text>
-            <Text style={styles.text}></Text>
-        </View>
-        //{JSON.stringify(user, null, 2)}
+            </View>
+        </>
     );
 }
 export default UserDetails;
@@ -36,19 +48,20 @@ const styles = StyleSheet.create({
     mainBody: {
         flex: 1,
         //justifyContent: 'center',
+        alignItems: 'center',
         backgroundColor: '#015a92',
 
     },
     text: {
         color: 'white',
-        fontSize: 20,
+        fontSize: 30,
         padding: 40,
     },
     container: {
         flex: 1,
     },
     listStyle: {
-        padding: 15,
+        padding: 40,
         marginBottom: 5,
         color: '#27046d',
         backgroundColor: "white",
@@ -56,8 +69,8 @@ const styles = StyleSheet.create({
         marginLeft: 20,
         borderRadius: 5,
         borderWidth: 1,
-        textAlign: 'center',
-        fontSize: 16
+        textAlign: 'left',
+        fontSize: 20
     },
     buttonStyle: {
         backgroundColor: 'white',

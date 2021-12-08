@@ -30,10 +30,6 @@ const UsersScreen = () => {
                 >
                     <Text style={styles.listStyle}>
                         {item.firstName} {item.lastName} - {item.role}
-                        {'\n'}
-                        {item.city}, tel: {item.phone}
-                        {'\n'}
-                        {item.email}
                     </Text>
                 </TouchableOpacity>
             </>
@@ -77,7 +73,7 @@ const styles = StyleSheet.create({
     listStyle: {
         padding: 15,
         marginBottom: 5,
-        color: '#27046d',
+        color: '#015a92',
         backgroundColor: "white",
         marginRight: 20,
         marginLeft: 20,

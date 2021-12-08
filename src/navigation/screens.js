@@ -12,4 +12,7 @@ export const SCREEN = {
     TOURNAMENTDETAILS: 'TournamentDetailsScreen',
     USERSDETAILS: 'UserDetailsScreen',
     ERROR: 'ErrorScreen',
+    MYTICKETS: 'Moje Bilety',
+    MYBOOKINGS: 'Moje Rezerwacje',
+    MYMESSAGES: 'Wiadomości',
 };

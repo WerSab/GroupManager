@@ -1,15 +1,19 @@
-import React, { useContext } from 'react';
-import { useTournaments } from '../hooks/useTournaments';
-import { useNavigation } from '@react-navigation/core';
+// this.state = {
+//     selectedStartDate: null,
+// }; -> odpowiednik funkcyjny -> const [selectedStartDate, setSelectedStartDate] = useState(null);
+
+
+import React, { useContext, useState } from 'react';
 import {
     View,
     Text,
     StyleSheet,
-    FlatList,
     TouchableOpacity,
+    Modal,
+    TextInput,
 } from 'react-native';
 import { TournamentContext } from '../context/TournamentContextProvider';
-import {UserContext} from '../context/UserContextProvider';
+import { UserContext } from '../context/UserContextProvider';
 import { addParticipantToTournament, getTournaments } from '../tournaments-examples';
 
 function getTournamentFromContext(context, tournamentId) {
@@ -21,25 +25,90 @@ function getTournamentFromContext(context, tournamentId) {
 
 const TournamentDetails = ({ route }) => {
     //const { id } = route.params;- ten lub poniższy sposób
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [numberOfBookings, setNumberOfBookings] = useState('');
     const id = route.params.id;
     const tournamentContext = useContext(TournamentContext);
     const currentUser = useContext(UserContext);
     const tournament = getTournamentFromContext(tournamentContext, id);
-    console.log("tournament.name", tournament.name)
+    const bookings = tournament.participants;
+    const sizeOfBookings = bookings.length;
+
+    const onSavePress = () => {
+        addParticipantToTournament(id, currentUser.user.uid, numberOfBookings)
+            .then(() => {
+                setIsModalVisible(!isModalVisible);
+                setNumberOfBookings('');
+            })
+            .catch(function (err) {
+                Alert.alert('Wystąpił błąd', `Przepraszamy mamy prblem z serwerem, prosze spróbować później`, [
+                    { text: 'Ok' },
+                ]);
+                console.log("TournamentsDetailsScreen error: ", err);
+            })
+
+    }
+    
+
+    console.log(tournament.date);
     return (
         <View style={styles.mainBody}>
 
-            <Text style={styles.text}>{tournament.name} {'\n'}{tournament.place} {'\n'}{tournament.date}</Text>
-            <Text style={styles.text}></Text>
+            <Text style={styles.text}>{tournament.name} {'\n'}
+            </Text>
+            {isModalVisible && (
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    onRequestClose={() => setIsModalVisible(false)}
+                    onBackdropPress={() => setIsModalVisible(false)}
+                    onBackButtonPress={() => setIsModalVisible(false)}>
+                    <View style={styles.modalView}>
+
+                        <TextInput
+                            style={styles.textDark}
+                            onChangeText={setNumberOfBookings}
+                            value={numberOfBookings}
+                            placeholder="Liczba miejsc..."
+                        />
+                        <View style={styles.twoButtons}>
+                        <TouchableOpacity
+                            style={[styles.button, styles.buttonClose]}
+                            onPress={() => {
+                                setIsModalVisible(!isModalVisible);
+                                setNumberOfBookings('');
+                            }}>
+                            <Text style={styles.textDark}>Close</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={[styles.button, styles.buttonSafe]}
+                            onPress={() => {
+
+                                onSavePress();
+                            }}>
+                            <Text style={styles.textDark}>Save</Text>
+                        </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
+            )}
+
+
+
+
+            <Text style={styles.listStyle}>Miejsce:{'\n'}{'\n'}{tournament.place}
+                {'\n'}{'\n'}Termin:{'\n'} {JSON.stringify(tournament.date, null, 2)}
+                {'\n'}{'\n'}Liczba dostępnych miejsc:{'\n'} {sizeOfBookings}
+                {'\n'}{'\n'}Liczba rezerwacji:{'\n'} {sizeOfBookings}</Text>
+
 
             <TouchableOpacity
                 style={styles.buttonStyle}
                 activeOpacity={0.5}
                 title="Book"
                 onPress={() => {
-                    addParticipantToTournament(id, currentUser.user.uid); 
-                    //zadanie tak jak signedOut żeby dezaktywować onpress                  
-               }}
+                    setIsModalVisible(true);              
+                }}
             >
                 <Text style={styles.buttonTextStyle}>Zarezerwuj</Text>
             </TouchableOpacity>
@@ -60,20 +129,25 @@ const styles = StyleSheet.create({
         fontSize: 20,
         padding: 40,
     },
+    textDark: {
+        color: '#005b98',
+        fontSize: 20,
+        padding: 20,
+    },
     container: {
         flex: 1,
     },
     listStyle: {
-        padding: 15,
+        padding: 40,
         marginBottom: 5,
-        color: '#27046d',
+        color: '#015a92',
         backgroundColor: "white",
         marginRight: 20,
         marginLeft: 20,
         borderRadius: 5,
         borderWidth: 1,
-        textAlign: 'center',
-        fontSize: 16
+        textAlign: 'left',
+        fontSize: 20
     },
     buttonStyle: {
         backgroundColor: 'white',
@@ -93,4 +167,21 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         fontSize: 16,
     },
+    modalView: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'white',
+        borderRadius: 20,
+        alignItems: 'center',
+        elevation: 5,
+        margin: '10%',
+    },
+    twoButtons:{
+flexDirection: 'row',
+justifyContent: 'space-between',
+    },
+    
+   
 })
