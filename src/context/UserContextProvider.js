@@ -18,7 +18,7 @@ const UserContextProvider = (props) => {
     initializing: true,
     data: null,
   });
-  //wzorzec obserwatora to metoda onAuthStateChanged (wartosc user jest wartoscia obserwowana)
+  
   useEffect(() => {
     const unsubscribe = auth().onAuthStateChanged(user => {
       if (user) {
@@ -27,9 +27,9 @@ const UserContextProvider = (props) => {
           .doc(user.uid)
           .get()
           .then(documentSnapshot => {
-            //console.log('snapshot: ', documentSnapshot);
+            
             if (documentSnapshot.exists) {
-              // pobieram dane uzytkownika z bazy danych i przypisuje do stanu [data]
+              
               setUserState({
                 user: user,
                 initializing: false,

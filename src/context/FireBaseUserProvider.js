@@ -18,13 +18,10 @@ const FirebaseUserProvider = (props) => {
   useEffect(() => {
     const unsubscribe = auth().onAuthStateChanged(user => {
       setAuthUser(user);
-      console.log('User', JSON.stringify(user));//wypisze zawartośc w postaci stringa
-    });//ta metoda wywołuje użytkownika po zalogowaniu (lub nie)
-    /* 
-      Odpowiednik metody componentWillUnmount() - czyli co sie stanie gdy komponent zniknie z ekranu
-    */
+      console.log('User', JSON.stringify(user));
+    });
     return () => {
-      // tutaj mozemy dac co chcemy
+     
       unsubscribe();
     };
   }, []);

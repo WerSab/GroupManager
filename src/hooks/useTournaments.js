@@ -2,18 +2,17 @@
 import React, { useState, useEffect } from 'react';
 import { getTournaments } from '../tournaments-examples';
 
+
 export function useTournaments() {
     const [tournamentList, setTournamentList] = useState();
     const [isLoaded, setisLoaded] = useState(false);
     const [error, setError] = useState();
 
-    // Sprobowac uzyc useEffect hook'a w celu zaciagniecia turniejow 
-    // i zwrocic z funkcji tablice ze stanami  
-    useEffect(() => {
+    const requeryTournaments = () => {
         console.log("xxx")
         getTournaments()
         .then((result) => {
-            
+            console.log('result', result)
             setTournamentList(result);
 
         })
@@ -23,12 +22,13 @@ export function useTournaments() {
         .finally(() => {
             setisLoaded (true);
         });
+    }
+
+    
+    useEffect(() => {
+        requeryTournaments();
     },[]);
-    return [tournamentList, isLoaded, error];
+    return [tournamentList, isLoaded, error, requeryTournaments];
 
 };
 
-//useEffect: trzy przypadki:
-//1. Brak tablicy - wywołuje się przy każdym re-renderze
-//2. Pusta tablica - wywołuje się raz
-//3. Tablica ze zmiennymi, useefekt wywołuje się za każdym razem gdy zmienią się zmienne

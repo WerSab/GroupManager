@@ -24,8 +24,8 @@ const App = () => {
     <UserContextProvider>
       <TournamentContextProvider>
         <SelectedUserContextProvider>
-      <StackContainer />
-      </SelectedUserContextProvider>
+          <StackContainer />
+        </SelectedUserContextProvider>
       </TournamentContextProvider>
     </UserContextProvider>
 

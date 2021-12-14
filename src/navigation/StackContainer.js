@@ -23,30 +23,17 @@ import { TournamentContext } from '../context/TournamentContextProvider';
 import { Text } from 'react-native'
 import ErrorComponent from '../screens/ErrorScreen';
 
-// Jeżeli mamy skomplikowane mapowanie listy to używamy:<React.Fragment key={}></React.Fragment> -> <></>
-//
 const Stack = createNativeStackNavigator();
 
 function StackContainer() {
 
   const userContext = useContext(UserContext);
-  const [tournamentList, isLoaded, error] = useContext(TournamentContext);
-  //Jak przechwycić isLoaded 
-  console.log(tournamentList, isLoaded, error);
-  //dopisac error screen obsługujący błąd, do screenu dopisac propsa która bedzie błędem, error screen ma obsłużyć propsa
+
+
+
   const getStackScreenBasedOnRole = () => {
-    if (error) {
-      return <Stack.Screen
-        name={SCREEN.ERROR}
-        options={{
-          headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
-          headerTitleAlign: 'center'
-        }}
-      >
-        {props => <ErrorComponent {...props} errorMessage={error} />}
-      </Stack.Screen>
-    }
-    if (userContext.initializing || !isLoaded) {
+
+    if (userContext.initializing) {
       return <Stack.Screen
         name="ActivityIndicatorScreen"
         component={ActivityIndicatorScreen}
@@ -62,7 +49,7 @@ function StackContainer() {
 
           case FIRESTORE_ROLES.PLAYER: {
             return (
-              //przekazać tournamentList do ekranów manager i player??
+
               <Stack.Screen
                 name="PlayerScreen"
                 component={PlayerScreen}
@@ -88,15 +75,13 @@ function StackContainer() {
                 />
                 <Stack.Screen
                   name={SCREEN.TOURNAMENTLIST}
-                  
+                  component={TournamentsScreen}
                   options={{
                     headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
                     headerStyle: { backgroundColor: 'white', flex: 1, alignSelf: 'center', height: 100 },
                     headerTitleAlign: 'center'
                   }}
-                >
-                  {props => <TournamentsScreen {...props} tournamentList={tournamentList} />}
-                </Stack.Screen>
+                />
 
                 <Stack.Screen
                   name={SCREEN.USERSLIST}
@@ -206,30 +191,3 @@ function StackContainer() {
 export default StackContainer;
 
 
-/* {
-          FIRESTORE_ROLES === 'player' ? (
-            <>
-              <Stack.Screen
-              name="PlayerScreen"
-              component={PlayerScreen}
-              options={{ headerBackVisible: false, headerTitle: props => <LogoTitle {...props}/>,
-              headerStyle: {backgroundColor: '#1a112b',  flex:1, alignSelf: 'center', height: 60 },
-              headerTitleAlign: 'center'}}
-              />
-
-            </>
-          ) : (
-            <>
-              <Stack.Screen
-              name="ManagerScreen"
-              component={ManagerScreen}
-              options={{ headerBackVisible: false, headerTitle: props => <LogoTitle {...props}/>,
-              headerStyle: {backgroundColor: '#1a112b',  flex:1, alignSelf: 'center', height: 60 },
-              headerTitleAlign: 'center',
-            }}
-
-              />
-
-            </>
-          )
-        }*/
