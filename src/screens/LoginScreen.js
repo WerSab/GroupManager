@@ -15,13 +15,10 @@ import {
   signOutFirebaseUser,
 } from '../fireBase/authentication-methods';
 import { UserContext } from '../context/UserContextProvider';
-//import RegisterScreen from './RegisterScreen'
 
 const LoginScreen = ({ navigation }) => {
 
   const authContext = useContext(UserContext);
-  // {user, data, initializing} = useContext(UserContext);
-  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLogging, setIsLogging] = useState('');

@@ -1,4 +1,5 @@
 import { FIRESTORE_COLLECTION } from './config';
+import { FirestoreDataContext } from './context/FirestoreDataProvider';
 import { addToArray, getCollection } from './fireBase/firestoreHelper';
 
 //lista turniejów - tournaments FlatList
@@ -38,6 +39,24 @@ export function addParticipantToTournament(tournamentId, userId) {
 
 }
 
+export function deleteTournament(tournamentId){
+return getCollection(FIRESTORE_COLLECTION.TOURNAMENTS).doc(tournamentId).delete();
+}
+// dopisać funkcję zliczania rezerwacji
+export function addBookingsToTournament(tournamentId, numberOfBookings) {
+    return new Promise((resolve, reject) => {
+        getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
+            .doc(tournamentId)
+            .update({
+                'allBookings':numberOfBookings})
+            .then(() => {
+                resolve();
+            })
+            .catch((error) => reject(error));
+    })
+
+}
+
 export function addNewTournamentToCollection(data){
     return new Promise((resolve, reject) => {
         getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
@@ -48,6 +67,11 @@ export function addNewTournamentToCollection(data){
             .catch((error) => reject(error));
     })
 }
+
+export function bookingsCounter (participants, bookings) 
+    {
+        return participants-bookings;
+    };
 
 
 //do nowego pliku zdefiniowac dwie funkcje remove from array & add to array

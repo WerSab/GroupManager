@@ -6,16 +6,33 @@
     we wszystkich miejscach gdzie tego potrzebuje czyli np. TorunamentsScreen
 */
 import React from 'react';
-import { createContext} from 'react';
+import { createContext } from 'react';
 import { useTournaments } from '../hooks/useTournaments';
+import ActivityIndicatorScreen from '../screens/ActivityIndicatorScreen';
+import ErrorComponent from '../screens/ErrorScreen';
+
+
 
 export const TournamentContext = createContext([null, false, null]);
-/*własciwości przekazywane do komponentu z góry z App.js*/
+
 const TournamentContextProvider = (props) => {
+
+    const [tournamentList, isLoaded, error, requeryTournaments] = useTournaments();
     
+    const contextObj = {
+        tournamentList: tournamentList,
+        requeryTournaments: requeryTournaments,
+    }
+
+    if (error) {
+        return <ErrorComponent errorMessage={error}/>;
+    }
+    if (!isLoaded) {
+        return <ActivityIndicatorScreen/>;
+    }
     return (
 
-        <TournamentContext.Provider value={useTournaments()}> 
+        <TournamentContext.Provider value={contextObj}>
             {props.children}
         </TournamentContext.Provider>
     )

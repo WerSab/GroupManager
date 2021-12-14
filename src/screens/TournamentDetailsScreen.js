@@ -14,31 +14,33 @@ import {
 } from 'react-native';
 import { TournamentContext } from '../context/TournamentContextProvider';
 import { UserContext } from '../context/UserContextProvider';
-import { addParticipantToTournament, getTournaments } from '../tournaments-examples';
+import { addBookingsToTournament, getTournaments, bookingsCounter } from '../tournaments-examples';
 
 function getTournamentFromContext(context, tournamentId) {
-    const [tournaments] = context;
-    return tournaments.find(function (tournament) {
+    return context.tournamentList.find(function (tournament) {
         return tournament.id === tournamentId;
     });
 };
 
+
+
 const TournamentDetails = ({ route }) => {
     //const { id } = route.params;- ten lub poniższy sposób
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const [numberOfBookings, setNumberOfBookings] = useState('');
+    const [numberOfBookings, setNumberOfBookings] = useState(null);
     const id = route.params.id;
     const tournamentContext = useContext(TournamentContext);
     const currentUser = useContext(UserContext);
     const tournament = getTournamentFromContext(tournamentContext, id);
-    const bookings = tournament.participants;
-    const sizeOfBookings = bookings.length;
+    const allParticipants = tournament.numberOfParticipants;
+    const allBookings = tournament.allBookings;
+    const bookCounter = bookingsCounter(allParticipants, allBookings);
 
     const onSavePress = () => {
-        addParticipantToTournament(id, currentUser.user.uid, numberOfBookings)
+        addBookingsToTournament(id, numberOfBookings)
             .then(() => {
                 setIsModalVisible(!isModalVisible);
-                setNumberOfBookings('');
+                setNumberOfBookings();
             })
             .catch(function (err) {
                 Alert.alert('Wystąpił błąd', `Przepraszamy mamy prblem z serwerem, prosze spróbować później`, [
@@ -48,9 +50,23 @@ const TournamentDetails = ({ route }) => {
             })
 
     }
-    
 
-    console.log(tournament.date);
+
+    // {
+    //     addParticipantToTournament(id, currentUser.user.uid, numberOfBookings)
+    //         .then(() => {
+    //             setIsModalVisible(!isModalVisible);
+    //             setNumberOfBookings('');
+    //         })
+    //         .catch(function (err) {
+    //             Alert.alert('Wystąpił błąd', `Przepraszamy mamy prblem z serwerem, prosze spróbować później`, [
+    //                 { text: 'Ok' },
+    //             ]);
+    //             console.log("TournamentsDetailsScreen error: ", err);
+    //         })
+
+    // }
+
     return (
         <View style={styles.mainBody}>
 
@@ -69,25 +85,26 @@ const TournamentDetails = ({ route }) => {
                             style={styles.textDark}
                             onChangeText={setNumberOfBookings}
                             value={numberOfBookings}
-                            placeholder="Liczba miejsc..."
+                            placeholder="Liczba rezerwacji..."
+                            keyboardType="numeric"
                         />
                         <View style={styles.twoButtons}>
-                        <TouchableOpacity
-                            style={[styles.button, styles.buttonClose]}
-                            onPress={() => {
-                                setIsModalVisible(!isModalVisible);
-                                setNumberOfBookings('');
-                            }}>
-                            <Text style={styles.textDark}>Close</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={[styles.button, styles.buttonSafe]}
-                            onPress={() => {
+                            <TouchableOpacity
+                                style={[styles.button, styles.buttonClose]}
+                                onPress={() => {
+                                    setIsModalVisible(!isModalVisible);
+                                    setNumberOfBookings('');
+                                }}>
+                                <Text style={styles.textDark}>Close</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={[styles.button, styles.buttonSafe]}
+                                onPress={() => {
 
-                                onSavePress();
-                            }}>
-                            <Text style={styles.textDark}>Save</Text>
-                        </TouchableOpacity>
+                                    onSavePress();
+                                }}>
+                                <Text style={styles.textDark}>Save</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
                 </Modal>
@@ -96,10 +113,10 @@ const TournamentDetails = ({ route }) => {
 
 
 
-            <Text style={styles.listStyle}>Miejsce:{'\n'}{'\n'}{tournament.place}
-                {'\n'}{'\n'}Termin:{'\n'} {JSON.stringify(tournament.date, null, 2)}
-                {'\n'}{'\n'}Liczba dostępnych miejsc:{'\n'} {sizeOfBookings}
-                {'\n'}{'\n'}Liczba rezerwacji:{'\n'} {sizeOfBookings}</Text>
+            <Text style={styles.listStyle}>Miejsce:  {tournament.place}
+                {'\n'}{'\n'}Termin: {tournament.date}
+                {'\n'}{'\n'}Liczba dostępnych miejsc:  {bookCounter}
+            </Text>
 
 
             <TouchableOpacity
@@ -107,7 +124,7 @@ const TournamentDetails = ({ route }) => {
                 activeOpacity={0.5}
                 title="Book"
                 onPress={() => {
-                    setIsModalVisible(true);              
+                    setIsModalVisible(true);
                 }}
             >
                 <Text style={styles.buttonTextStyle}>Zarezerwuj</Text>
@@ -127,7 +144,7 @@ const styles = StyleSheet.create({
     text: {
         color: 'white',
         fontSize: 20,
-        padding: 40,
+        padding: 10,
     },
     textDark: {
         color: '#005b98',
@@ -147,7 +164,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         borderWidth: 1,
         textAlign: 'left',
-        fontSize: 20
+        fontSize: 16
     },
     buttonStyle: {
         backgroundColor: 'white',
@@ -178,10 +195,10 @@ const styles = StyleSheet.create({
         elevation: 5,
         margin: '10%',
     },
-    twoButtons:{
-flexDirection: 'row',
-justifyContent: 'space-between',
+    twoButtons: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
     },
-    
-   
+
+
 })

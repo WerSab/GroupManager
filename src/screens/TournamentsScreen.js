@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useNavigation } from '@react-navigation/core';
 import {
     View,
@@ -16,19 +16,25 @@ import deleteIcon from '../assets/icons/delete.png';
 import { Picker } from '@react-native-picker/picker';
 import { removeFromArray } from '../fireBase/firestoreHelper';
 import { SCREEN } from '../navigation/screens';
-import { addNewTournamentToCollection } from '../tournaments-examples';
+import { addNewTournamentToCollection, deleteTournament } from '../tournaments-examples';
+import { TournamentContext } from '../context/TournamentContextProvider';
 
-const TournamentsScreen = ({ tournamentList }) => {
+const TournamentsScreen = () => {
+    const {tournamentList, requeryTournaments} = useContext(TournamentContext);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [nameInput, setNameInput] = useState('');
-    //const [dateInput, setDateInput] = useState('');
+    const [dateInput, setDateInput] = useState('');
+    const [startTimeInput, setStartTimeInput] = useState('');
+    const [intervalInput, setIntervalInput] = useState('');
     const [placeInput, setPlaceInput] = useState('');
     const [numberOfParticipantsInput, setNumberOfParticipantsInput] = useState('');
     const [selectedValue, setSelectedValue] = useState('Turniej');
-    
+
     const clearInputs = () => {
         setNameInput('');
-        //setDateInput('');
+        setDateInput('');
+        setStartTimeInput('');
+        setIntervalInput('');
         setNumberOfParticipantsInput('');
         setPlaceInput('');
 
@@ -37,32 +43,53 @@ const TournamentsScreen = ({ tournamentList }) => {
     const deleteAlert = (id, name) => {
         Alert.alert('Delete alert', `Do You want to delete ${name}?`, [
             { text: 'Cancel', onPress: () => console.log('Cancel Pressed') },
-            { text: 'Ok', onPress: () => removeFromArray(id) },
+            { text: 'Ok', onPress: () => {
+                deleteTournament(id)
+                .then(() => {
+                    requeryTournaments();
+                })
+                .catch(function(err){
+                    Alert.alert('Spróbuj ponownie później')
+                })
+            } },
         ]);
     };
-    
+
     const onSavePress = () => {
         addNewTournamentToCollection({
             name: nameInput,
-            //date: dateInput,
+            date: dateInput,
+            startTime: startTimeInput,
+            interval: intervalInput,
             place: placeInput,
             numberOfParticipants: numberOfParticipantsInput,
             category: selectedValue,
         })
-        .then(() => {
-            setIsModalVisible(!isModalVisible);
-            clearInputs();
-        })
-        .catch(function(err) {
-             Alert.alert('Wystąpił błąd', `Przepraszamy mamy prblem z serwerem, prosze spróbować później`, [
-                { text: 'Ok'},
-            ]);
-            console.log("TournamentsScreen error: ", err);
-        })
-        
-    }
-    
+            .then(() => {
+                setIsModalVisible(!isModalVisible);
+                clearInputs();
+                requeryTournaments();
+            })
+            .catch(function (err) {
+                Alert.alert('Wystąpił błąd', `Przepraszamy mamy prblem z serwerem, prosze spróbować później`, [
+                    { text: 'Ok' },
+                ]);
+                console.log("TournamentsScreen error: ", err);
+            })
 
+    }
+
+/*
+    const tournamentsContext = useContext(Conaosda);
+    tournamentsContext.requeryTournaments();
+
+    addTournamentToDB()
+    .then(() => {
+
+        tournamentsContext.requeryTournaments();
+    })
+
+*/
     const navigation = useNavigation();
 
     const renderItem = item => {
@@ -88,7 +115,7 @@ const TournamentsScreen = ({ tournamentList }) => {
             </View>
         )
     }
-    
+
     return (
         <>
             {/*<CustomHeader/>*/}
@@ -108,7 +135,7 @@ const TournamentsScreen = ({ tournamentList }) => {
                         <View style={styles.modalView}>
                             <Picker
                                 selectedValue={selectedValue}
-                                style={{ height: 200, width: 150, fontSize: 40, color: "#005b98" }}
+                                style={{ height: 100, width: 150, color: "#005b98" }}
                                 onValueChange={itemValue => setSelectedValue(itemValue)}>
                                 <Picker.Item label="Kategoria" value="  " />
                                 <Picker.Item label="Turniej" value="turniej" />
@@ -136,15 +163,35 @@ const TournamentsScreen = ({ tournamentList }) => {
                             />
                             <TextInput
                                 style={styles.textDark}
+                                onChangeText={setDateInput}
+                                value={dateInput}
+                                placeholder="Termin..."
+                            />
+                            <TextInput
+                                style={styles.textDark}
+                                onChangeText={setStartTimeInput}
+                                value={startTimeInput}
+                                placeholder="Godzina rozpoczęcia..."
+                            />
+                            <TextInput
+                                style={styles.textDark}
+                                onChangeText={setIntervalInput}
+                                value={intervalInput}
+                                placeholder="Czas trwania..."
+                            />
+                            <TextInput
+                                style={styles.textDark}
                                 onChangeText={setNumberOfParticipantsInput}
                                 value={numberOfParticipantsInput}
                                 placeholder="Liczba uczestników..."
+                                keyboardType="numeric"
                             />
                             <View
                                 style={{
                                     flexDirection: 'row',
                                     justifyContent: 'space-around',
                                     width: '100%',
+                                    padding: 40,
                                 }}>
                                 <TouchableOpacity
                                     style={[styles.button, styles.buttonClose]}
@@ -157,7 +204,6 @@ const TournamentsScreen = ({ tournamentList }) => {
                                 <TouchableOpacity
                                     style={[styles.button, styles.buttonSafe]}
                                     onPress={() => {
-                                       
                                         onSavePress();
                                     }}>
                                     <Text style={styles.textDark}>Save</Text>
@@ -200,13 +246,13 @@ const styles = StyleSheet.create({
 
     text: {
         color: 'white',
-        fontSize: 25,
-        padding: 30,
+        fontSize: 20,
+        padding: 10,
     },
     textDark: {
         color: '#005b98',
         fontSize: 20,
-        padding: 20,
+        padding: 10,
     },
     container: {
         flex: 2,
@@ -273,7 +319,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderRadius: 20,
         alignItems: 'center',
-        elevation: 5,
+        // elevation: 5,
         margin: '10%',
     },
 
