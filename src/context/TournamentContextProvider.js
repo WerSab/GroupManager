@@ -16,23 +16,21 @@ import ErrorComponent from '../screens/ErrorScreen';
 export const TournamentContext = createContext([null, false, null]);
 
 const TournamentContextProvider = (props) => {
-
     const [tournamentList, isLoaded, error, requeryTournaments] = useTournaments();
-    
-    const contextObj = {
-        tournamentList: tournamentList,
-        requeryTournaments: requeryTournaments,
-    }
+    const providerValue = [
+        tournamentList,
+        {
+            isLoaded: isLoaded,
+            error: error,
+        },
+        {
+            requeryTournaments: requeryTournaments,
+        }
+    ];
 
-    if (error) {
-        return <ErrorComponent errorMessage={error}/>;
-    }
-    if (!isLoaded) {
-        return <ActivityIndicatorScreen/>;
-    }
     return (
 
-        <TournamentContext.Provider value={contextObj}>
+        <TournamentContext.Provider value={providerValue}>
             {props.children}
         </TournamentContext.Provider>
     )

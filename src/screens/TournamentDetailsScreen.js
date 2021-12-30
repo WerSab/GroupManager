@@ -17,33 +17,33 @@ import { UserContext } from '../context/UserContextProvider';
 import { addBookingsToTournament, getTournaments, bookingsCounter } from '../tournaments-examples';
 
 function getTournamentFromContext(context, tournamentId) {
-    return context.tournamentList.find(function (tournament) {
+    const [tournamentList] = context;
+    return tournamentList.find(function (tournament) {
         return tournament.id === tournamentId;
     });
 };
 
-
-
 const TournamentDetails = ({ route }) => {
     //const { id } = route.params;- ten lub poniższy sposób
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const [numberOfBookings, setNumberOfBookings] = useState(null);
+    const [bookings, setBookings] = useState(null);
     const id = route.params.id;
     const tournamentContext = useContext(TournamentContext);
     const currentUser = useContext(UserContext);
     const tournament = getTournamentFromContext(tournamentContext, id);
     const allParticipants = tournament.numberOfParticipants;
-    const allBookings = tournament.allBookings;
+    const allBookings = tournament.numberOfBookings + bookings;
     const bookCounter = bookingsCounter(allParticipants, allBookings);
 
     const onSavePress = () => {
-        addBookingsToTournament(id, numberOfBookings)
+        const bookings = parseInt(bookings);
+        addBookingsToTournament(id, bookings)
             .then(() => {
                 setIsModalVisible(!isModalVisible);
                 setNumberOfBookings();
             })
             .catch(function (err) {
-                Alert.alert('Wystąpił błąd', `Przepraszamy mamy prblem z serwerem, prosze spróbować później`, [
+                Alert.alert('Wystąpił błąd', `Przepraszamy mamy problem z serwerem, prosze spróbować później`, [
                     { text: 'Ok' },
                 ]);
                 console.log("TournamentsDetailsScreen error: ", err);
@@ -83,8 +83,8 @@ const TournamentDetails = ({ route }) => {
 
                         <TextInput
                             style={styles.textDark}
-                            onChangeText={setNumberOfBookings}
-                            value={numberOfBookings}
+                            onChangeText={setBookings}
+                            value={bookings}
                             placeholder="Liczba rezerwacji..."
                             keyboardType="numeric"
                         />
@@ -93,7 +93,7 @@ const TournamentDetails = ({ route }) => {
                                 style={[styles.button, styles.buttonClose]}
                                 onPress={() => {
                                     setIsModalVisible(!isModalVisible);
-                                    setNumberOfBookings('');
+                                    setBookings('');
                                 }}>
                                 <Text style={styles.textDark}>Close</Text>
                             </TouchableOpacity>
