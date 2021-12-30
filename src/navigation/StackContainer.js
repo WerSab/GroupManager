@@ -28,10 +28,32 @@ const Stack = createNativeStackNavigator();
 function StackContainer() {
 
   const userContext = useContext(UserContext);
-
-
+  const[, {isLoaded, error}] = useContext(TournamentContext);
 
   const getStackScreenBasedOnRole = () => {
+
+    if (error) {
+      return <Stack.Screen
+      name={SCREEN.ERROR}
+      options={{
+        headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
+        headerTitleAlign: 'center'
+      }}
+      >
+        {props => <ErrorComponent {...props} errorMessage={error} />}
+      </Stack.Screen>
+    }
+    console.log("isLoaded", isLoaded)
+    if (!isLoaded) {
+      return <Stack.Screen
+        name="ActivityIndicatorScreen"
+        component={ActivityIndicatorScreen}
+        options={{
+          headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
+          headerTitleAlign: 'center'
+        }}
+      />
+    }
 
     if (userContext.initializing) {
       return <Stack.Screen

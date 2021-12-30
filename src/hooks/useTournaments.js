@@ -28,6 +28,7 @@ export function useTournaments() {
     useEffect(() => {
         requeryTournaments();
     },[]);
+    console.log( [tournamentList, isLoaded, error, requeryTournaments])
     return [tournamentList, isLoaded, error, requeryTournaments];
 
 };

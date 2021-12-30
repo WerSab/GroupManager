@@ -20,7 +20,8 @@ import { addNewTournamentToCollection, deleteTournament } from '../tournaments-e
 import { TournamentContext } from '../context/TournamentContextProvider';
 
 const TournamentsScreen = () => {
-    const {tournamentList, requeryTournaments} = useContext(TournamentContext);
+    const [tournamentList, , {requeryTournaments}] = useContext(TournamentContext);
+    console.log("tournamentSCREEN",tournamentList,)
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [nameInput, setNameInput] = useState('');
     const [dateInput, setDateInput] = useState('');
@@ -28,6 +29,7 @@ const TournamentsScreen = () => {
     const [intervalInput, setIntervalInput] = useState('');
     const [placeInput, setPlaceInput] = useState('');
     const [numberOfParticipantsInput, setNumberOfParticipantsInput] = useState('');
+    const [numberOfBookingsInput, setNumberOfBookingsInput] = useState('');
     const [selectedValue, setSelectedValue] = useState('Turniej');
 
     const clearInputs = () => {
@@ -36,6 +38,7 @@ const TournamentsScreen = () => {
         setStartTimeInput('');
         setIntervalInput('');
         setNumberOfParticipantsInput('');
+        setNumberOfBookingsInput('');
         setPlaceInput('');
 
     };
@@ -56,6 +59,14 @@ const TournamentsScreen = () => {
     };
 
     const onSavePress = () => {
+        const numberOfParticipants = parseInt(numberOfParticipantsInput);
+        const numberOfBookings = parseInt(numberOfBookingsInput);
+            if(isNaN(numberOfParticipants)||isNaN(numberOfBookings)) {
+            Alert.alert('Wystąpił błąd', `Prosze wprowadzić liczbę`, [
+                { text: 'Ok' },
+            ]);
+            return;
+        }
         addNewTournamentToCollection({
             name: nameInput,
             date: dateInput,
@@ -63,6 +74,7 @@ const TournamentsScreen = () => {
             interval: intervalInput,
             place: placeInput,
             numberOfParticipants: numberOfParticipantsInput,
+            numberOfBookings: numberOfBookingsInput,
             category: selectedValue,
         })
             .then(() => {
@@ -184,6 +196,13 @@ const TournamentsScreen = () => {
                                 onChangeText={setNumberOfParticipantsInput}
                                 value={numberOfParticipantsInput}
                                 placeholder="Liczba uczestników..."
+                                keyboardType="numeric"
+                            />
+                            <TextInput
+                                style={styles.textDark}
+                                onChangeText={setNumberOfBookingsInput}
+                                value={numberOfBookingsInput}
+                                placeholder="Liczba rezerwacji..."
                                 keyboardType="numeric"
                             />
                             <View
