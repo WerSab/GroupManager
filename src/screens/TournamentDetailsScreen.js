@@ -11,10 +11,11 @@ import {
     TouchableOpacity,
     Modal,
     TextInput,
+    Alert,
 } from 'react-native';
 import { TournamentContext } from '../context/TournamentContextProvider';
 import { UserContext } from '../context/UserContextProvider';
-import { addBookingsToTournament, getTournaments, bookingsCounter } from '../tournaments-examples';
+import { updateBookingsToTournament, getTournaments, bookingsCounter } from '../tournaments-examples';
 
 function getTournamentFromContext(context, tournamentId) {
     const [tournamentList] = context;
@@ -32,15 +33,21 @@ const TournamentDetails = ({ route }) => {
     const currentUser = useContext(UserContext);
     const tournament = getTournamentFromContext(tournamentContext, id);
     const allParticipants = tournament.numberOfParticipants;
-    const allBookings = tournament.numberOfBookings + bookings;
+    const allBookings = tournament.numberOfBookings;
     const bookCounter = bookingsCounter(allParticipants, allBookings);
 
     const onSavePress = () => {
-        const bookings = parseInt(bookings);
-        addBookingsToTournament(id, bookings)
+        const parsedBookings = parseInt(bookings);
+        if(isNaN(parsedBookings)){
+            Alert.alert('Wystąpił błąd', `Prosze wprowadzić liczbę`, [
+                { text: 'Ok' },
+            ])
+            return undefined;
+        }
+        
+        updateBookingsToTournament(id, parsedBookings)
             .then(() => {
                 setIsModalVisible(!isModalVisible);
-                setNumberOfBookings();
             })
             .catch(function (err) {
                 Alert.alert('Wystąpił błąd', `Przepraszamy mamy problem z serwerem, prosze spróbować później`, [

@@ -5,18 +5,23 @@ import { addParticipantToTournament, getTournaments } from './src/tournaments-ex
 import TournamentContextProvider from './src/context/TournamentContextProvider';
 import { getUsers } from './src/users-examples';
 import SelectedUserContextProvider from './src/context/SelectedUserContextProvider';
+import firestore from '@react-native-firebase/firestore';
 
 
 const App = () => {
 
-  // useEffect(function () {
-  //   setTimeout(function () {
-  //     getUsers().then((result) => {
-  //       console.log('Users:\n',result);
-  //     })
-  //     .catch(error => console.log(error));
-  //   }, 1500)
-  // }, []);
+  useEffect(function () {
+    setTimeout(function () {
+    //  getTournaments()
+    //  .then(results => {
+    //     results.forEach(element => {
+    //       firestore().collection('tournaments').doc(element.id).update({
+    //       numberOfBookings:0
+    //     });
+    //   })
+    //   })
+    }, 1500)
+  }, []);
 
 
   return (

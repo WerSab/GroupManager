@@ -43,17 +43,12 @@ export function deleteTournament(tournamentId){
 return getCollection(FIRESTORE_COLLECTION.TOURNAMENTS).doc(tournamentId).delete();
 }
 // dopisać funkcję zliczania rezerwacji
-export function addBookingsToTournament(tournamentId, bookings) {
-    return new Promise((resolve, reject) => {
-        getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
+export function updateBookingsToTournament(tournamentId, bookings) {
+       return getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
             .doc(tournamentId)
             .update({
-                'numberOfBookings': bookings})
-            .then(() => {
-                resolve();
+                numberOfBookings: bookings
             })
-            .catch((error) => reject(error));
-    })
 
 }
 

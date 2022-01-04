@@ -20,17 +20,19 @@ import { addNewTournamentToCollection, deleteTournament } from '../tournaments-e
 import { TournamentContext } from '../context/TournamentContextProvider';
 
 const TournamentsScreen = () => {
-    const [tournamentList, , {requeryTournaments}] = useContext(TournamentContext);
-    console.log("tournamentSCREEN",tournamentList,)
+    const [tournamentList, , { requeryTournaments }] = useContext(TournamentContext);
+    console.log("tournamentSCREEN", tournamentList,)
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isModalPricingVisible, setIsModalPricingVisible] = useState(false);
     const [nameInput, setNameInput] = useState('');
     const [dateInput, setDateInput] = useState('');
     const [startTimeInput, setStartTimeInput] = useState('');
     const [intervalInput, setIntervalInput] = useState('');
     const [placeInput, setPlaceInput] = useState('');
     const [numberOfParticipantsInput, setNumberOfParticipantsInput] = useState('');
-    const [numberOfBookingsInput, setNumberOfBookingsInput] = useState('');
-    const [selectedValue, setSelectedValue] = useState('Turniej');
+    const [tournamentCategoryInput, setTournamentCategoryInput] = useState('Kategoria');
+    const [ticketCategoryInput, setTicketCategoryInput] = useState('Cena biletu');
+    const [pricingInput, setPricingInput] = useState('');
 
     const clearInputs = () => {
         setNameInput('');
@@ -38,30 +40,94 @@ const TournamentsScreen = () => {
         setStartTimeInput('');
         setIntervalInput('');
         setNumberOfParticipantsInput('');
-        setNumberOfBookingsInput('');
         setPlaceInput('');
+        setTournamentCategoryInput('Kategoria');
+        setTicketCategoryInput('Cena biletu');
+        setPricingInput('');
 
     };
 
     const deleteAlert = (id, name) => {
         Alert.alert('Delete alert', `Do You want to delete ${name}?`, [
             { text: 'Cancel', onPress: () => console.log('Cancel Pressed') },
-            { text: 'Ok', onPress: () => {
-                deleteTournament(id)
-                .then(() => {
-                    requeryTournaments();
-                })
-                .catch(function(err){
-                    Alert.alert('Spróbuj ponownie później')
-                })
-            } },
+            {
+                text: 'Ok', onPress: () => {
+                    deleteTournament(id)
+                        .then(() => {
+                            requeryTournaments();
+                        })
+                        .catch(function (err) {
+                            Alert.alert('Spróbuj ponownie później')
+                        })
+                }
+            },
         ]);
     };
+    const pricingTickets = () => {
+        setIsModalPricingVisible(true)
+        const pricing = pricingInput;
+        if (pricing == "platny") {
+            {
+                isModalVisible && (
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        onRequestClose={() => setIsModalPricingVisible(false)}
+                        onBackdropPress={() => setIsModalPricingVisible(false)}
+                        onBackButtonPress={() => setIsModalPricingVisible(false)}>
+                        <View style={styles.modalView}>
+
+                            <TextInput
+                                style={styles.textDark}
+                                onChangeText={setFirstTicketInput}
+                                value={firstTicketInput}
+                                placeholder="Nazwa biletu..."
+                            />
+                            <TextInput
+                                style={styles.textDark}
+                                onChangeText={setSecondTicketInput}
+                                value={secondTicketInput}
+                                placeholder="Nazwa biletu..."
+                            />
+                            <TextInput
+                                style={styles.textDark}
+                                onChangeText={setThirdTicketInput}
+                                value={thirdTicketInput}
+                                placeholder="Nazwa biletu..."
+                            />
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-around',
+                                    width: '100%',
+                                    padding: 40,
+                                }}>
+                                <TouchableOpacity
+                                    style={[styles.button, styles.buttonClose]}
+                                    onPress={() => {
+                                        setIsModalPricingVisible(!isModalPricingVisible);
+                                    }}>
+                                    <Text style={styles.textDark}>Close</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={[styles.button, styles.buttonSafe]}
+                                    onPress={() => {
+                                        //onSavePricingPress();
+                                    }}>
+                                    <Text style={styles.textDark}>Save</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </Modal>
+                )
+            }
+        }
+    };
+    //onSavePricingPress();
 
     const onSavePress = () => {
         const numberOfParticipants = parseInt(numberOfParticipantsInput);
-        const numberOfBookings = parseInt(numberOfBookingsInput);
-            if(isNaN(numberOfParticipants)||isNaN(numberOfBookings)) {
+        if (isNaN(numberOfParticipants)) {
             Alert.alert('Wystąpił błąd', `Prosze wprowadzić liczbę`, [
                 { text: 'Ok' },
             ]);
@@ -74,8 +140,8 @@ const TournamentsScreen = () => {
             interval: intervalInput,
             place: placeInput,
             numberOfParticipants: numberOfParticipantsInput,
-            numberOfBookings: numberOfBookingsInput,
-            category: selectedValue,
+            tournamentCategory: tournamentCategoryInput,
+            ticketCategory: ticketCategoryInput,
         })
             .then(() => {
                 setIsModalVisible(!isModalVisible);
@@ -91,17 +157,17 @@ const TournamentsScreen = () => {
 
     }
 
-/*
-    const tournamentsContext = useContext(Conaosda);
-    tournamentsContext.requeryTournaments();
-
-    addTournamentToDB()
-    .then(() => {
-
+    /*
+        const tournamentsContext = useContext(Conaosda);
         tournamentsContext.requeryTournaments();
-    })
-
-*/
+    
+        addTournamentToDB()
+        .then(() => {
+    
+            tournamentsContext.requeryTournaments();
+        })
+    
+    */
     const navigation = useNavigation();
 
     const renderItem = item => {
@@ -117,7 +183,6 @@ const TournamentsScreen = () => {
                     <Text style={styles.itemStyle}>
                         {item.name}
                     </Text>
-
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() => deleteAlert(item.id, item.name)}
@@ -146,21 +211,14 @@ const TournamentsScreen = () => {
                         onBackButtonPress={() => setIsModalVisible(false)}>
                         <View style={styles.modalView}>
                             <Picker
-                                selectedValue={selectedValue}
+                                selectedValue={tournamentCategoryInput}
                                 style={{ height: 100, width: 150, color: "#005b98" }}
-                                onValueChange={itemValue => setSelectedValue(itemValue)}>
+                                onValueChange={itemValue => setTournamentCategoryInput(itemValue)}>
                                 <Picker.Item label="Kategoria" value="  " />
-                                <Picker.Item label="Turniej" value="turniej" />
-                                <Picker.Item label="Koncert" value="koncert" />
-                                <Picker.Item label="Wystawa" value="wystawa" />
-                                <Picker.Item label="Spektakl" value="Spektakl" />
+                                <Picker.Item label="Kultura" value="kultura" />
+                                <Picker.Item label="Sport" value="sport" />
                             </Picker>
-                            {/* <TextInput
-                                style={styles.textDark}
-                                onChangeText={setDateInput}
-                                value={dateInput}
-                                placeholder="Termin..."
-                            /> */}
+
                             <TextInput
                                 style={styles.textDark}
                                 onChangeText={setNameInput}
@@ -198,13 +256,22 @@ const TournamentsScreen = () => {
                                 placeholder="Liczba uczestników..."
                                 keyboardType="numeric"
                             />
-                            <TextInput
-                                style={styles.textDark}
-                                onChangeText={setNumberOfBookingsInput}
-                                value={numberOfBookingsInput}
-                                placeholder="Liczba rezerwacji..."
-                                keyboardType="numeric"
-                            />
+                            <Picker
+                                selectedValue={ticketCategoryInput}
+                                style={{ height: 100, width: 150, color: "#005b98" }}
+                                onValueChange={itemValue => setTicketCategoryInput(itemValue)}
+                            >
+                                <Picker.Item label="Cena biletu" value="  " />
+                                <Picker.Item label="Bezplatny" value="bezplatny" />
+                                <Picker.Item label="Platny" value="platny" />
+                            </Picker>
+                            <TouchableOpacity
+                                style={[styles.button, styles.buttonTicketType]}
+                                onPress={() => {
+                                    pricingTickets();
+                                }}>
+                                <Text style={styles.textDark}>Dodaj bilet</Text>
+                            </TouchableOpacity>
                             <View
                                 style={{
                                     flexDirection: 'row',
@@ -278,9 +345,6 @@ const styles = StyleSheet.create({
     },
     listStyle: {
         flexDirection: 'row',
-        padding: 5,
-        marginRight: 20,
-        marginLeft: 20,
         borderRadius: 5,
         textAlign: 'center',
         fontSize: 16,
@@ -290,7 +354,7 @@ const styles = StyleSheet.create({
     },
     itemStyle: {
         flexDirection: 'column',
-        width: 300,
+        width: 250,
         padding: 15,
         marginBottom: 5,
         color: '#005b98',
