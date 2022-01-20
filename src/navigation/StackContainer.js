@@ -13,7 +13,6 @@ import { FIRESTORE_ROLES } from '../config';
 import { UserContext } from '../context/UserContextProvider';
 import TournamentsScreen from '../screens/TournamentsScreen';
 import TournamentDetailsScreen from '../screens/TournamentDetailsScreen'
-import UsersDetailsScreen from '../screens/UsersDetailsScreen'
 import UsersScreen from '../screens/UsersScreen';
 import MyTicketsScreen from '../screens/MyTicketsScreen';
 import MyBookingsScreen from '../screens/MyBookingsScreen';
@@ -123,15 +122,7 @@ function StackContainer() {
                     headerTitleAlign: 'center'
                   }}
                 />
-                <Stack.Screen
-                  name={SCREEN.USERSDETAILS}
-                  component={UsersDetailsScreen}
-                  options={{
-                    headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
-                    headerStyle: { backgroundColor: 'white', flex: 1, alignSelf: 'center', height: 100 },
-                    headerTitleAlign: 'center'
-                  }}
-                />
+                
                 <Stack.Screen
                   name={SCREEN.MYTICKETS}
                   component={MyTicketsScreen}

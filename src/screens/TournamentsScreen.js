@@ -32,8 +32,8 @@ const TournamentsScreen = () => {
     const [numberOfParticipantsInput, setNumberOfParticipantsInput] = useState('');
     const [tournamentCategoryInput, setTournamentCategoryInput] = useState('Kategoria');
     const [ticketCategoryInput, setTicketCategoryInput] = useState('Cena biletu');
-    const [pricingInput, setPricingInput] = useState('');
-
+    const [firstTicketInput, setFirstTicketInput]= useState('');
+    
     const clearInputs = () => {
         setNameInput('');
         setDateInput('');
@@ -43,7 +43,7 @@ const TournamentsScreen = () => {
         setPlaceInput('');
         setTournamentCategoryInput('Kategoria');
         setTicketCategoryInput('Cena biletu');
-        setPricingInput('');
+        
 
     };
 
@@ -65,8 +65,7 @@ const TournamentsScreen = () => {
     };
     const pricingTickets = () => {
         setIsModalPricingVisible(true)
-        const pricing = pricingInput;
-        if (pricing == "platny") {
+        if (ticketCategoryInput == "platny") {
             {
                 isModalVisible && (
                     <Modal
@@ -83,18 +82,7 @@ const TournamentsScreen = () => {
                                 value={firstTicketInput}
                                 placeholder="Nazwa biletu..."
                             />
-                            <TextInput
-                                style={styles.textDark}
-                                onChangeText={setSecondTicketInput}
-                                value={secondTicketInput}
-                                placeholder="Nazwa biletu..."
-                            />
-                            <TextInput
-                                style={styles.textDark}
-                                onChangeText={setThirdTicketInput}
-                                value={thirdTicketInput}
-                                placeholder="Nazwa biletu..."
-                            />
+                            
                             <View
                                 style={{
                                     flexDirection: 'row',
