@@ -13,3 +13,7 @@ export function addToArray(element) {
 export function removeFromArray(element){
   return firestore.FieldValue.arrayRemove(element);
 }
+
+export function getDocumentReferenceById(documentPath) {
+    return firestore().doc(documentPath);
+ }

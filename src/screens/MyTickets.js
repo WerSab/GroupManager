@@ -12,11 +12,21 @@ function getSelectedUserFromContext(context, userId) {
         return user.id === userId;
     });
 };
+
+function getUserTicket(context, userId) {
+    const[tickets]= context;
+    return tickets.find(function(ticket)
+    {
+        return ticket.user === userId;
+    })
+}
+
 function UserDetails({ route }) {
     //const { id } = route.params;- ten lub poniższy sposób
     const id = route.params.id;
     const selectedUserContext = useContext(SelectedUserContext)
     const selectedUser = getSelectedUserFromContext(selectedUserContext, id)
+
     console.log('selectedUser', selectedUser)
     return (
         <>
@@ -35,7 +45,12 @@ function UserDetails({ route }) {
                 {selectedUser.mieszkanie}
                 {'\n'}
                 {selectedUser.kod} {selectedUser.city}
-                
+                {'\n'}
+                {'\n'}
+                rezerwacje:
+                {'\n'}
+                {'\n'}
+                bilety:
                 
                  </Text> 
 

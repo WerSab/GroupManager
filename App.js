@@ -6,23 +6,31 @@ import TournamentContextProvider from './src/context/TournamentContextProvider';
 import { getUsers } from './src/users-examples';
 import SelectedUserContextProvider from './src/context/SelectedUserContextProvider';
 import firestore from '@react-native-firebase/firestore';
+import { getUserTickets } from './src/ticket-examples';
+import { extractTicketsInfo } from './src/ticket-examples';
 
 
 const App = () => {
 
   useEffect(function () {
     setTimeout(function () {
-    //  getTournaments()
-    //  .then(results => {
-    //     results.forEach(element => {
-    //       firestore().collection('tournaments').doc(element.id).update({
-    //       numberOfBookings:0
-    //     });
-    //   })
-    //   })
+      
+      getUserTickets('2yMVk3a2ovS9QvWLdy1l4U3HH773')
+        .then(result => {
+           return extractTicketsInfo(result);//to jest promise
+        })
+        .then(extractedTickets => {                 //to jest rozpakowana wartość promisa
+            console.log("extractedTickets", extractedTickets)
+        })
+        .catch(err => console.log('blad', err))
     }, 1500)
   }, []);
 
+  // setState();
+  // tournament.get().then(result => {
+  //   setTournament(result);
+  //   setState(false);
+  // });
 
   return (
 
