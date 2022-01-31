@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/core';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
     View,
     Text,
@@ -7,10 +7,40 @@ import {
     TouchableOpacity,
     Image,
 } from 'react-native';
+import { UserContext } from '../context/UserContextProvider';
+import { runTransaction } from "firebase/firestore";
+import { extractTicketsInfo, getUserTickets } from '../ticket-examples';
+
+function getExtractedTickets(userID) {
+    return new Promise((resolve, reject) => {
+        getUserTickets(userID)
+            .then(function(tickets) {
+                console.log("tickets for users", tickets)
+                return extractTicketsInfo(tickets);
+            })
+            .then(function(extractedTickets){
+                resolve(extractedTickets)
+            })
+            .catch((error) =>reject(error))
+    });
+
+    
+};
 
 
 const MyTicketsScreen = () => {
-    const navigation = useNavigation();
+    //const navigation = useNavigation();
+
+
+    const userContext = useContext(UserContext);
+    const userID = userContext.user.uid;
+
+    getExtractedTickets(userID).then(result => {
+        console.log('extracted tickets in component:', result);
+        console.log(userID)
+    });
+    // const mojeBilety = getExtractedTickets(userID);
+    // console.log("mojeBilety", mojeBilety);
 
     return (
         <View style={styles.mainBody}>
