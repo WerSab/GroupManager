@@ -13,7 +13,12 @@ import ErrorComponent from '../screens/ErrorScreen';
 
 
 
-export const TournamentContext = createContext([null, false, null]);
+export const TournamentContext = createContext({
+   tournament: [null, false, null],
+   ticket: [],
+
+
+});
 
 const TournamentContextProvider = (props) => {
     const [tournamentList, isLoaded, error, requeryTournaments] = useTournaments();

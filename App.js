@@ -13,17 +13,17 @@ import { extractTicketsInfo } from './src/ticket-examples';
 const App = () => {
 
   useEffect(function () {
-    setTimeout(function () {
+    // setTimeout(function () {
       
-      getUserTickets('2yMVk3a2ovS9QvWLdy1l4U3HH773')
-        .then(result => {
-           return extractTicketsInfo(result);//to jest promise
-        })
-        .then(extractedTickets => {                 //to jest rozpakowana wartość promisa
-            console.log("extractedTickets", extractedTickets)
-        })
-        .catch(err => console.log('blad', err))
-    }, 1500)
+    //   getUserTickets('2yMVk3a2ovS9QvWLdy1l4U3HH773')
+    //     .then(result => {
+    //        return extractTicketsInfo(result);//to jest promise
+    //     })
+    //     .then(extractedTickets => {                 //to jest rozpakowana wartość promisa
+    //         console.log("extractedTickets", extractedTickets)
+    //     })
+    //     .catch(err => console.log('blad', err))
+    // }, 1500)
   }, []);
 
   // setState();
