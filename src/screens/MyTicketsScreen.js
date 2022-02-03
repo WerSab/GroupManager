@@ -10,42 +10,75 @@ import {
 import { UserContext } from '../context/UserContextProvider';
 import { runTransaction } from "firebase/firestore";
 import { extractTicketsInfo, getUserTickets } from '../ticket-examples';
+import ErrorScreen from './ErrorScreen';
+
 
 function getExtractedTickets(userID) {
     return new Promise((resolve, reject) => {
         getUserTickets(userID)
-            .then(function(tickets) {
+            .then(function (tickets) {
                 console.log("tickets for users", tickets)
                 return extractTicketsInfo(tickets);
             })
-            .then(function(extractedTickets){
+            .then(function (extractedTickets) {
                 resolve(extractedTickets)
             })
-            .catch((error) =>reject(error))
+            .catch((error) => reject(error))
     });
 
-    
 };
-
 
 const MyTicketsScreen = () => {
     //const navigation = useNavigation();
-
-
+    const [myTickets, setMyTickets] = useState();
+    const [error, setError] = useState();
+    const [loading, setLoading] = useState(true);
     const userContext = useContext(UserContext);
     const userID = userContext.user.uid;
 
-    getExtractedTickets(userID).then(result => {
-        console.log('extracted tickets in component:', result);
-        console.log(userID)
-    });
-    // const mojeBilety = getExtractedTickets(userID);
-    // console.log("mojeBilety", mojeBilety);
+    // const [data, error, loading] = useMyTickets();
 
+    useEffect(() => {
+        getExtractedTickets(userID) // "pending"
+            .then(result => {
+                // i know that the promise is fullfilled
+                console.log('extracted tickets in component:', result);
+                console.log(userID);
+                setMyTickets(result);
+                setLoading(false);
+            })
+            .catch((error) => {
+                // i know that the promise is rejected
+                setError(error);
+            })
+    }, []);
+
+
+    //const myTickets = getExtractedTickets(userID);
+    console.log("myTickets", myTickets);
+    if (loading) {
+        return (<View style={styles.buttonContainer}>
+        <Text style={styles.text}>Ładuje się</Text>
+        </View>)
+    }
+    if(error){
+        return <ErrorScreen errorMessage={error.message}/>
+        }
+    if(!myTickets && myTickets.length===0){
+        return (<View style={styles.buttonContainer}>
+            <Text style={styles.text}>Nie posiadasz żadnych biletów.</Text>
+            </View>)
+    }
+// const myNumber = 0;
+//     if(!!!myNumber || myNumber !== undefined && myNumber !== null) {
+
+//     }
+   
     return (
         <View style={styles.mainBody}>
             <View style={styles.buttonContainer}>
                 <Text style={styles.text}>Moje Bilety</Text>
+                <Text style={styles.text}>Amout: {(myTickets[0].amount)} </Text>
             </View>
         </View>
     )

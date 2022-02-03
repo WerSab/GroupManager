@@ -12,7 +12,7 @@ export function getUserTickets(userId) {
             .get()
             .then(querySnapshot => {
                 const allDocuments = querySnapshot.docs;
-                const ticketList = allDocuments.map(function (collectionElement) {
+                                const ticketList = allDocuments.map(function (collectionElement) {
                     return {
                         id: collectionElement.id,
                         ...collectionElement.data(),
