@@ -5,13 +5,12 @@ import {
     StyleSheet,
     TouchableOpacity,
 } from 'react-native';
-import { SCREEN } from '../navigation/screens';
 
 function ErrorComponent(props) {
-
+    const errorMessage= props.errorMessage;
     return (
         <View>
-            <Text>Błąd</Text>
+            <Text>{errorMessage}</Text>
         </View>
     )
 }
