@@ -52,10 +52,27 @@ export function updateBookingsToTournament(tournamentId, bookings) {
 
 }
 
-export function addNewTournamentToCollection(data){
+/*
+interface ITicketType: {
+	id: string!
+	name: string!
+	price: number!
+	slots: number!
+	description: string,
+}
+
+const x: ITicketType = {
+    id: '100',
+	name: 'halo',
+	price: 100,
+	slots: 100,
+}
+*/
+
+export function addNewTournamentToCollection(tournament, ticketTypes) {
     return new Promise((resolve, reject) => {
         getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
-            .add(data)
+            .add(tournament)
             .then(() => {
                 resolve();
             })
@@ -69,6 +86,18 @@ export function bookingsCounter (participants, bookings)
     };
 
 
+const sampleTournament = {
+startTime: getFirestoreTimestampFromDate(new Date('December 17, 2022 03:24:00')),
+intervalInMinutes: 60,//czas w minutach,
+name: 'Koncert Galowy',
+slots: 100,
+place: 'Hala Widowiskowa',
+};
+
+const sampleTournamentWithTicketTypes = {
+    ...sampleTournament,
+    ticketTypes: createTicketTypes(sampleTournament),
+}
 //do nowego pliku zdefiniowac dwie funkcje remove from array & add to array
 
 /*
