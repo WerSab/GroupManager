@@ -17,7 +17,7 @@ function getExtractedTickets(userID) {
     return new Promise((resolve, reject) => {
         getUserTickets(userID)
             .then(function (tickets) {
-                console.log("tickets for users", tickets)
+                
                 return extractTicketsInfo(tickets);
             })
             .then(function (extractedTickets) {
@@ -42,8 +42,7 @@ const MyTicketsScreen = () => {
         getExtractedTickets(userID) // "pending"
             .then(result => {
                 // i know that the promise is fullfilled
-                console.log('extracted tickets in component:', result);
-                console.log(userID);
+                
                 setMyTickets(result);
                 setLoading(false);
             })
@@ -55,8 +54,7 @@ const MyTicketsScreen = () => {
 
 
     //const myTickets = getExtractedTickets(userID);
-    console.log("myTickets", myTickets);
-    if (loading) {
+        if (loading) {
         return (<View style={styles.buttonContainer}>
         <Text style={styles.text}>Ładuje się</Text>
         </View>)
@@ -76,9 +74,13 @@ const MyTicketsScreen = () => {
    
     return (
         <View style={styles.mainBody}>
+            {
+                // TODO: zadanie
+                myTickets.map(ticket => <Text></Text>)//zadanie!!!!- pomapowac bilety - zamiana struktur java scriptowych na komponenty Reactowe (żeby je mozna było wyswuetlić w komponnetach View, text itd.)
+            }
             <View style={styles.buttonContainer}>
                 <Text style={styles.text}>Moje Bilety</Text>
-                <Text style={styles.text}>Amout: {(myTickets[0].amount)} </Text>
+                <Text style={styles.text}>Amout: {myTickets[0].amount} </Text>
             </View>
         </View>
     )

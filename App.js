@@ -8,22 +8,19 @@ import SelectedUserContextProvider from './src/context/SelectedUserContextProvid
 import firestore from '@react-native-firebase/firestore';
 import { getUserTickets } from './src/ticket-examples';
 import { extractTicketsInfo } from './src/ticket-examples';
+import { getFirestoreTimestampFromDate, getFirestoreTimestampFromMillis } from './src/fireBase/firestoreHelper';
 
 
 const App = () => {
 
   useEffect(function () {
-    // setTimeout(function () {
-      
-    //   getUserTickets('2yMVk3a2ovS9QvWLdy1l4U3HH773')
-    //     .then(result => {
-    //        return extractTicketsInfo(result);//to jest promise
-    //     })
-    //     .then(extractedTickets => {                 //to jest rozpakowana wartość promisa
-    //         console.log("extractedTickets", extractedTickets)
-    //     })
-    //     .catch(err => console.log('blad', err))
-    // }, 1500)
+    setTimeout(function () {
+         const x = getFirestoreTimestampFromDate(new Date());
+         const y = getFirestoreTimestampFromMillis(1643827618000);
+         console.log('x', x);
+         
+         console.log('y', y);
+    }, 1500)
   }, []);
 
   // setState();
