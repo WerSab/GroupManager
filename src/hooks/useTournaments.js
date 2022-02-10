@@ -9,26 +9,23 @@ export function useTournaments() {
     const [error, setError] = useState();
 
     const requeryTournaments = () => {
-        console.log("xxx")
         getTournaments()
-        .then((result) => {
-            console.log('result', result)
-            setTournamentList(result);
+            .then((result) => {
+                setTournamentList(result);
 
-        })
-        .catch((error) => {
-            setError(error);
-        })
-        .finally(() => {
-            setisLoaded (true);
-        });
+            })
+            .catch((error) => {
+                setError(error);
+            })
+            .finally(() => {
+                setisLoaded(true);
+            });
     }
 
-    
+
     useEffect(() => {
         requeryTournaments();
-    },[]);
-    console.log( [tournamentList, isLoaded, error, requeryTournaments])
+    }, []);
     return [tournamentList, isLoaded, error, requeryTournaments];
 
 };

@@ -1,6 +1,7 @@
 import { FIRESTORE_COLLECTION } from './config';
 import { FirestoreDataContext } from './context/FirestoreDataProvider';
-import { addToArray, getCollection } from './fireBase/firestoreHelper';
+import { addToArray, getCollection, getFirestoreTimestampFromDate } from './fireBase/firestoreHelper';
+import { firestore } from '@react-native-firebase/firestore';
 
 //lista turniejów - tournaments FlatList
 export function getTournaments() {
@@ -39,65 +40,124 @@ export function addParticipantToTournament(tournamentId, userId) {
 
 }
 
-export function deleteTournament(tournamentId){
-return getCollection(FIRESTORE_COLLECTION.TOURNAMENTS).doc(tournamentId).delete();
+export function deleteTournament(tournamentId) {
+    return getCollection(FIRESTORE_COLLECTION.TOURNAMENTS).doc(tournamentId).delete();
 }
 // dopisać funkcję zliczania rezerwacji
 export function updateBookingsToTournament(tournamentId, bookings) {
-       return getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
-            .doc(tournamentId)
-            .update({
-                numberOfBookings: bookings
-            })
+    return getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
+        .doc(tournamentId)
+        .update({
+            numberOfBookings: bookings
+        })
 
 }
 
 /*
 interface ITicketType: {
-	id: string!
-	name: string!
-	price: number!
-	slots: number!
-	description: string,
+    id: string!
+    name: string!
+    price: number!
+    slots: number!
+    description: string,
 }
 
 const x: ITicketType = {
     id: '100',
-	name: 'halo',
-	price: 100,
-	slots: 100,
+    name: 'halo',
+    price: 100,
+    slots: 100,
 }
 */
 
 export function addNewTournamentToCollection(tournament, ticketTypes) {
     return new Promise((resolve, reject) => {
+        let addedTournamentReference;
+        const batch = firestore.batch()
         getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
             .add(tournament)
-            .then(() => {
-                resolve();
+            .then((tournament) => {
+                addedTournamentReference = tournament;
+                return tournament.collection(FIRESTORE_COLLECTION.SUB_COLLECTION.TICKET_TYPES);
             })
+            .then((ticketTypesCollectionReference) => {
+                // const ticketTypePromises = ticketTypes.map(ticketType => {
+                //    return ticketTypesCollectionReference.add(ticketType);
+                // });
+                // return Promise.all(ticketTypePromises);
+                
+                const ticketTypesLength = ticketTypes.length;
+
+                const result=[];
+                for (let i = 0; i < ticketTypesLength; i++) {
+                    const ticketTypePromise = ticketTypesCollectionReference.add(ticketTypes[i]);
+
+                    result.push(ticketTypePromise);
+                            //dodawanie elementów do tablicy                   
+                            // [].push(element);
+                            // [...a, {}]
+                }
+                return Promise.all(result);
+
+            })
+            .then((ticketTypeDocumentReferences)=>{
+                resolve({
+                    tournament: addedTournamentReference,
+                    ticketTypeReferences: ticketTypeDocumentReferences
+                });
+            }
+            
+            )
             .catch((error) => reject(error));
     })
 }
 
-export function bookingsCounter (participants, bookings) 
-    {
-        return participants-bookings;
-    };
+const x = {
+    doc: () => {
+
+    }
+}
+
+export function bookingsCounter(participants, bookings) {
+    return participants - bookings;
+};
 
 
 const sampleTournament = {
-startTime: getFirestoreTimestampFromDate(new Date('December 17, 2022 03:24:00')),
-intervalInMinutes: 60,//czas w minutach,
-name: 'Koncert Galowy',
-slots: 100,
-place: 'Hala Widowiskowa',
+    startTime: getFirestoreTimestampFromDate(new Date('December 17, 2022 03:24:00')),
+    intervalInMinutes: 60,//czas w minutach,
+    name: 'Koncert Galowy',
+    slots: 100,
+    place: 'Hala Widowiskowa',
 };
+
+const sampleTicketTypes = [
+    {
+        id: '12egvregtv',
+        name: 'premium',
+        price: 150,
+        slots: 200,
+        description: 'płyta główna',
+    },
+    {
+        id: '15ftgrhthn',
+        name: 'basic',
+        price: 90,
+        slots: 300,
+        description: 'trybuny',
+    }
+
+
+]
+
+const createTicketTypes = () => [];
 
 const sampleTournamentWithTicketTypes = {
     ...sampleTournament,
     ticketTypes: createTicketTypes(sampleTournament),
 }
+
+
 //do nowego pliku zdefiniowac dwie funkcje remove from array & add to array
 
 /*

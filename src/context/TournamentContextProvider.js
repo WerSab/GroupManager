@@ -8,10 +8,6 @@
 import React from 'react';
 import { createContext } from 'react';
 import { useTournaments } from '../hooks/useTournaments';
-import ActivityIndicatorScreen from '../screens/ActivityIndicatorScreen';
-import ErrorComponent from '../screens/ErrorScreen';
-
-
 
 export const TournamentContext = createContext({
    tournament: [null, false, null],
