@@ -8,21 +8,35 @@ import SelectedUserContextProvider from './src/context/SelectedUserContextProvid
 import firestore from '@react-native-firebase/firestore';
 import { getUserTickets } from './src/ticket-examples';
 import { extractTicketsInfo } from './src/ticket-examples';
-import { getFirestoreTimestampFromDate, getFirestoreTimestampFromMillis } from './src/fireBase/firestoreHelper';
+import { getCollection, getFirestoreTimestampFromDate, getFirestoreTimestampFromMillis } from './src/fireBase/firestoreHelper';
+import { FIRESTORE_COLLECTION } from './src/config';
 
 
 const App = () => {
 
   useEffect(function () {
     setTimeout(function () {
-         const x = getFirestoreTimestampFromDate(new Date());
-         const y = getFirestoreTimestampFromMillis(1643827618000);
-         console.log('x', x);
-         
-         console.log('y', y);
+      const ticketTypesRef = getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
+        .doc('L1G0uRreTk2FHV1heeX2')
+        .collection(FIRESTORE_COLLECTION.SUB_COLLECTION.TICKET_TYPES);
+      console.log('TEST1')
+
+        ticketTypesRef.doc('testowy').set({
+        name: 'premium',
+        price: 150,
+        slots: 200,
+        description: 'płyta główna',
+      });
+      
     }, 1500)
   }, []);
-
+//kolejne kroki: 
+//1. Rozpoczynanie transakcji - tournaments-examples
+//2. Stworzenie turniejowego dokumentu( dta,miejsce itd)  - tournaments-examples
+//3. Dorzucenie do dokumentu turniejowego subkolekcji- tournaments-examples
+//4. Commitowanie zmian - zamykamy i potwierdzamy transakcję - wrzucenie wszystkich operacji do bazy danych
+  
+  
   // setState();
   // tournament.get().then(result => {
   //   setTournament(result);
