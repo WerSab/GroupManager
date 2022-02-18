@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/core';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import {
     View,
     Text,
@@ -8,13 +8,15 @@ import {
     Image,
 } from 'react-native';
 import { SCREEN } from '../navigation/screens';
-import { FlatGrid, SectionGrid } from 'react-native-super-grid';
+import { FlatGrid} from 'react-native-super-grid';
 import signedOut from '../assets/icons/signedOut.png'
+import { UserContext } from '../context/UserContextProvider';
 import { signOutFirebaseUser } from '../fireBase/authentication-methods';
 
 const ManagerScreen = () => {
     const navigation = useNavigation();
     const [isSigningOut, setIsSigningOut] = useState(false);
+    const currentUser = useContext(UserContext);
     /*useEffect(() => {
         navigation.navigate(SCREEN.TOURNAMENTLIST);
     }
@@ -23,9 +25,9 @@ const ManagerScreen = () => {
     const data = [
         { name: SCREEN.TOURNAMENTLIST },
         { name: SCREEN.USERSLIST },
-        { name: SCREEN.MYTICKETS},
-        { name: SCREEN.MYBOOKINGS},
-        { name: SCREEN.MYMESSAGES},
+        { name: SCREEN.TICKETTYPES},
+        { name: SCREEN.BOOKINGSLIST},
+        { name: SCREEN.MESSAGESLIST},
     ]
 
     //const onSignOutFunction = isSigningOut ? undefined : onSignOutPress;
@@ -50,7 +52,9 @@ const ManagerScreen = () => {
             {/*<CustomHeader/>*/}
             <View style={styles.mainBody}>
                 <View style={styles.buttonContainer}>
-                    <Text style={styles.text}>Hello Manager</Text>
+                    <Text style={styles.text}>Witaj  {currentUser.data.firstName} {currentUser.data.lastName}
+                    {'\n'}{currentUser.data.role}
+                    </Text>
                     <TouchableOpacity
 
                         onPress={isSigningOut ? undefined : () => {

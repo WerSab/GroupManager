@@ -15,29 +15,34 @@ import TournamentsScreen from '../screens/TournamentsScreen';
 import TournamentDetailsScreen from '../screens/TournamentDetailsScreen'
 import UsersScreen from '../screens/UsersScreen';
 import MyTicketsScreen from '../screens/MyTicketsScreen';
-import MyBookingsScreen from '../screens/MyBookingsScreen';
+import MyBookingsScreen from '../screens/MyProfileScreen';
 import MyMessagesScreen from '../screens/MyMessagesScreen';
 import { SCREEN } from './screens';
 import { TournamentContext } from '../context/TournamentContextProvider';
 import { Text } from 'react-native'
 import ErrorComponent from '../screens/ErrorScreen';
+import TicketTypesScreen from '../screens/TicketTypesScreen';
+import MyTournamentsListScreen from '../screens/MyTournamentsListScreen';
+import BookingsListScreen from '../screens/BookingsListScreen';
+import MessagesListScreen from '../screens/MessagesListScreen';
+import MyProfileScreen from '../screens/MyProfileScreen';
 
 const Stack = createNativeStackNavigator();
 
 function StackContainer() {
 
   const userContext = useContext(UserContext);
-  const[, {isLoaded, error}] = useContext(TournamentContext);
+  const [, { isLoaded, error }] = useContext(TournamentContext);
 
   const getStackScreenBasedOnRole = () => {
 
     if (error) {
       return <Stack.Screen
-      name={SCREEN.ERROR}
-      options={{
-        headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
-        headerTitleAlign: 'center'
-      }}
+        name={SCREEN.ERROR}
+        options={{
+          headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
+          headerTitleAlign: 'center'
+        }}
       >
         {props => <ErrorComponent {...props} errorMessage={error} />}
       </Stack.Screen>
@@ -70,23 +75,68 @@ function StackContainer() {
 
           case FIRESTORE_ROLES.PLAYER: {
             return (
-
-              <Stack.Screen
-                name="PlayerScreen"
-                component={PlayerScreen}
-                options={{
-                  headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
-                  headerTitleAlign: 'center'
-                }}
-              />
-
+              <>
+                <Stack.Screen
+                  name="PlayerScreen"
+                  component={PlayerScreen}
+                  options={{
+                    headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
+                    headerTitleAlign: 'center'
+                  }}
+                />
+                <Stack.Screen
+                  name={SCREEN.MYTICKETS}
+                  component={MyTicketsScreen}
+                  options={{
+                    headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
+                    headerStyle: { backgroundColor: 'white', flex: 1, alignSelf: 'center', height: 100 },
+                    headerTitleAlign: 'center'
+                  }}
+                />
+                <Stack.Screen
+                  name={SCREEN.MYPROFILE}
+                  component={MyProfileScreen}
+                  options={{
+                    headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
+                    headerStyle: { backgroundColor: 'white', flex: 1, alignSelf: 'center', height: 100 },
+                    headerTitleAlign: 'center'
+                  }}
+                />
+                <Stack.Screen
+                  name={SCREEN.MYMESSAGES}
+                  component={MyMessagesScreen}
+                  options={{
+                    headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
+                    headerStyle: { backgroundColor: 'white', flex: 1, alignSelf: 'center', height: 100 },
+                    headerTitleAlign: 'center'
+                  }}
+                />
+                <Stack.Screen
+                  name={SCREEN.MYTOURNAMENTS}
+                  component={MyTournamentsListScreen}
+                  options={{
+                    headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
+                    headerStyle: { backgroundColor: 'white', flex: 1, alignSelf: 'center', height: 100 },
+                    headerTitleAlign: 'center'
+                  }}
+                />
+                <Stack.Screen
+                  name={SCREEN.TOURNAMENTDETAILS}
+                  component={TournamentDetailsScreen}
+                  options={{
+                    headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
+                    headerStyle: { backgroundColor: 'white', flex: 1, alignSelf: 'center', height: 100 },
+                    headerTitleAlign: 'center'
+                  }}
+                />
+              </>
             )
           }
           case FIRESTORE_ROLES.MANAGER: {
             return (
               <>
                 <Stack.Screen
-                  name="ManagerScreen"
+                  name={SCREEN.MANAGER}
                   component={ManagerScreen}
                   options={{
                     headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
@@ -103,10 +153,37 @@ function StackContainer() {
                     headerTitleAlign: 'center'
                   }}
                 />
-
+                
                 <Stack.Screen
                   name={SCREEN.USERSLIST}
                   component={UsersScreen}
+                  options={{
+                    headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
+                    headerStyle: { backgroundColor: 'white', flex: 1, alignSelf: 'center', height: 100 },
+                    headerTitleAlign: 'center'
+                  }}
+                />
+                <Stack.Screen
+                  name={SCREEN.TICKETTYPES}
+                  component={TicketTypesScreen}
+                  options={{
+                    headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
+                    headerStyle: { backgroundColor: 'white', flex: 1, alignSelf: 'center', height: 100 },
+                    headerTitleAlign: 'center'
+                  }}
+                />
+                <Stack.Screen
+                  name={SCREEN.BOOKINGSLIST}
+                  component={BookingsListScreen}
+                  options={{
+                    headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
+                    headerStyle: { backgroundColor: 'white', flex: 1, alignSelf: 'center', height: 100 },
+                    headerTitleAlign: 'center'
+                  }}
+                />
+                <Stack.Screen
+                  name={SCREEN.MESSAGESLIST}
+                  component={MessagesListScreen}
                   options={{
                     headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
                     headerStyle: { backgroundColor: 'white', flex: 1, alignSelf: 'center', height: 100 },
@@ -122,35 +199,6 @@ function StackContainer() {
                     headerTitleAlign: 'center'
                   }}
                 />
-                
-                <Stack.Screen
-                  name={SCREEN.MYTICKETS}
-                  component={MyTicketsScreen}
-                  options={{
-                    headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
-                    headerStyle: { backgroundColor: 'white', flex: 1, alignSelf: 'center', height: 100 },
-                    headerTitleAlign: 'center'
-                  }}
-                />
-                <Stack.Screen
-                  name={SCREEN.MYBOOKINGS}
-                  component={MyBookingsScreen}
-                  options={{
-                    headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
-                    headerStyle: { backgroundColor: 'white', flex: 1, alignSelf: 'center', height: 100 },
-                    headerTitleAlign: 'center'
-                  }}
-                />
-                <Stack.Screen
-                  name={SCREEN.MYMESSAGES}
-                  component={MyMessagesScreen}
-                  options={{
-                    headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
-                    headerStyle: { backgroundColor: 'white', flex: 1, alignSelf: 'center', height: 100 },
-                    headerTitleAlign: 'center'
-                  }}
-                />
-
               </>
             )
           }
@@ -160,7 +208,7 @@ function StackContainer() {
         return (
           <>
             <Stack.Screen
-              name="LoginScreen"
+              name={SCREEN.LOGIN}
               component={LoginScreen}
               options={{
                 headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
@@ -169,7 +217,7 @@ function StackContainer() {
               }}
             />
             <Stack.Screen
-              name="RegisterScreen"
+              name={SCREEN.REGISTER}
               component={RegisterScreen}
               options={{
                 headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
@@ -178,7 +226,7 @@ function StackContainer() {
               }}
             />
             <Stack.Screen
-              name="PasswordRecoveryScreen"
+              name={SCREEN.PASSWORDRECOVERY}
               component={PasswordRecoveryScreen}
               options={{
                 headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,

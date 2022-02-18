@@ -1,27 +1,67 @@
+import React, { useContext, useState } from 'react';
 import { useNavigation } from '@react-navigation/core';
-import React, { useEffect, useState } from 'react';
 import {
     View,
+    Image,
     Text,
     StyleSheet,
+    FlatList,
     TouchableOpacity,
-    Image,
+    Alert,
+    Modal,
+    TextInput,
 } from 'react-native';
+import { SCREEN } from '../navigation/screens';
+import { TournamentContext } from '../context/TournamentContextProvider';
 
+const MyTournamentsListScreen = () => {
+    const [tournamentList, , { requeryTournaments }] = useContext(TournamentContext);
+        
 
-const MyBookingsScreen = () => {
+         
     const navigation = useNavigation();
 
-    return (
-        <View style={styles.mainBody}>
-            <View style={styles.buttonContainer}>
-                <Text style={styles.text}>Moje rezerwacje</Text>
+    const renderItem = item => {
+        return (
+            <View style={styles.listStyle}>
+                <TouchableOpacity
+                    onPress={() => {
+                        navigation.navigate(SCREEN.TOURNAMENTDETAILS, {
+                            id: item.id
+                        });
+                    }}
+                >
+                    <Text style={styles.itemStyle}>
+                        {item.name}
+                    </Text>
+                </TouchableOpacity>
+                
             </View>
-        </View>
+        )
+    }
+
+    return (
+        <>
+            {/*<CustomHeader/>*/}
+            <View style={styles.mainBody}>
+                <View style={styles.title}>
+                    <Text style={styles.text}>Lista wydarzeń </Text>
+                </View>
+
+                <FlatList
+                    data={tournamentList}
+                    renderItem={({ item }) => renderItem(item)} //do renderItem przekazujemy wartośc funkcji renderItem
+                    keyExtractor={(item, index) => index.toString()}
+                    style={styles.container}
+                    withSearchbar={false}
+                />
+
+            </View>
+        </>
     )
 }
 
-export default MyBookingsScreen;
+export default MyTournamentsListScreen;
 
 const styles = StyleSheet.create({
     mainBody: {
@@ -40,23 +80,19 @@ const styles = StyleSheet.create({
 
     text: {
         color: 'white',
-        fontSize: 25,
-        padding: 30,
+        fontSize: 20,
+        padding: 10,
     },
     textDark: {
         color: '#005b98',
         fontSize: 20,
-        padding: 20,
+        padding: 10,
     },
     container: {
         flex: 2,
     },
     listStyle: {
         flexDirection: 'row',
-        padding: 15,
-        marginBottom: 5,
-        marginRight: 20,
-        marginLeft: 20,
         borderRadius: 5,
         textAlign: 'center',
         fontSize: 16,
@@ -66,7 +102,7 @@ const styles = StyleSheet.create({
     },
     itemStyle: {
         flexDirection: 'column',
-        width: 300,
+        width: 250,
         padding: 15,
         marginBottom: 5,
         color: '#005b98',
@@ -114,7 +150,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderRadius: 20,
         alignItems: 'center',
-        elevation: 5,
+        // elevation: 5,
         margin: '10%',
     },
+
 })
