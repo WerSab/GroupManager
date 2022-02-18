@@ -1,7 +1,7 @@
 import { FIRESTORE_COLLECTION } from './config';
 import { FirestoreDataContext } from './context/FirestoreDataProvider';
 import { addToArray, getCollection, getFirestoreTimestampFromDate } from './fireBase/firestoreHelper';
-import { firestore } from '@react-native-firebase/firestore';
+import firestore from '@react-native-firebase/firestore';
 
 //lista turniejów - tournaments FlatList
 export function getTournaments() {
@@ -72,50 +72,68 @@ const x: ITicketType = {
 
 export function addNewTournamentToCollection(tournament, ticketTypes) {
     return new Promise((resolve, reject) => {
-        let addedTournamentReference;
-        const batch = firestore.batch()
-        getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
-            .add(tournament)
-            .then((tournament) => {
-                addedTournamentReference = tournament;
-                return tournament.collection(FIRESTORE_COLLECTION.SUB_COLLECTION.TICKET_TYPES);
-            })
-            .then((ticketTypesCollectionReference) => {
-                // const ticketTypePromises = ticketTypes.map(ticketType => {
-                //    return ticketTypesCollectionReference.add(ticketType);
-                // });
-                // return Promise.all(ticketTypePromises);
-                
-                const ticketTypesLength = ticketTypes.length;
+        const ticketTypesLength = ticketTypes.length;
 
-                const result=[];
-                for (let i = 0; i < ticketTypesLength; i++) {
-                    const ticketTypePromise = ticketTypesCollectionReference.add(ticketTypes[i]);
+        const batch = firestore().batch()//pozwala na zapisywanie kolejnych dokumentów
+        const newTournamentReference = getCollection(FIRESTORE_COLLECTION.TOURNAMENTS).doc();
 
-                    result.push(ticketTypePromise);
-                            //dodawanie elementów do tablicy                   
-                            // [].push(element);
-                            // [...a, {}]
-                }
-                return Promise.all(result);
+        batch.set(newTournamentReference, tournament);
+        const ticketTypesCollectionReference = newTournamentReference.collection(FIRESTORE_COLLECTION.SUB_COLLECTION.TICKET_TYPES);
+        const ticketTypeResponse = [];
+        for (let i = 0; i < ticketTypesLength; i++) {
 
-            })
-            .then((ticketTypeDocumentReferences)=>{
+            const ticketTypeReference = ticketTypesCollectionReference.doc();
+
+            batch.set(ticketTypeReference, ticketTypes[i]);
+
+            const parsedTicketType = {
+                id: ticketTypeReference.id,
+                ...ticketTypes[i],
+
+            };
+
+            ticketTypeResponse.push(parsedTicketType);
+
+
+            //dodawanie elementów do tablicy                   
+            // [].push(element);
+            // [...a, {}]
+        }
+
+        batch.commit()
+            .then(() => {
                 resolve({
-                    tournament: addedTournamentReference,
-                    ticketTypeReferences: ticketTypeDocumentReferences
-                });
+                    id: newTournamentReference.id,
+                    ...tournament,
+                    ...ticketTypeResponse,
+                })
+            })
+            .catch((error) => {
+                console.log('Add new tournament with ticketTypes error occured:' ,error);
+                reject(error);
+            });
+        /*
+            {
+                id: id_nowo_dodanego_turnieju
+                // + pola turnieju
+                ticketTypes: [
+                    {
+                        id: id_dodanego_rodzaju_biletu,
+                        // + pola rodzaju biletu
+                    }
+                ],
             }
-            
-            )
-            .catch((error) => reject(error));
+        */
+        // .then((ticketTypeDocumentReferences)=>{
+        //     resolve({
+        //         tournament: addedTournamentReference,
+        //         ticketTypeReferences: ticketTypeDocumentReferences
+        //     });
+        // }
+
+        // )
+        // .catch((error) => reject(error));
     })
-}
-
-const x = {
-    doc: () => {
-
-    }
 }
 
 export function bookingsCounter(participants, bookings) {
@@ -123,7 +141,7 @@ export function bookingsCounter(participants, bookings) {
 };
 
 
-const sampleTournament = {
+export const sampleTournament = {
     startTime: getFirestoreTimestampFromDate(new Date('December 17, 2022 03:24:00')),
     intervalInMinutes: 60,//czas w minutach,
     name: 'Koncert Galowy',
@@ -131,7 +149,7 @@ const sampleTournament = {
     place: 'Hala Widowiskowa',
 };
 
-const sampleTicketTypes = [
+export const sampleTicketTypes = [
     {
         id: '12egvregtv',
         name: 'premium',

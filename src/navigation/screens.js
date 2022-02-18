@@ -1,5 +1,5 @@
 export const SCREEN = {
-    TOURNAMENTLIST: 'Wydarzenia',
+    TOURNAMENTLIST: 'Lista Wydarzeń',
     ACTIVITYINDICATOR: 'ActivityIndicatorScreen',
     HEADER:'Header',
     LOGIN:'LoginScreen',
@@ -11,7 +11,7 @@ export const SCREEN = {
     TOURNAMENTDETAILS: 'TournamentDetailsScreen',
     USERSDETAILS: 'UserDetailsScreen',
     ERROR: 'ErrorScreen',
-    MYTICKETS: 'Moje Bilety',
-    MYBOOKINGS: 'Moje Rezerwacje',
+    MYTICKETS: 'Rodzaje biletów',
+    MYBOOKINGS: 'Rezerwacje',
     MYMESSAGES: 'Wiadomości',
 };

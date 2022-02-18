@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import StackContainer from './src/navigation/StackContainer';
 import UserContextProvider from './src/context/UserContextProvider';
-import { addParticipantToTournament, getTournaments } from './src/tournaments-examples';
+import { addNewTournamentToCollection, addParticipantToTournament, getTournaments, sampleTicketTypes, sampleTournament } from './src/tournaments-examples';
 import TournamentContextProvider from './src/context/TournamentContextProvider';
 import { getUsers } from './src/users-examples';
 import SelectedUserContextProvider from './src/context/SelectedUserContextProvider';
@@ -16,17 +16,10 @@ const App = () => {
 
   useEffect(function () {
     setTimeout(function () {
-      const ticketTypesRef = getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
-        .doc('L1G0uRreTk2FHV1heeX2')
-        .collection(FIRESTORE_COLLECTION.SUB_COLLECTION.TICKET_TYPES);
-      console.log('TEST1')
-
-        ticketTypesRef.doc('testowy').set({
-        name: 'premium',
-        price: 150,
-        slots: 200,
-        description: 'płyta główna',
-      });
+      addNewTournamentToCollection(sampleTournament, sampleTicketTypes)
+      .then(result => {
+        console.log('zapisane dane:',result);
+      })
       
     }, 1500)
   }, []);
