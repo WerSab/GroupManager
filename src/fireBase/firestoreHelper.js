@@ -26,3 +26,6 @@ export function getFirestoreTimestampFromMillis(millis) {
   return firebase.firestore.Timestamp.fromMillis(millis);
 }
 
+export function getFirestoreBatch() {
+  return firestore().batch();
+}

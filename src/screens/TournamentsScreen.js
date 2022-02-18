@@ -22,7 +22,7 @@ import { TournamentContext } from '../context/TournamentContextProvider';
 const TournamentsScreen = () => {
     const [tournamentList, , { requeryTournaments }] = useContext(TournamentContext);
     console.log("tournamentSCREEN", tournamentList,)
-    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isModalAddTournamentVisible, setIsModalAddTournamentVisible] = useState(false);
     const [isModalPricingVisible, setIsModalPricingVisible] = useState(false);
     const [nameInput, setNameInput] = useState('');
     const [dateInput, setDateInput] = useState('');
@@ -63,11 +63,34 @@ const TournamentsScreen = () => {
             },
         ]);
     };
+    // export const sampleTournament = {
+    //     startTime: getFirestoreTimestampFromDate(new Date('December 17, 2022 03:24:00')),
+    //     intervalInMinutes: 60,//czas w minutach,
+    //     name: 'Koncert Galowy',
+    //     slots: 100,
+    //     place: 'Hala Widowiskowa',
+    // };
+    
+    // export const sampleTicketTypes = [
+    //     {
+    //         id: '12egvregtv',
+    //         name: 'premium',
+    //         price: 150,
+    //         slots: 200,
+    //         description: 'płyta główna',
+    //     },
+    //     {
+    //         id: '15ftgrhthn',
+    //         name: 'basic',
+    //         price: 90,
+    //         slots: 300,
+    //         description: 'trybuny',
+    //     }
     const pricingTickets = () => {
         setIsModalPricingVisible(true)
         if (ticketCategoryInput == "platny") {
             {
-                isModalVisible && (
+                isModalAddTournamentVisible && (
                     <Modal
                         animationType="slide"
                         transparent={true}
@@ -132,7 +155,7 @@ const TournamentsScreen = () => {
             ticketCategory: ticketCategoryInput,
         })
             .then(() => {
-                setIsModalVisible(!isModalVisible);
+                setIsModalAddTournamentVisible(!isModalAddTournamentVisible);
                 clearInputs();
                 requeryTournaments();
             })
@@ -186,17 +209,17 @@ const TournamentsScreen = () => {
             {/*<CustomHeader/>*/}
             <View style={styles.mainBody}>
                 <View style={styles.title}>
-                    <Text style={styles.text}>Wydarzenia </Text><TouchableOpacity onPress={() => setIsModalVisible(true)}>
+                    <Text style={styles.text}>Wydarzenia </Text><TouchableOpacity onPress={() => setIsModalAddTournamentVisible(true)}>
                         <Image style={styles.icon_1} source={addIcon} />
                     </TouchableOpacity>
                 </View>
-                {isModalVisible && (
+                {isModalAddTournamentVisible && (
                     <Modal
                         animationType="slide"
                         transparent={true}
-                        onRequestClose={() => setIsModalVisible(false)}
-                        onBackdropPress={() => setIsModalVisible(false)}
-                        onBackButtonPress={() => setIsModalVisible(false)}>
+                        onRequestClose={() => setIsModalAddTournamentVisible(false)}
+                        onBackdropPress={() => setIsModalAddTournamentVisible(false)}
+                        onBackButtonPress={() => setIsModalAddTournamentVisible(false)}>
                         <View style={styles.modalView}>
                             <Picker
                                 selectedValue={tournamentCategoryInput}
@@ -270,7 +293,7 @@ const TournamentsScreen = () => {
                                 <TouchableOpacity
                                     style={[styles.button, styles.buttonClose]}
                                     onPress={() => {
-                                        setIsModalVisible(!isModalVisible);
+                                        setIsModalAddTournamentVisible(!isModalAddTournamentVisible);
                                         setNameInput('');
                                     }}>
                                     <Text style={styles.textDark}>Close</Text>
