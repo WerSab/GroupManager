@@ -21,7 +21,6 @@ import { TournamentContext } from '../context/TournamentContextProvider';
 
 const TournamentsScreen = () => {
     const [tournamentList, , { requeryTournaments }] = useContext(TournamentContext);
-    console.log("tournamentSCREEN", tournamentList,)
     const [isModalAddTournamentVisible, setIsModalAddTournamentVisible] = useState(false);
     const [isModalPricingVisible, setIsModalPricingVisible] = useState(false);
     const [nameInput, setNameInput] = useState('');
