@@ -7,25 +7,34 @@ import {
     TouchableOpacity,
     Image,
 } from 'react-native';
-import { SCREEN } from '../navigation/screens';
+
 import { UserContext } from '../context/UserContextProvider';
 import { FlatGrid, SectionGrid } from 'react-native-super-grid';
 import signedOut from '../assets/icons/signedOut.png'
 import { signOutFirebaseUser } from '../fireBase/authentication-methods';
+import { SCREEN } from '../navigation/screens';
+
+const SCREEN_TAB = Object.values(SCREEN.PLAYER_TAB).map((element) => {
+    return {
+        name: element,
+    }
+});
 
 const PlayerScreen = () => {
     const navigation = useNavigation();
     const [isSigningOut, setIsSigningOut] = useState(false);
     const currentUser = useContext(UserContext);
-    
-    const data = [
-        { name: SCREEN.MYTOURNAMENTS },
-        { name: SCREEN.MYTICKETS},
-        { name: SCREEN.MYPROFILE},
-        { name: SCREEN.MYMESSAGES},
-    ]
+   
 
-    //const onSignOutFunction = isSigningOut ? undefined : onSignOutPress;
+    // [1,2,3,4,5,6,7].reduce((accumulator, element) => {
+    //    accumulator={
+    //        a: 10,
+    //    }
+    //   return accumulator;
+    // }, {});
+    
+    
+    console.log('screenTab', screenTab)
 
     const renderItem = item => {
 
@@ -47,8 +56,8 @@ const PlayerScreen = () => {
             {/*<CustomHeader/>*/}
             <View style={styles.mainBody}>
                 <View style={styles.buttonContainer}>
-                <Text style={styles.text}>Witaj  {currentUser.data.firstName} {currentUser.data.lastName}
-                    {'\n'}{currentUser.data.role}
+                    <Text style={styles.text}>Witaj  {currentUser.data.firstName} {currentUser.data.lastName}
+                        {'\n'}{currentUser.data.role}
                     </Text>
                     <TouchableOpacity
 
@@ -62,7 +71,7 @@ const PlayerScreen = () => {
                 </View>
                 <FlatGrid
                     itemDimension={130}
-                    data={data}
+                    data={SCREEN_TAB}
                     style={styles.gridView}
                     // staticDimension={300}
                     // fixed
