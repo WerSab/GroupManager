@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
 
     text: {
         color: 'white',
-        fontSize: 25,
+        fontSize: 20,
         padding: 30,
     },
     textDark: {

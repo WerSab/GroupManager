@@ -112,7 +112,7 @@ function StackContainer() {
                   }}
                 />
                 <Stack.Screen
-                  name={SCREEN.MYTOURNAMENTS}
+                  name='Moje turnieje'
                   component={MyTournamentsListScreen}
                   options={{
                     headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,

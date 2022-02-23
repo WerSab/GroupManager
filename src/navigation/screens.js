@@ -1,4 +1,7 @@
 export const SCREEN = {
+    PLAYER_TAB: {
+        MY_TOURNAMENTS: 'Moje turnieje',
+    },
     TOURNAMENTLIST: 'Lista Wydarzeń',
     ACTIVITYINDICATOR: 'ActivityIndicatorScreen',
     HEADER:'Header',
