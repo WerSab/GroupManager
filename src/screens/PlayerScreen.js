@@ -34,8 +34,7 @@ const PlayerScreen = () => {
     // }, {});
     
     
-    console.log('screenTab', screenTab)
-
+    
     const renderItem = item => {
 
         return (

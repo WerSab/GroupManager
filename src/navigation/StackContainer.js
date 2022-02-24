@@ -85,7 +85,7 @@ function StackContainer() {
                   }}
                 />
                 <Stack.Screen
-                  name={SCREEN.MYTICKETS}
+                  name='Moje bilety'
                   component={MyTicketsScreen}
                   options={{
                     headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
@@ -94,7 +94,7 @@ function StackContainer() {
                   }}
                 />
                 <Stack.Screen
-                  name={SCREEN.MYPROFILE}
+                  name='Mój profil'
                   component={MyProfileScreen}
                   options={{
                     headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
@@ -103,7 +103,7 @@ function StackContainer() {
                   }}
                 />
                 <Stack.Screen
-                  name={SCREEN.MYMESSAGES}
+                  name='Moje wiadomości'
                   component={MyMessagesScreen}
                   options={{
                     headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
@@ -121,7 +121,7 @@ function StackContainer() {
                   }}
                 />
                 <Stack.Screen
-                  name={SCREEN.TOURNAMENTDETAILS}
+                  name='Szczegóły turnieju'
                   component={TournamentDetailsScreen}
                   options={{
                     headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
@@ -145,7 +145,7 @@ function StackContainer() {
                   }}
                 />
                 <Stack.Screen
-                  name={SCREEN.TOURNAMENTLIST}
+                  name='Lista wydarzeń'
                   component={TournamentsScreen}
                   options={{
                     headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
@@ -155,7 +155,7 @@ function StackContainer() {
                 />
                 
                 <Stack.Screen
-                  name={SCREEN.USERSLIST}
+                  name='Lista użytkowników'
                   component={UsersScreen}
                   options={{
                     headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
@@ -164,7 +164,7 @@ function StackContainer() {
                   }}
                 />
                 <Stack.Screen
-                  name={SCREEN.TICKETTYPES}
+                  name='Rodzaje biletów'
                   component={TicketTypesScreen}
                   options={{
                     headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
@@ -173,7 +173,7 @@ function StackContainer() {
                   }}
                 />
                 <Stack.Screen
-                  name={SCREEN.BOOKINGSLIST}
+                  name='Lista rezerwacji'
                   component={BookingsListScreen}
                   options={{
                     headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
@@ -182,7 +182,7 @@ function StackContainer() {
                   }}
                 />
                 <Stack.Screen
-                  name={SCREEN.MESSAGESLIST}
+                  name='Lista Wiadomości'
                   component={MessagesListScreen}
                   options={{
                     headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
