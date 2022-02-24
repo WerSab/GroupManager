@@ -1,24 +1,33 @@
 export const SCREEN = {
     PLAYER_TAB: {
         MY_TOURNAMENTS: 'Moje turnieje',
+        MY_MESSAGES:  'Moje wiadomości',
+        MY_PROFILE: 'Mój profil',
+        MY_TICKETS: 'Moje bilety',
+        
+        
     },
-    TOURNAMENTLIST: 'Lista Wydarzeń',
+
+    MANAGER_TAB: {
+        TOURNAMENT_LIST: 'Lista Wydarzeń',
+        USERS_LIST: 'Lista Użytkowników',
+        TICKET_TYPES:'Rodzaje biletów',
+        BOOKINGS_LIST: 'Lista rezerwacji',
+        MESSAGES_LIST: 'Lista Wiadomości',
+    },
+    
     ACTIVITYINDICATOR: 'ActivityIndicatorScreen',
     HEADER:'Header',
     LOGIN:'LoginScreen',
-    MANAGER:'ManagerScreen',
     PASSWORDRECOVERY:'PasswordRecoveryScreen',
+    MANAGER:'ManagerScreen',
     PLAYER:'PlayerScreen',
     REGISTER:'RegisterScreen',
-    USERSLIST: 'Lista Użytkowników',
-    TOURNAMENTDETAILS: 'TournamentDetailsScreen',
+    TOURNAMENTDETAILS: 'Szczegóły turnieju',
     USERSDETAILS: 'UserDetailsScreen',
     ERROR: 'ErrorScreen',
-    TICKETTYPES:'Rodzaje biletów',
-    MYTICKETS: 'Moje bilety i rezerwacje',
-    BOOKINGSLIST: 'Lista rezerwacji',
-    MYPROFILE: 'Mój profil',
-    MESSAGESLIST: 'Lista Wiadomości',
-    MYMESSAGES: 'Moje wiadomości',
-    MYTOURNAMENTS: 'Lista wydarzeń',
+        
+    
+    
+    
 };

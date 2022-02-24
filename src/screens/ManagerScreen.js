@@ -13,6 +13,12 @@ import signedOut from '../assets/icons/signedOut.png'
 import { UserContext } from '../context/UserContextProvider';
 import { signOutFirebaseUser } from '../fireBase/authentication-methods';
 
+const SCREEN_TAB = Object.values(SCREEN.MANAGER_TAB).map((element) => {
+    return {
+        name: element,
+    }
+});
+
 const ManagerScreen = () => {
     const navigation = useNavigation();
     const [isSigningOut, setIsSigningOut] = useState(false);
@@ -22,14 +28,6 @@ const ManagerScreen = () => {
     }
     
     )*/
-    const data = [
-        { name: SCREEN.TOURNAMENTLIST },
-        { name: SCREEN.USERSLIST },
-        { name: SCREEN.TICKETTYPES},
-        { name: SCREEN.BOOKINGSLIST},
-        { name: SCREEN.MESSAGESLIST},
-    ]
-
     //const onSignOutFunction = isSigningOut ? undefined : onSignOutPress;
 
     const renderItem = item => {
@@ -67,7 +65,7 @@ const ManagerScreen = () => {
                 </View>
                 <FlatGrid
                     itemDimension={130}
-                    data={data}
+                    data={SCREEN_TAB}
                     style={styles.gridView}
                     // staticDimension={300}
                     // fixed
