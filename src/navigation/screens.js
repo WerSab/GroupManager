@@ -11,11 +11,11 @@ export const SCREEN = {
     MANAGER_TAB: {
         TOURNAMENT_LIST: 'Lista Wydarzeń',
         USERS_LIST: 'Lista Użytkowników',
-        TICKET_TYPES:'Rodzaje biletów',
         BOOKINGS_LIST: 'Lista rezerwacji',
         MESSAGES_LIST: 'Lista Wiadomości',
     },
     
+    TICKET_TYPES:'Rodzaje biletów',
     ACTIVITYINDICATOR: 'ActivityIndicatorScreen',
     HEADER:'Header',
     LOGIN:'LoginScreen',

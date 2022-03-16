@@ -145,7 +145,7 @@ function StackContainer() {
                   }}
                 />
                 <Stack.Screen
-                  name='Lista wydarzeń'
+                  name={SCREEN.MANAGER_TAB.TOURNAMENT_LIST}
                   component={TournamentsScreen}
                   options={{
                     headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
@@ -155,7 +155,7 @@ function StackContainer() {
                 />
                 
                 <Stack.Screen
-                  name='Lista użytkowników'
+                  name={SCREEN.MANAGER_TAB.USERS_LIST}
                   component={UsersScreen}
                   options={{
                     headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,

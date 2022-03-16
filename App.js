@@ -14,15 +14,15 @@ import { FIRESTORE_COLLECTION } from './src/config';
 
 const App = () => {
 
-  useEffect(function () {
-    setTimeout(function () {
-      addNewTournamentToCollection(sampleTournament, sampleTicketTypes)
-      .then(result => {
-        console.log('zapisane dane:',result);
-      })
+  // useEffect(function () {
+  //   setTimeout(function () {
+  //     addNewTournamentToCollection(sampleTournament, sampleTicketTypes)
+  //     .then(result => {
+  //       console.log('zapisane dane:',result);
+  //     })
       
-    }, 1500)
-  }, []);
+  //   }, 1500)
+  // }, []);
 //kolejne kroki: 
 //1. Rozpoczynanie transakcji - tournaments-examples
 //2. Stworzenie turniejowego dokumentu( dta,miejsce itd)  - tournaments-examples

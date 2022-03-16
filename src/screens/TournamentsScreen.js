@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useCallback } from 'react';
 import { useNavigation } from '@react-navigation/core';
 import {
     View,
@@ -10,6 +10,7 @@ import {
     Alert,
     Modal,
     TextInput,
+    ScrollView,
 } from 'react-native';
 import addIcon from '../assets/icons/add.png';
 import deleteIcon from '../assets/icons/delete.png';
@@ -20,29 +21,68 @@ import { addNewTournamentToCollection, deleteTournament } from '../tournaments-e
 import { TournamentContext } from '../context/TournamentContextProvider';
 
 const TournamentsScreen = () => {
+    // Zaznaczanie takich samych wystapein -> ctrl+d
+    // ctrl+z -> cofnij
     const [tournamentList, , { requeryTournaments }] = useContext(TournamentContext);
     const [isModalAddTournamentVisible, setIsModalAddTournamentVisible] = useState(false);
-    const [isModalPricingVisible, setIsModalPricingVisible] = useState(false);
-    const [nameInput, setNameInput] = useState('');
-    const [dateInput, setDateInput] = useState('');
-    const [startTimeInput, setStartTimeInput] = useState('');
-    const [intervalInput, setIntervalInput] = useState('');
-    const [placeInput, setPlaceInput] = useState('');
-    const [numberOfParticipantsInput, setNumberOfParticipantsInput] = useState('');
+    const [nameInput, setNameInput] = useState();
+    const [dateInput, setDateInput] = useState();
+    const [startTimeInput, setStartTimeInput] = useState();
+    const [intervalInput, setIntervalInput] = useState();
+    const [placeInput, setPlaceInput] = useState();
     const [tournamentCategoryInput, setTournamentCategoryInput] = useState('Kategoria');
-    const [ticketCategoryInput, setTicketCategoryInput] = useState('Cena biletu');
-    const [firstTicketInput, setFirstTicketInput]= useState('');
-    
+    const [ticketPremiumPrice, setTicketPremiumPrice] = useState();
+    const [ticketPremiumSlots, setTicketPremiumSlots] = useState();
+    const [ticketBasicPrice, setTicketBasicPrice] = useState();
+    const [ticketBasicSlots, setTicketBasicSlots] = useState();
+    const [ticketFreeSlots, setTicketFreeSlots] = useState();
+
+    const getTicketTypes = useCallback(
+        //Pierwszy parametr Callback to funkcja
+        () => {
+            const ticketDetails = [
+                {
+                    premiumPrice: ticketPremiumPrice,
+                    premiumSlots: ticketPremiumSlots,
+                },
+
+                {
+                    basicPrice: ticketBasicPrice,
+                    basicSlots: ticketBasicSlots,
+                },
+                {
+                    freeSlots: ticketFreeSlots,
+                }
+            ]
+            return ticketDetails;
+        },
+
+        [
+            ticketPremiumPrice,
+            ticketPremiumSlots,
+            ticketBasicPrice,
+            ticketBasicSlots,
+            ticketFreeSlots
+        ]
+
+    )
+
+
+
+    const ticketDetails = getTicketTypes();
+
     const clearInputs = () => {
         setNameInput('');
         setDateInput('');
         setStartTimeInput('');
         setIntervalInput('');
-        setNumberOfParticipantsInput('');
         setPlaceInput('');
         setTournamentCategoryInput('Kategoria');
-        setTicketCategoryInput('Cena biletu');
-        
+        setTicketPremiumPrice('');
+        setTicketPremiumSlots('');
+        setTicketBasicSlots('');
+        setTicketBasicPrice('');
+        setTicketFreeSlots('');
 
     };
 
@@ -62,107 +102,31 @@ const TournamentsScreen = () => {
             },
         ]);
     };
-    // export const sampleTournament = {
-    //     startTime: getFirestoreTimestampFromDate(new Date('December 17, 2022 03:24:00')),
-    //     intervalInMinutes: 60,//czas w minutach,
-    //     name: 'Koncert Galowy',
-    //     slots: 100,
-    //     place: 'Hala Widowiskowa',
-    // };
-    
-    // export const sampleTicketTypes = [
-    //     {
-    //         id: '12egvregtv',
-    //         name: 'premium',
-    //         price: 150,
-    //         slots: 200,
-    //         description: 'płyta główna',
-    //     },
-    //     {
-    //         id: '15ftgrhthn',
-    //         name: 'basic',
-    //         price: 90,
-    //         slots: 300,
-    //         description: 'trybuny',
-    //     }
-    const pricingTickets = () => {
-        setIsModalPricingVisible(true)
-        if (ticketCategoryInput == "platny") {
-            {
-                isModalAddTournamentVisible && (
-                    <Modal
-                        animationType="slide"
-                        transparent={true}
-                        onRequestClose={() => setIsModalPricingVisible(false)}
-                        onBackdropPress={() => setIsModalPricingVisible(false)}
-                        onBackButtonPress={() => setIsModalPricingVisible(false)}>
-                        <View style={styles.modalView}>
-
-                            <TextInput
-                                style={styles.textDark}
-                                onChangeText={setFirstTicketInput}
-                                value={firstTicketInput}
-                                placeholder="Nazwa biletu..."
-                            />
-                            
-                            <View
-                                style={{
-                                    flexDirection: 'row',
-                                    justifyContent: 'space-around',
-                                    width: '100%',
-                                    padding: 40,
-                                }}>
-                                <TouchableOpacity
-                                    style={[styles.button, styles.buttonClose]}
-                                    onPress={() => {
-                                        setIsModalPricingVisible(!isModalPricingVisible);
-                                    }}>
-                                    <Text style={styles.textDark}>Close</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    style={[styles.button, styles.buttonSafe]}
-                                    onPress={() => {
-                                        //onSavePricingPress();
-                                    }}>
-                                    <Text style={styles.textDark}>Save</Text>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    </Modal>
-                )
-            }
-        }
-    };
-    //onSavePricingPress();
 
     const onSavePress = () => {
-        const numberOfParticipants = parseInt(numberOfParticipantsInput);
-        if (isNaN(numberOfParticipants)) {
-            Alert.alert('Wystąpił błąd', `Prosze wprowadzić liczbę`, [
-                { text: 'Ok' },
-            ]);
-            return;
-        }
-        addNewTournamentToCollection({
-            name: nameInput,
-            date: dateInput,
-            startTime: startTimeInput,
-            interval: intervalInput,
-            place: placeInput,
-            numberOfParticipants: numberOfParticipantsInput,
-            tournamentCategory: tournamentCategoryInput,
-            ticketCategory: ticketCategoryInput,
-        })
+
+        addNewTournamentToCollection(
+            {
+                name: nameInput,
+                date: dateInput,
+                startTime: startTimeInput,
+                interval: intervalInput,
+                place: placeInput,
+                tournamentCategory: tournamentCategoryInput,
+
+            },
+            ticketDetails
+        )
             .then(() => {
                 setIsModalAddTournamentVisible(!isModalAddTournamentVisible);
                 clearInputs();
                 requeryTournaments();
             })
             .catch(function (err) {
-                Alert.alert('Wystąpił błąd', `Przepraszamy mamy prblem z serwerem, prosze spróbować później`, [
+                Alert.alert('Wystąpił błąd', `Przepraszamy mamy problem z serwerem, prosze spróbować później`, [
                     { text: 'Ok' },
                 ]);
-                console.log("TournamentsScreen error: ", err);
+
             })
 
     }
@@ -220,95 +184,132 @@ const TournamentsScreen = () => {
                         onBackdropPress={() => setIsModalAddTournamentVisible(false)}
                         onBackButtonPress={() => setIsModalAddTournamentVisible(false)}>
                         <View style={styles.modalView}>
-                            <Picker
-                                selectedValue={tournamentCategoryInput}
-                                style={{ height: 100, width: 150, color: "#005b98" }}
-                                onValueChange={itemValue => setTournamentCategoryInput(itemValue)}>
-                                <Picker.Item label="Kategoria" value="  " />
-                                <Picker.Item label="Kultura" value="kultura" />
-                                <Picker.Item label="Sport" value="sport" />
-                            </Picker>
+                            <Text style={styles.textHeader}>Załóż nowe wydarzenie</Text>
+                            <ScrollView>
+                                <Picker
+                                    selectedValue={tournamentCategoryInput}
+                                    style={{ height: 50, width: 150, color: "#005b98" }}
+                                    onValueChange={itemValue => setTournamentCategoryInput(itemValue)}>
+                                    <Picker.Item label="Kategoria" value="  " />
+                                    <Picker.Item label="Kultura" value="kultura" />
+                                    <Picker.Item label="Sport" value="sport" />
+                                </Picker>
 
-                            <TextInput
-                                style={styles.textDark}
-                                onChangeText={setNameInput}
-                                value={nameInput}
-                                placeholder="Nazwa..."
-                            />
-                            <TextInput
-                                style={styles.textDark}
-                                onChangeText={setPlaceInput}
-                                value={placeInput}
-                                placeholder="Miejsce..."
-                            />
-                            <TextInput
-                                style={styles.textDark}
-                                onChangeText={setDateInput}
-                                value={dateInput}
-                                placeholder="Termin..."
-                            />
-                            <TextInput
-                                style={styles.textDark}
-                                onChangeText={setStartTimeInput}
-                                value={startTimeInput}
-                                placeholder="Godzina rozpoczęcia..."
-                            />
-                            <TextInput
-                                style={styles.textDark}
-                                onChangeText={setIntervalInput}
-                                value={intervalInput}
-                                placeholder="Czas trwania..."
-                            />
-                            <TextInput
-                                style={styles.textDark}
-                                onChangeText={setNumberOfParticipantsInput}
-                                value={numberOfParticipantsInput}
-                                placeholder="Liczba uczestników..."
-                                keyboardType="numeric"
-                            />
-                            <Picker
-                                selectedValue={ticketCategoryInput}
-                                style={{ height: 100, width: 150, color: "#005b98" }}
-                                onValueChange={itemValue => setTicketCategoryInput(itemValue)}
-                            >
-                                <Picker.Item label="Cena biletu" value="  " />
-                                <Picker.Item label="Bezplatny" value="bezplatny" />
-                                <Picker.Item label="Platny" value="platny" />
-                            </Picker>
-                            <TouchableOpacity
-                                style={[styles.button, styles.buttonTicketType]}
-                                onPress={() => {
-                                    pricingTickets();
-                                }}>
-                                <Text style={styles.textDark}>Dodaj bilet</Text>
-                            </TouchableOpacity>
-                            <View
-                                style={{
-                                    flexDirection: 'row',
-                                    justifyContent: 'space-around',
-                                    width: '100%',
-                                    padding: 40,
-                                }}>
-                                <TouchableOpacity
-                                    style={[styles.button, styles.buttonClose]}
-                                    onPress={() => {
-                                        setIsModalAddTournamentVisible(!isModalAddTournamentVisible);
-                                        setNameInput('');
+                                <TextInput
+                                    style={styles.textDark}
+                                    onChangeText={setNameInput}
+                                    value={nameInput}
+                                    placeholder="Nazwa..."
+                                />
+                                <TextInput
+                                    style={styles.textDark}
+                                    onChangeText={setPlaceInput}
+                                    value={placeInput}
+                                    placeholder="Miejsce..."
+                                />
+                                <TextInput
+                                    style={styles.textDark}
+                                    onChangeText={setDateInput}
+                                    value={dateInput}
+                                    placeholder="Termin..."
+                                />
+                                <TextInput
+                                    style={styles.textDark}
+                                    onChangeText={setStartTimeInput}
+                                    value={startTimeInput}
+                                    placeholder="Godzina rozpoczęcia..."
+                                />
+                                <TextInput
+                                    style={styles.textDark}
+                                    onChangeText={setIntervalInput}
+                                    value={intervalInput}
+                                    placeholder="Czas trwania..."
+                                />
+                                <View
+                                    style={{
+                                        flexDirection: 'row',
+                                        justifyContent: 'space-around',
+                                        width: '80%',
+                                        padding: 10,
                                     }}>
-                                    <Text style={styles.textDark}>Close</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    style={[styles.button, styles.buttonSafe]}
-                                    onPress={() => {
-                                        onSavePress();
+                                    <Text style={styles.textDark}>Bilety premium:</Text>
+                                    <TextInput
+                                        style={styles.textDark}
+                                        onChangeText={setTicketPremiumPrice}
+                                        value={ticketPremiumPrice}
+                                        placeholder="cena..."
+                                    />
+                                    <TextInput
+                                        style={styles.textDark}
+                                        onChangeText={setTicketPremiumSlots}
+                                        value={ticketPremiumSlots}
+                                        placeholder="ilość..."
+                                    />
+                                </View>
+                                <View
+                                    style={{
+                                        flexDirection: 'row',
+                                        justifyContent: 'space-around',
+                                        width: '80%',
+                                        padding: 10,
                                     }}>
-                                    <Text style={styles.textDark}>Save</Text>
-                                </TouchableOpacity>
-                            </View>
+                                    <Text style={styles.textDark}>Bilety basic:</Text>
+                                    <TextInput
+                                        style={styles.textDark}
+                                        onChangeText={setTicketBasicPrice}
+                                        value={ticketBasicPrice}
+                                        placeholder="cena..."
+                                    />
+                                    <TextInput
+                                        style={styles.textDark}
+                                        onChangeText={setTicketPremiumSlots}
+                                        value={ticketBasicSlots}
+                                        placeholder="ilość..."
+                                    />
+                                </View>
+                                <View
+                                    style={{
+                                        flexDirection: 'row',
+                                        justifyContent: 'space-around',
+                                        width: '80%',
+                                        padding: 10,
+                                    }}>
+                                    <Text style={styles.textDark}>Bilety bezpłatne:</Text>
+                                    <TextInput
+                                        style={styles.textDark}
+                                        onChangeText={setTicketFreeSlots}
+                                        value={ticketFreeSlots}
+                                        placeholder="ilość..."
+                                    />
+                                </View>
+
+                                <View
+                                    style={{
+                                        flexDirection: 'row',
+                                        justifyContent: 'space-around',
+                                        width: '100%',
+                                        padding: 10,
+                                    }}>
+                                    <TouchableOpacity
+                                        style={[styles.button, styles.buttonClose]}
+                                        onPress={() => {
+                                            setIsModalAddTournamentVisible(!isModalAddTournamentVisible);
+                                            setNameInput('');
+                                        }}>
+                                        <Text style={styles.textButton}>Close</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={[styles.button, styles.buttonSafe]}
+                                        onPress={() => {
+                                            onSavePress();
+                                        }}>
+                                        <Text style={styles.textButton}>Save</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </ScrollView>
                         </View>
                     </Modal>
                 )}
-
 
                 <FlatList
                     data={tournamentList}
@@ -339,7 +340,11 @@ const styles = StyleSheet.create({
         width: '100%',
 
     },
-
+    textHeader: {
+        color: '#005b98',
+        fontSize: 20,
+        padding: 10,
+    },
     text: {
         color: 'white',
         fontSize: 20,
@@ -347,7 +352,12 @@ const styles = StyleSheet.create({
     },
     textDark: {
         color: '#005b98',
-        fontSize: 20,
+        fontSize: 15,
+        padding: 10,
+    },
+    textButton: {
+        color: 'white',
+        fontSize: 15,
         padding: 10,
     },
     container: {
@@ -413,7 +423,21 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         alignItems: 'center',
         // elevation: 5,
-        margin: '10%',
+        margin: '2%',
+    },
+    button: {
+        backgroundColor: '#005b98',
+        borderWidth: 0,
+        borderColor: '#3175ab',
+        height: 40,
+        alignItems: 'center',
+        borderRadius: 15,
+        marginLeft: 35,
+        marginRight: 35,
+        marginTop: 20,
+        marginBottom: 25,
+        margin: 10,
+        justifyContent: 'center',
     },
 
 })
