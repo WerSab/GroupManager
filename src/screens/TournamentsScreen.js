@@ -122,6 +122,7 @@ const TournamentsScreen = () => {
                 clearInputs();
                 requeryTournaments();
             })
+
             .catch(function (err) {
                 Alert.alert('Wystąpił błąd', `Przepraszamy mamy problem z serwerem, prosze spróbować później`, [
                     { text: 'Ok' },
@@ -184,7 +185,7 @@ const TournamentsScreen = () => {
                         onBackdropPress={() => setIsModalAddTournamentVisible(false)}
                         onBackButtonPress={() => setIsModalAddTournamentVisible(false)}>
                         <View style={styles.modalView}>
-                            <Text style={styles.textHeader}>Załóż nowe wydarzenie</Text>
+                            <Text style={styles.textHeader}>Dodaj nowe wydarzenie</Text>
                             <ScrollView>
                                 <Picker
                                     selectedValue={tournamentCategoryInput}
@@ -297,6 +298,13 @@ const TournamentsScreen = () => {
                                             setNameInput('');
                                         }}>
                                         <Text style={styles.textButton}>Close</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={[styles.button, styles.buttonSafe]}
+                                        onPress={() => {
+                                            clearInputs();
+                                        }}>
+                                        <Text style={styles.textButton}>Clear</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity
                                         style={[styles.button, styles.buttonSafe]}
