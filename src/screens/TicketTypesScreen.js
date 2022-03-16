@@ -12,6 +12,8 @@ import {
 
 const TicketTypesScreen = () => {
     const navigation = useNavigation();
+    const ticketTypes = [];
+
 
     return (
         <View style={styles.mainBody}>
@@ -21,6 +23,19 @@ const TicketTypesScreen = () => {
         </View>
     )
 }
+// //https://reactnavigation.org/docs/getting-started/
+// https://reactnavigation.org/docs/navigating
+// //=>utworzyć tablicę z rodzajami biletów 
+// //=>przycisk zatwierdz
+// //=>przesyła tablicę do tournament screen (jako zwykły komponent który przesyłam tablicę przez propsy)- przeczytać jak działa przesyłanie parametrów w nawigacji
+// // navigation.push('tournamentsScreen', {
+//     route:{
+//         params: {
+//             tournament: tournamentState,
+//             ticketTypes: mojStanZTicketTypes,
+//         } 
+//     }
+// })
 
 export default TicketTypesScreen;
 

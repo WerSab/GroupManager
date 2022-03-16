@@ -13,6 +13,7 @@ import signedOut from '../assets/icons/signedOut.png'
 import { UserContext } from '../context/UserContextProvider';
 import { signOutFirebaseUser } from '../fireBase/authentication-methods';
 
+//napisać  wspólną funkcję w screen do player tab i manager tab
 const SCREEN_TAB = Object.values(SCREEN.MANAGER_TAB).map((element) => {
     return {
         name: element,

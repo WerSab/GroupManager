@@ -107,6 +107,7 @@ export function addNewTournamentToCollection(tournament, ticketTypes) {
                     ...tournament,
                     ...ticketTypeResponse,
                 })
+                console.log(`Added document with id ${newTournamentReference.id} to tournaments collection`);
             })
             .catch((error) => {
                 console.log('Add new tournament with ticketTypes error occured:' ,error);
