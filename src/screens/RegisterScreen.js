@@ -43,7 +43,7 @@ const RegisterScreen = ({ user, addUser, navigation, StackNavigator }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [role, setRole] = useState('');
+  const [role, setRole] = useState('player');
   const [errortext, setErrortext] = useState('');
 
   const firstNameRef = createRef();
@@ -74,7 +74,7 @@ const RegisterScreen = ({ user, addUser, navigation, StackNavigator }) => {
     setEmail('');
     setPassword('');
     setConfirmPassword('');
-    setRole('');
+    //setRole('');
   };
 
   const onRegisterPress = () => {

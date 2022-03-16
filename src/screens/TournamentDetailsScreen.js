@@ -59,20 +59,7 @@ const TournamentDetails = ({ route }) => {
     }
 
 
-    // {
-    //     addParticipantToTournament(id, currentUser.user.uid, numberOfBookings)
-    //         .then(() => {
-    //             setIsModalVisible(!isModalVisible);
-    //             setNumberOfBookings('');
-    //         })
-    //         .catch(function (err) {
-    //             Alert.alert('Wystąpił błąd', `Przepraszamy mamy prblem z serwerem, prosze spróbować później`, [
-    //                 { text: 'Ok' },
-    //             ]);
-    //             console.log("TournamentsDetailsScreen error: ", err);
-    //         })
-
-    // }
+    
 
     return (
         <View style={styles.mainBody}>
@@ -120,9 +107,13 @@ const TournamentDetails = ({ route }) => {
 
 
 
-            <Text style={styles.listStyle}>Miejsce:  {tournament.place}
+            <Text style={styles.listStyle}>
+                Miejsce:  {tournament.place}
                 {'\n'}{'\n'}Termin: {tournament.date}
-                {'\n'}{'\n'}Liczba dostępnych miejsc:  {bookCounter}
+                {'\n'}{'\n'}Godzina rozpoczęcia: {tournament.startTime}
+                {'\n'}{'\n'}Czas trwania: {tournament.interval}              
+                {'\n'}{'\n'}Dostępne bilety: {tournament.ticketTypes[0,1,2]}
+              
             </Text>
 
 
@@ -134,7 +125,7 @@ const TournamentDetails = ({ route }) => {
                     setIsModalVisible(true);
                 }}
             >
-                <Text style={styles.buttonTextStyle}>Zarezerwuj</Text>
+                <Text style={styles.buttonTextStyle}>Kup bilet/Zarezerwuj</Text>
             </TouchableOpacity>
         </View>
         //{JSON.stringify(tournament, null, 2)}
