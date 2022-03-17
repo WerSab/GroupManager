@@ -112,7 +112,7 @@ const TournamentDetails = ({ route }) => {
                 {'\n'}{'\n'}Termin: {tournament.date}
                 {'\n'}{'\n'}Godzina rozpoczęcia: {tournament.startTime}
                 {'\n'}{'\n'}Czas trwania: {tournament.interval}              
-                {'\n'}{'\n'}Dostępne bilety: {tournament.ticketTypes[0,1,2]}
+                {'\n'}{'\n'}Dostępne bilety: 
               
             </Text>
 

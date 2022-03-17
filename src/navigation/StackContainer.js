@@ -77,7 +77,7 @@ function StackContainer() {
             return (
               <>
                 <Stack.Screen
-                  name="PlayerScreen"
+                  name={SCREEN.PLAYER}
                   component={PlayerScreen}
                   options={{
                     headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
@@ -85,7 +85,7 @@ function StackContainer() {
                   }}
                 />
                 <Stack.Screen
-                  name='Moje bilety'
+                  name={SCREEN.PLAYER_TAB.MY_TICKETS}
                   component={MyTicketsScreen}
                   options={{
                     headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
@@ -94,7 +94,7 @@ function StackContainer() {
                   }}
                 />
                 <Stack.Screen
-                  name='Mój profil'
+                  name={SCREEN.PLAYER_TAB.MY_PROFILE}
                   component={MyProfileScreen}
                   options={{
                     headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
@@ -103,7 +103,7 @@ function StackContainer() {
                   }}
                 />
                 <Stack.Screen
-                  name='Moje wiadomości'
+                  name={SCREEN.PLAYER_TAB.MY_MESSAGES}
                   component={MyMessagesScreen}
                   options={{
                     headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
@@ -112,7 +112,7 @@ function StackContainer() {
                   }}
                 />
                 <Stack.Screen
-                  name='Moje turnieje'
+                  name={SCREEN.PLAYER_TAB.MY_TOURNAMENTS}
                   component={MyTournamentsListScreen}
                   options={{
                     headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
