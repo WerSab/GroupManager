@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import { TournamentContext } from '../context/TournamentContextProvider';
 import { UserContext } from '../context/UserContextProvider';
+import { useTournamentTicketTypes } from '../hooks/useTournamentTicketTypes';
 import { updateBookingsToTournament, getTournaments, bookingsCounter } from '../tournaments-examples';
 
 function getTournamentFromContext(context, tournamentId) {
@@ -23,6 +24,17 @@ function getTournamentFromContext(context, tournamentId) {
         return tournament.id === tournamentId;
     });
 };
+
+// const MyComponent = () => {
+//     // hook [data, error, loading]
+//     if(loading) {
+//         // tekst laduje sie
+//     }
+//     if(error) {
+//         // wystapil blad
+//     }
+//     return data;
+// }
 
 const TournamentDetails = ({ route }) => {
     //const { id } = route.params;- ten lub poniższy sposób
@@ -33,18 +45,22 @@ const TournamentDetails = ({ route }) => {
     const currentUser = useContext(UserContext);
     const tournament = getTournamentFromContext(tournamentContext, id);
     const allParticipants = tournament.numberOfParticipants;
-    const allBookings = tournament.numberOfBookings;
-    const bookCounter = bookingsCounter(allParticipants, allBookings);
+    const [ticketTypesData, loading, error] = useTournamentTicketTypes(tournament);
+    
+    // const allBookings = tournament.numberOfBookings;
+    // const bookCounter = bookingsCounter(allParticipants, allBookings);
+
+   
 
     const onSavePress = () => {
         const parsedBookings = parseInt(bookings);
-        if(isNaN(parsedBookings)){
+        if (isNaN(parsedBookings)) {
             Alert.alert('Wystąpił błąd', `Prosze wprowadzić liczbę`, [
                 { text: 'Ok' },
             ])
             return undefined;
         }
-        
+
         updateBookingsToTournament(id, parsedBookings)
             .then(() => {
                 setIsModalVisible(!isModalVisible);
@@ -58,9 +74,9 @@ const TournamentDetails = ({ route }) => {
 
     }
 
-
-    
-
+    // console.log('ticketTypesData[0]', ticketTypesData[0]);
+    // console.log('ticketTypesData[1]', ticketTypesData[1]);
+    // console.log('ticketTypesData[2]', ticketTypesData[2]);
     return (
         <View style={styles.mainBody}>
 
@@ -102,20 +118,26 @@ const TournamentDetails = ({ route }) => {
                         </View>
                     </View>
                 </Modal>
+                
             )}
 
-
-
-
-            <Text style={styles.listStyle}>
-                Miejsce:  {tournament.place}
-                {'\n'}{'\n'}Termin: {tournament.date}
-                {'\n'}{'\n'}Godzina rozpoczęcia: {tournament.startTime}
-                {'\n'}{'\n'}Czas trwania: {tournament.interval}              
-                {'\n'}{'\n'}Dostępne bilety: 
-              
-            </Text>
-
+            {
+                loading ? <Text>Ładuje się</Text> : (
+                    //zrobić nowy komponent TournamentTicketTypes, w którym odpalam hooka usetournamentsTicketTypes
+                    // const [error, loading, data] = useTournamentTicketTypes(tournament);
+                    error ? <Text>Blad pobierania biletów {!!error}</Text> : (
+                        <Text style={styles.listStyle}>
+                            Miejsce:  {tournament.place}
+                            {'\n'}{'\n'}Termin: {tournament.date}
+                            {'\n'}{'\n'}Godzina rozpoczęcia: {tournament.startTime}
+                            {'\n'}{'\n'}Czas trwania: {tournament.interval}
+                            {'\n'}{'\n'}Cena bilety Premium: {ticketTypesData[0].premiumPrice} zł.
+                            {'\n'}{'\n'}Cena bilety Basic: {ticketTypesData[2].basicPrice} zł.
+                            {'\n'}{'\n'}Bezplatne bilety: {ticketTypesData[1].freeSlots} szt.
+                        </Text>
+                    )
+                )
+            }
 
             <TouchableOpacity
                 style={styles.buttonStyle}

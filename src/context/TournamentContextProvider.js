@@ -8,13 +8,11 @@
 import React from 'react';
 import { createContext } from 'react';
 import { useTournaments } from '../hooks/useTournaments';
+import { useTournamentTicketTypes } from '../hooks/useTournamentTicketTypes';
 
 export const TournamentContext = createContext({
-   tournament: [null, false, null],
-   ticket: [],
-
-
-});
+    tournament: [null, false, null],
+    });
 
 const TournamentContextProvider = (props) => {
     const [tournamentList, isLoaded, error, requeryTournaments] = useTournaments();
@@ -26,7 +24,7 @@ const TournamentContextProvider = (props) => {
         },
         {
             requeryTournaments: requeryTournaments,
-        }
+        },
     ];
 
     return (
