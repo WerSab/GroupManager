@@ -21,7 +21,6 @@ const FirebaseUserProvider = (props) => {
       console.log('User', JSON.stringify(user));
     });
     return () => {
-     
       unsubscribe();
     };
   }, []);

@@ -6,7 +6,6 @@ export function useTicket() {
     const [error, setError] = useState();
 
     useEffect(() => {
-        console.log("ttt")
         getTicket()
         .then((result) => {
             setTicketList(result);

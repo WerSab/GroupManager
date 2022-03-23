@@ -25,6 +25,30 @@ export function getTournaments() {
     })
 }
 
+export function getTicketTypesFromTournament(tournament){
+    return new Promise((resolve,reject)=>{
+        getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
+        .doc(tournament.id)
+        .collection(FIRESTORE_COLLECTION.SUB_COLLECTION.TICKET_TYPES)
+        .get()
+        .then(querySnapshot=>{
+            const ticketTypes = querySnapshot.docs;
+            const ticketTypesList = ticketTypes.map(function(document)
+            {
+                return{
+                    id: document.id,
+                    ...document.data(),
+                }
+            }
+            )
+            resolve(ticketTypesList)
+
+        })
+        .catch((error) => reject(error))
+
+    })
+}
+
 export function addParticipantToTournament(tournamentId, userId) {
     return new Promise((resolve, reject) => {
         getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
@@ -136,46 +160,6 @@ export function addNewTournamentToCollection(tournament, ticketTypes) {
         // .catch((error) => reject(error));
     })
 }
-
-export function bookingsCounter(participants, bookings) {
-    return participants - bookings;
-};
-
-
-export const sampleTournament = {
-    startTime: getFirestoreTimestampFromDate(new Date('December 17, 2022 03:24:00')),
-    intervalInMinutes: 60,//czas w minutach,
-    name: 'Koncert Galowy',
-    slots: 100,
-    place: 'Hala Widowiskowa',
-};
-
-export const sampleTicketTypes = [
-    {
-        id: '12egvregtv',
-        name: 'premium',
-        price: 150,
-        slots: 200,
-        description: 'płyta główna',
-    },
-    {
-        id: '15ftgrhthn',
-        name: 'basic',
-        price: 90,
-        slots: 300,
-        description: 'trybuny',
-    }
-
-
-]
-
-const createTicketTypes = () => [];
-
-const sampleTournamentWithTicketTypes = {
-    ...sampleTournament,
-    ticketTypes: createTicketTypes(sampleTournament),
-}
-
 
 //do nowego pliku zdefiniowac dwie funkcje remove from array & add to array
 

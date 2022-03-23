@@ -17,7 +17,7 @@ function getExtractedTickets(userID) {
     return new Promise((resolve, reject) => {
         getUserTickets(userID)
             .then(function (tickets) {
-                
+
                 return extractTicketsInfo(tickets);
             })
             .then(function (extractedTickets) {
@@ -42,7 +42,7 @@ const MyTicketsScreen = () => {
         getExtractedTickets(userID) // "pending"
             .then(result => {
                 // i know that the promise is fullfilled
-                
+
                 setMyTickets(result);
                 setLoading(false);
             })
@@ -54,33 +54,33 @@ const MyTicketsScreen = () => {
 
 
     //const myTickets = getExtractedTickets(userID);
-        if (loading) {
+    if (loading) {
         return (<View style={styles.buttonContainer}>
-        <Text style={styles.text}>Ładuje się</Text>
+            <Text style={styles.textDark}>Ładuje się</Text>
         </View>)
     }
-    if(error){
-        return <ErrorScreen errorMessage={error.message}/>
-        }
-    if(!myTickets && myTickets.length===0){
+    if (error) {
+        return <ErrorScreen errorMessage={error.message} />
+    }
+    if (!myTickets && myTickets.length === 0) {
         return (<View style={styles.buttonContainer}>
             <Text style={styles.text}>Nie posiadasz żadnych biletów.</Text>
-            </View>)
+        </View>)
     }
-// const myNumber = 0;
-//     if(!!!myNumber || myNumber !== undefined && myNumber !== null) {
+    // const myNumber = 0;
+    //     if(!!!myNumber || myNumber !== undefined && myNumber !== null) {
 
-//     }
-   
+    //     }
+
     return (
         <View style={styles.mainBody}>
             {
                 // TODO: zadanie
-                myTickets.map(ticket => <Text></Text>)//zadanie!!!!- pomapowac bilety - zamiana struktur java scriptowych na komponenty Reactowe (żeby je mozna było wyswuetlić w komponnetach View, text itd.)
+                myTickets.map(ticket => <Text>{ticket}</Text>)//zadanie!!!!- pomapowac bilety - zamiana struktur java scriptowych na komponenty Reactowe (żeby je mozna było wyswuetlić w komponnetach View, text itd.)
             }
             <View style={styles.buttonContainer}>
                 <Text style={styles.text}>Moje Bilety</Text>
-                <Text style={styles.text}>Amout: {myTickets[0].amount} </Text>
+                <Text style={styles.text}>Amount: {myTickets.amount} </Text>
             </View>
         </View>
     )
