@@ -27,6 +27,8 @@ import BookingsListScreen from '../screens/BookingsListScreen';
 import MessagesListScreen from '../screens/MessagesListScreen';
 import MyProfileScreen from '../screens/MyProfileScreen';
 
+
+
 const Stack = createNativeStackNavigator();
 
 function StackContainer() {
@@ -199,6 +201,7 @@ function StackContainer() {
                     headerTitleAlign: 'center'
                   }}
                 />
+                
               </>
             )
           }

@@ -24,7 +24,7 @@ export const useTournamentTicketTypes = (tournament) => {
             
     }
     useEffect(() => {
-        requeryTicketTypes()
+        requeryTicketTypes();
     }, []);
     //console.log('ticketTypesData', ticketTypesData)
     return [ticketTypesData, ticketTypesLoading, ticketTypesError];
