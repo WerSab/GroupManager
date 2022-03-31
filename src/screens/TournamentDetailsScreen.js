@@ -13,6 +13,7 @@ import {
     TextInput,
     Alert,
 } from 'react-native';
+import { useEffect } from 'react/cjs/react.production.min';
 import { TournamentContext } from '../context/TournamentContextProvider';
 import { UserContext } from '../context/UserContextProvider';
 import { useTournamentTicketTypes } from '../hooks/useTournamentTicketTypes';
@@ -25,16 +26,10 @@ function getTournamentFromContext(context, tournamentId) {
     });
 };
 
-// const MyComponent = () => {
-//     // hook [data, error, loading]
-//     if(loading) {
-//         // tekst laduje sie
-//     }
-//     if(error) {
-//         // wystapil blad
-//     }
-//     return data;
-// }
+function parsedTicketTypesDataView(element) {
+    return <Text>{`Cena Bilety ${element.name} : ${element.price} : ${element.slots}`}</Text>
+}
+//
 
 const TournamentDetails = ({ route }) => {
     //const { id } = route.params;- ten lub poniższy sposób
@@ -42,16 +37,10 @@ const TournamentDetails = ({ route }) => {
     const [bookings, setBookings] = useState(null);
     const id = route.params.id;
     const tournamentContext = useContext(TournamentContext);
-    const currentUser = useContext(UserContext);
     const tournament = getTournamentFromContext(tournamentContext, id);
-    const allParticipants = tournament.numberOfParticipants;
     const [ticketTypesData, loading, error] = useTournamentTicketTypes(tournament);
     
-    // const allBookings = tournament.numberOfBookings;
-    // const bookCounter = bookingsCounter(allParticipants, allBookings);
-
-   
-
+    const parsedTicketTypesData = ticketTypesData?.map(parsedTicketTypesDataView);
     const onSavePress = () => {
         const parsedBookings = parseInt(bookings);
         if (isNaN(parsedBookings)) {
@@ -74,67 +63,32 @@ const TournamentDetails = ({ route }) => {
 
     }
 
-    // console.log('ticketTypesData[0]', ticketTypesData[0]);
-    // console.log('ticketTypesData[1]', ticketTypesData[1]);
-    // console.log('ticketTypesData[2]', ticketTypesData[2]);
     return (
         <View style={styles.mainBody}>
 
             <Text style={styles.text}>{tournament.name} {'\n'}
             </Text>
-            {isModalVisible && (
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    onRequestClose={() => setIsModalVisible(false)}
-                    onBackdropPress={() => setIsModalVisible(false)}
-                    onBackButtonPress={() => setIsModalVisible(false)}>
-                    <View style={styles.modalView}>
 
-                        <TextInput
-                            style={styles.textDark}
-                            onChangeText={setBookings}
-                            value={bookings}
-                            placeholder="Liczba rezerwacji..."
-                            keyboardType="numeric"
-                        />
-                        <View style={styles.twoButtons}>
-                            <TouchableOpacity
-                                style={[styles.button, styles.buttonClose]}
-                                onPress={() => {
-                                    setIsModalVisible(!isModalVisible);
-                                    setBookings('');
-                                }}>
-                                <Text style={styles.textDark}>Close</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                style={[styles.button, styles.buttonSafe]}
-                                onPress={() => {
+            <Text style={styles.listStyle}>
+                                Miejsce:  {tournament.place}
+                                {'\n'}{'\n'}Termin: {tournament.date}
+                                {'\n'}{'\n'}Godzina rozpoczęcia: {tournament.startTime}
+                                {'\n'}{'\n'}Czas trwania: {tournament.interval}
+                                
+                            </Text>
 
-                                    onSavePress();
-                                }}>
-                                <Text style={styles.textDark}>Save</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </Modal>
-                
-            )}
-
+           
             {
                 loading ? <Text>Ładuje się</Text> : (
                     //zrobić nowy komponent TournamentTicketTypes, w którym odpalam hooka usetournamentsTicketTypes
                     // const [error, loading, data] = useTournamentTicketTypes(tournament);
                     error ? <Text>Blad pobierania biletów {!!error}</Text> : (
-                        <Text style={styles.listStyle}>
-                            Miejsce:  {tournament.place}
-                            {'\n'}{'\n'}Termin: {tournament.date}
-                            {'\n'}{'\n'}Godzina rozpoczęcia: {tournament.startTime}
-                            {'\n'}{'\n'}Czas trwania: {tournament.interval}
-                            {'\n'}{'\n'}Cena bilety Premium: {ticketTypesData[0].premiumPrice} zł.
-                            {'\n'}{'\n'}Cena bilety Basic: {ticketTypesData[2].basicPrice} zł.
-                            {'\n'}{'\n'}Bezplatne bilety: {ticketTypesData[1].freeSlots} szt.
-                        </Text>
+                        <>
+                            <Text style={styles.listStyle}>
+                                 {'\n'}{'\n'}Bilety: {parsedTicketTypesData};
+                            </Text>
+
+                        </>
                     )
                 )
             }

@@ -13,12 +13,16 @@ import {
     ScrollView,
 } from 'react-native';
 import addIcon from '../assets/icons/add.png';
+import addIconDark from '../assets/icons/add_dark.png';
 import deleteIcon from '../assets/icons/delete.png';
 import { Picker } from '@react-native-picker/picker';
 import { removeFromArray } from '../fireBase/firestoreHelper';
 import { SCREEN } from '../navigation/screens';
 import { addNewTournamentToCollection, deleteTournament } from '../tournaments-examples';
 import { TournamentContext } from '../context/TournamentContextProvider';
+import { ticketTypePresets } from '../fireBase/ticket-types-presets';
+import { TicketTypeCreator } from './TicketTypeCreator';
+
 
 const TournamentsScreen = () => {
     // Zaznaczanie takich samych wystapein -> ctrl+d
@@ -31,45 +35,15 @@ const TournamentsScreen = () => {
     const [intervalInput, setIntervalInput] = useState();
     const [placeInput, setPlaceInput] = useState();
     const [tournamentCategoryInput, setTournamentCategoryInput] = useState('Kategoria');
-    const [ticketPremiumPrice, setTicketPremiumPrice] = useState();
-    const [ticketPremiumSlots, setTicketPremiumSlots] = useState();
-    const [ticketBasicPrice, setTicketBasicPrice] = useState();
-    const [ticketBasicSlots, setTicketBasicSlots] = useState();
-    const [ticketFreeSlots, setTicketFreeSlots] = useState();
-
-    const getTicketTypes = useCallback(
-        //Pierwszy parametr Callback to funkcja
-        () => {
-            const ticketDetails = [
-                {
-                    premiumPrice: ticketPremiumPrice,
-                    premiumSlots: ticketPremiumSlots,
-                },
-
-                {
-                    basicPrice: ticketBasicPrice,
-                    basicSlots: ticketBasicSlots,
-                },
-                {
-                    freeSlots: ticketFreeSlots,
-                }
-            ]
-            return ticketDetails;
-        },
-
-        [
-            ticketPremiumPrice,
-            ticketPremiumSlots,
-            ticketBasicPrice,
-            ticketBasicSlots,
-            ticketFreeSlots
-        ]
-
-    )
+    const [isCreatorVisible, setIsCreatorVisible] = useState(true);
+    const [ticketTypes, setTicketTypes] = useState([]);
 
 
+    const handleTicketTypeAdd = (ticketType) => {
+        setTicketTypes([...ticketTypes, ticketType]);
+        setIsCreatorVisible(false);
+    };
 
-    const ticketDetails = getTicketTypes();
 
     const clearInputs = () => {
         setNameInput('');
@@ -78,12 +52,7 @@ const TournamentsScreen = () => {
         setIntervalInput('');
         setPlaceInput('');
         setTournamentCategoryInput('Kategoria');
-        setTicketPremiumPrice('');
-        setTicketPremiumSlots('');
-        setTicketBasicSlots('');
-        setTicketBasicPrice('');
-        setTicketFreeSlots('');
-
+        setTIcketTypes([]);
     };
 
     const deleteAlert = (id, name) => {
@@ -115,7 +84,7 @@ const TournamentsScreen = () => {
                 tournamentCategory: tournamentCategoryInput,
 
             },
-            ticketDetails
+            ticketTypes,
         )
             .then(() => {
                 setIsModalAddTournamentVisible(!isModalAddTournamentVisible);
@@ -132,17 +101,6 @@ const TournamentsScreen = () => {
 
     }
 
-    /*
-        const tournamentsContext = useContext(Conaosda);
-        tournamentsContext.requeryTournaments();
-    
-        addTournamentToDB()
-        .then(() => {
-    
-            tournamentsContext.requeryTournaments();
-        })
-    
-    */
     const navigation = useNavigation();
 
     const renderItem = item => {
@@ -226,63 +184,21 @@ const TournamentsScreen = () => {
                                     value={intervalInput}
                                     placeholder="Czas trwania..."
                                 />
-                                <View
-                                    style={{
-                                        flexDirection: 'row',
-                                        justifyContent: 'space-around',
-                                        width: '80%',
-                                        padding: 10,
-                                    }}>
-                                    <Text style={styles.textDark}>Bilety premium:</Text>
-                                    <TextInput
-                                        style={styles.textDark}
-                                        onChangeText={setTicketPremiumPrice}
-                                        value={ticketPremiumPrice}
-                                        placeholder="cena..."
-                                    />
-                                    <TextInput
-                                        style={styles.textDark}
-                                        onChangeText={setTicketPremiumSlots}
-                                        value={ticketPremiumSlots}
-                                        placeholder="ilość..."
-                                    />
+                                <View style={styles.ticketStyle}>
+
+                                    <Text style={styles.textDark}>Bilety</Text>
+                                    {isCreatorVisible && (
+                                        <TicketTypeCreator onTicketTypeAdd={handleTicketTypeAdd} />
+                                    )}
+                                    <Text style={styles.textDark}>{JSON.stringify(ticketTypes)}</Text>
+
+                                    <TouchableOpacity
+                                        style={styles.button}
+                                        onPress={() => { setIsCreatorVisible(true) }}>
+                                        <Text style={styles.textButton}>Dodaj bilet  </Text>
+                                    </TouchableOpacity>
                                 </View>
-                                <View
-                                    style={{
-                                        flexDirection: 'row',
-                                        justifyContent: 'space-around',
-                                        width: '80%',
-                                        padding: 10,
-                                    }}>
-                                    <Text style={styles.textDark}>Bilety basic:</Text>
-                                    <TextInput
-                                        style={styles.textDark}
-                                        onChangeText={setTicketBasicPrice}
-                                        value={ticketBasicPrice}
-                                        placeholder="cena..."
-                                    />
-                                    <TextInput
-                                        style={styles.textDark}
-                                        onChangeText={setTicketPremiumSlots}
-                                        value={ticketBasicSlots}
-                                        placeholder="ilość..."
-                                    />
-                                </View>
-                                <View
-                                    style={{
-                                        flexDirection: 'row',
-                                        justifyContent: 'space-around',
-                                        width: '80%',
-                                        padding: 10,
-                                    }}>
-                                    <Text style={styles.textDark}>Bilety bezpłatne:</Text>
-                                    <TextInput
-                                        style={styles.textDark}
-                                        onChangeText={setTicketFreeSlots}
-                                        value={ticketFreeSlots}
-                                        placeholder="ilość..."
-                                    />
-                                </View>
+
 
                                 <View
                                     style={{
@@ -292,42 +208,43 @@ const TournamentsScreen = () => {
                                         padding: 10,
                                     }}>
                                     <TouchableOpacity
-                                        style={[styles.button, styles.buttonClose]}
+                                        style={styles.button}
                                         onPress={() => {
                                             setIsModalAddTournamentVisible(!isModalAddTournamentVisible);
                                             setNameInput('');
                                         }}>
-                                        <Text style={styles.textButton}>Close</Text>
+                                        <Text style={styles.textButton}>Zamknij</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity
-                                        style={[styles.button, styles.buttonSafe]}
+                                        style={styles.button}
                                         onPress={() => {
                                             clearInputs();
                                         }}>
-                                        <Text style={styles.textButton}>Clear</Text>
+                                        <Text style={styles.textButton}>Wyczyść</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity
-                                        style={[styles.button, styles.buttonSafe]}
+                                        style={styles.button}
                                         onPress={() => {
                                             onSavePress();
                                         }}>
-                                        <Text style={styles.textButton}>Save</Text>
+                                        <Text style={styles.textButton}>Zapisz wydarzenie</Text>
                                     </TouchableOpacity>
                                 </View>
                             </ScrollView>
                         </View>
                     </Modal>
-                )}
+                )
+                }
 
                 <FlatList
                     data={tournamentList}
                     renderItem={({ item }) => renderItem(item)} //do renderItem przekazujemy wartośc funkcji renderItem
                     keyExtractor={(item, index) => index.toString()}
                     style={styles.container}
-                    withSearchbar={false}
+                    withSearchbar={true}
                 />
 
-            </View>
+            </View >
         </>
     )
 }
@@ -360,7 +277,7 @@ const styles = StyleSheet.create({
     },
     textDark: {
         color: '#005b98',
-        fontSize: 15,
+        fontSize: 18,
         padding: 10,
     },
     textButton: {
@@ -446,6 +363,18 @@ const styles = StyleSheet.create({
         marginBottom: 25,
         margin: 10,
         justifyContent: 'center',
+    },
+    ticketStyle: {
+        backgroundColor: '#e3ecf2',
+        alignItems: 'center',
+        borderRadius: 15,
+        marginLeft: 35,
+        marginRight: 35,
+        marginTop: 20,
+        marginBottom: 25,
+        margin: 10,
+        justifyContent: 'center',
+        borderRadius: 20,
     },
 
 })

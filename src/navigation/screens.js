@@ -26,6 +26,7 @@ export const SCREEN = {
     TOURNAMENTDETAILS: 'Szczegóły turnieju',
     USERSDETAILS: 'UserDetailsScreen',
     ERROR: 'ErrorScreen',
+    
         
     
     
