@@ -8,16 +8,23 @@ import {
     View,
     Text,
     StyleSheet,
+    Image,
+    Linking,
     TouchableOpacity,
     Modal,
     TextInput,
     Alert,
+    ScrollView,
+
 } from 'react-native';
+import linkIcon from '../assets/icons/link.png';
 import { useEffect } from 'react/cjs/react.production.min';
 import { TournamentContext } from '../context/TournamentContextProvider';
 import { UserContext } from '../context/UserContextProvider';
 import { useTournamentTicketTypes } from '../hooks/useTournamentTicketTypes';
 import { updateBookingsToTournament, getTournaments, bookingsCounter } from '../tournaments-examples';
+import TicketOrderScreen from './TicketOrderingScreen';
+
 
 function getTournamentFromContext(context, tournamentId) {
     const [tournamentList] = context;
@@ -27,9 +34,21 @@ function getTournamentFromContext(context, tournamentId) {
 };
 
 function parsedTicketTypesDataView(element) {
-    return <Text>{`Cena Bilety ${element.name} : ${element.price} : ${element.slots}`}</Text>
+    return <Text style={styles.listStyle} key={element.id}>
+        {
+            `${element.name}:   
+        Cena: ${element.price}  
+        Ilość biletów: ${element.slots}`
+        }
+        {'\n'}
+        {'\n'}
+        <TicketOrderScreen />
+        {'\n'}
+        {'\n'}
+
+    </Text>
 }
-//
+
 
 const TournamentDetails = ({ route }) => {
     //const { id } = route.params;- ten lub poniższy sposób
@@ -39,8 +58,9 @@ const TournamentDetails = ({ route }) => {
     const tournamentContext = useContext(TournamentContext);
     const tournament = getTournamentFromContext(tournamentContext, id);
     const [ticketTypesData, loading, error] = useTournamentTicketTypes(tournament);
-    
+
     const parsedTicketTypesData = ticketTypesData?.map(parsedTicketTypesDataView);
+
     const onSavePress = () => {
         const parsedBookings = parseInt(bookings);
         if (isNaN(parsedBookings)) {
@@ -63,46 +83,46 @@ const TournamentDetails = ({ route }) => {
 
     }
 
+
+
     return (
         <View style={styles.mainBody}>
+            <ScrollView>
 
-            <Text style={styles.text}>{tournament.name} {'\n'}
-            </Text>
+                <Text style={styles.text}>{tournament.name} {'\n'}
+                </Text>
+                <Text style={styles.listStyle}>
+                    <View >
+                        <Text style={styles.textDark}>Miejsce:  {tournament.place}</Text>
+                        <Text style={styles.textDark}>Termin: {tournament.date}</Text>
+                        <Text style={styles.textDark}>Godzina rozpoczęcia: {tournament.startTime}</Text>
+                        <Text style={styles.textDark}>Czas trwania: {tournament.interval}</Text>
+                        <Image source={{ uri: tournament.picture }}
+                            style={{ width: 60, height: 60 }} />
 
-            <Text style={styles.listStyle}>
-                                Miejsce:  {tournament.place}
-                                {'\n'}{'\n'}Termin: {tournament.date}
-                                {'\n'}{'\n'}Godzina rozpoczęcia: {tournament.startTime}
-                                {'\n'}{'\n'}Czas trwania: {tournament.interval}
-                                
-                            </Text>
+                        <TouchableOpacity
+                            onPress={() => Linking.openURL(tournament.link)}//(then i catch/ obsłużyć w promisie/sprawdzić Regex/https://regex101.com/https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url#:~:text=javascript%3Avoid%20%280%29%20is%20valid%20URL%2C%20although%20not%20an,DNS%29%20https%3A%2F%2Fexample..com%20is%20valid%20URL%2C%20same%20as%20above
+                        >
+                            <Text style={styles.linkStyle}><Image source={linkIcon} style={styles.icon} />Link do wydarzenia</Text>
+                        </TouchableOpacity>
 
-           
-            {
-                loading ? <Text>Ładuje się</Text> : (
-                    //zrobić nowy komponent TournamentTicketTypes, w którym odpalam hooka usetournamentsTicketTypes
-                    // const [error, loading, data] = useTournamentTicketTypes(tournament);
-                    error ? <Text>Blad pobierania biletów {!!error}</Text> : (
-                        <>
-                            <Text style={styles.listStyle}>
-                                 {'\n'}{'\n'}Bilety: {parsedTicketTypesData};
-                            </Text>
+                    </View>
+                </Text>
 
-                        </>
+                {
+                    loading ? <Text style={styles.text}>Ładuje się ...</Text> : (
+                        error ? <Text>Blad pobierania biletów {!!error}</Text> : (
+                            <View style={styles.listStyle}>
+                                <Text style={styles.textDark}> Bilety:</Text>
+                                <Text> {parsedTicketTypesData}</Text>
+
+
+                            </View>
+                        )
                     )
-                )
-            }
+                }
 
-            <TouchableOpacity
-                style={styles.buttonStyle}
-                activeOpacity={0.5}
-                title="Book"
-                onPress={() => {
-                    setIsModalVisible(true);
-                }}
-            >
-                <Text style={styles.buttonTextStyle}>Kup bilet/Zarezerwuj</Text>
-            </TouchableOpacity>
+            </ScrollView>
         </View>
         //{JSON.stringify(tournament, null, 2)}
     )
@@ -122,23 +142,28 @@ const styles = StyleSheet.create({
     },
     textDark: {
         color: '#005b98',
-        fontSize: 20,
-        padding: 20,
+        fontSize: 16,
+
     },
     container: {
         flex: 1,
     },
     listStyle: {
-        padding: 40,
+        padding: 20,
         marginBottom: 5,
-        color: '#015a92',
+        color: '#005b98',
         backgroundColor: "white",
         marginRight: 20,
         marginLeft: 20,
-        borderRadius: 5,
-        borderWidth: 1,
+
         textAlign: 'left',
         fontSize: 16
+    },
+    linkStyle: {
+        color: '#fbb713',
+        height: 40,
+        
+        
     },
     buttonStyle: {
         backgroundColor: 'white',
@@ -152,11 +177,16 @@ const styles = StyleSheet.create({
         marginTop: 20,
         marginBottom: 25,
         margin: 10,
+
+
+
     },
     buttonTextStyle: {
-        color: '#015a92',
         paddingVertical: 10,
+        color: '#005b98',
         fontSize: 16,
+
+
     },
     modalView: {
         flex: 1,
@@ -173,6 +203,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
     },
-
-
+    image: { height: 70, width: 70, flexBasis: '20%' },
+    icon: { height: 30, width: 30, flexBasis: '20%' },
 })
