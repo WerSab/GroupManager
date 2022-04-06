@@ -19,19 +19,9 @@ const UsersScreen = () => {
     const renderItem = item => {
         return (
             <>
-                <TouchableOpacity
-                    onPress={() => {
-                        navigation.navigate(SCREEN.USERSDETAILS, {
-                            id: item.id
-                            // przykladowo przekazuje argument user: item
-                        });
-                    }}
-                    //po kliknieciu w kafalek z uzytkownikiem, wyszukuje uzytkownika z tablicy users i przekazuje jego obiekt do ekranu USERDETAILS
-                >
-                    <Text style={styles.listStyle}>
-                        {item.firstName} {item.lastName} - {item.role}
-                    </Text>
-                </TouchableOpacity>
+                <Text style={styles.listStyle}>
+                    {item.firstName} {item.lastName} - {item.role}
+                </Text>
             </>
         )
     }

@@ -15,7 +15,7 @@ export const useTournamentTicketTypes = (tournament) => {
                 setTimeout(() => {
                     setTicketTypesData(result);
                     setTicketTypesLoading(false);
-                }, 3000);
+                }, 1000);
             })
             .catch((ticketTypesError) => {
                 setTicketTypesError(ticketTypesError);

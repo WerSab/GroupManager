@@ -3,6 +3,7 @@ import { useNavigation } from '@react-navigation/core';
 import {
     View,
     Image,
+    Linking,
     Text,
     StyleSheet,
     FlatList,
@@ -15,6 +16,7 @@ import {
 import addIcon from '../assets/icons/add.png';
 import addIconDark from '../assets/icons/add_dark.png';
 import deleteIcon from '../assets/icons/delete.png';
+import wielkanoc from '../assets/icons/wielkanoc.png'
 import { Picker } from '@react-native-picker/picker';
 import { removeFromArray } from '../fireBase/firestoreHelper';
 import { SCREEN } from '../navigation/screens';
@@ -22,6 +24,7 @@ import { addNewTournamentToCollection, deleteTournament } from '../tournaments-e
 import { TournamentContext } from '../context/TournamentContextProvider';
 import { ticketTypePresets } from '../fireBase/ticket-types-presets';
 import { TicketTypeCreator } from './TicketTypeCreator';
+import { validateTournament, validateTournmanetFields } from '../fireBase/firestore-model-validators';
 
 
 const TournamentsScreen = () => {
@@ -34,6 +37,8 @@ const TournamentsScreen = () => {
     const [startTimeInput, setStartTimeInput] = useState();
     const [intervalInput, setIntervalInput] = useState();
     const [placeInput, setPlaceInput] = useState();
+    const [linkInput, setLinkInput] = useState('');
+    const [urlInput, setUrlInput] = useState('');
     const [tournamentCategoryInput, setTournamentCategoryInput] = useState('Kategoria');
     const [isCreatorVisible, setIsCreatorVisible] = useState(true);
     const [ticketTypes, setTicketTypes] = useState([]);
@@ -52,7 +57,9 @@ const TournamentsScreen = () => {
         setIntervalInput('');
         setPlaceInput('');
         setTournamentCategoryInput('Kategoria');
-        setTIcketTypes([]);
+        setTicketTypes([]);
+        setLinkInput('');
+        setUrlInput('');
     };
 
     const deleteAlert = (id, name) => {
@@ -74,31 +81,45 @@ const TournamentsScreen = () => {
 
     const onSavePress = () => {
 
-        addNewTournamentToCollection(
-            {
+        try {
+
+            const tournament = {
                 name: nameInput,
                 date: dateInput,
                 startTime: startTimeInput,
                 interval: intervalInput,
                 place: placeInput,
                 tournamentCategory: tournamentCategoryInput,
+                link: linkInput,
+                url: urlInput,
+                
 
-            },
-            ticketTypes,
-        )
-            .then(() => {
-                setIsModalAddTournamentVisible(!isModalAddTournamentVisible);
-                clearInputs();
-                requeryTournaments();
-            })
+            };
+            validateTournament(tournament, ticketTypes);
+            addNewTournamentToCollection(
+                tournament,
+                ticketTypes,
+            )
+                .then(() => {
+                    setIsModalAddTournamentVisible(!isModalAddTournamentVisible);
+                    clearInputs();
+                    requeryTournaments();
+                })
 
-            .catch(function (err) {
-                Alert.alert('Wystąpił błąd', `Przepraszamy mamy problem z serwerem, prosze spróbować później`, [
-                    { text: 'Ok' },
-                ]);
+                .catch(function (err) {
+                    console.log('catch error in promise.catch:', err);
+                    Alert.alert('Wystąpił błąd', `Przepraszamy mamy problem z serwerem, prosze spróbować później`, [
+                        { text: 'Ok' },
+                    ]);
 
-            })
+                });
 
+               // const promiseResult = await addNewTournamentToCollection({},[]); // async/await sugar syntax for promise
+                // console.log(promiseResult);
+
+        } catch (error) {
+            console.log('try/catch blad: ', error.message);//wyświetlić text błędu
+        }
     }
 
     const navigation = useNavigation();
@@ -106,16 +127,20 @@ const TournamentsScreen = () => {
     const renderItem = item => {
         return (
             <View style={styles.listStyle}>
-                <TouchableOpacity
+
+                <TouchableOpacity style={styles.itemStyle}
                     onPress={() => {
                         navigation.navigate(SCREEN.TOURNAMENTDETAILS, {
                             id: item.id
                         });
                     }}
                 >
-                    <Text style={styles.itemStyle}>
-                        {item.name}
+                    <Text style={styles.textDark}>
+                        {item.name}{'\n'}
+                        {item.date}{'\n'}
+                        {item.place}
                     </Text>
+
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() => deleteAlert(item.id, item.name)}
@@ -184,6 +209,19 @@ const TournamentsScreen = () => {
                                     value={intervalInput}
                                     placeholder="Czas trwania..."
                                 />
+                                <TextInput
+                                    style={styles.input}
+                                    onChangeText={setLinkInput}
+                                    value={linkInput}
+                                    placeholder="Link do strony..."
+                                />
+                                 <TextInput
+                                    style={styles.input}
+                                    onChangeText={setUrlInput}
+                                    value={urlInput}
+                                    placeholder="Link do obrazka..."
+                                />
+
                                 <View style={styles.ticketStyle}>
 
                                     <Text style={styles.textDark}>Bilety</Text>
@@ -258,6 +296,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#005b98',
         alignItems: 'center',
     },
+    image: { height: 70, width: 110, flexBasis: '20%' },
+    textContainer: {
+        textAlign: 'center',
+        flexBasis: '70%',
+    },
     title: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -277,8 +320,9 @@ const styles = StyleSheet.create({
     },
     textDark: {
         color: '#005b98',
-        fontSize: 18,
+        fontSize: 16,
         padding: 10,
+        flexDirection: 'column',
     },
     textButton: {
         color: 'white',
@@ -298,14 +342,14 @@ const styles = StyleSheet.create({
 
     },
     itemStyle: {
-        flexDirection: 'column',
+        flexDirection: 'row',
         width: 250,
-        padding: 15,
+        padding: 2,
         marginBottom: 5,
         color: '#005b98',
         backgroundColor: "white",
-        marginRight: 20,
-        marginLeft: 20,
+        marginRight: 2,
+        marginLeft: 2,
         borderRadius: 5,
         textAlign: 'center',
         fontSize: 16,

@@ -7,37 +7,30 @@ import {
     StyleSheet,
     TouchableOpacity,
     Image,
+    Button
 } from 'react-native';
+import { updateBookingsToTournament, getTournaments, bookingsCounter } from '../tournaments-examples';
 
-
-const TicketTypesScreen = () => {
-    const navigation = useNavigation();
-    const ticketTypes = [];
-
+const TicketOrderScreen = () => {
+    // const [isModalVisible, setIsModalVisible] = useState(false);
+    // const [bookings, setBookings] = useState(null);
 
     return (
-        <View style={styles.mainBody}>
-            <View style={styles.buttonContainer}>
-                <Text style={styles.text}>Rodzaje biletów</Text>
-            </View>
+        <View >
+            <Button
+                activeOpacity={0.5}
+                background='#005b98'
+                title="Kup bilet/Zarezerwuj"
+                onPress={() => {
+                    setIsModalVisible(true);
+                }}
+            />
+            
         </View>
     )
 }
-// //https://reactnavigation.org/docs/getting-started/
-// https://reactnavigation.org/docs/navigating
-// //=>utworzyć tablicę z rodzajami biletów 
-// //=>przycisk zatwierdz
-// //=>przesyła tablicę do tournament screen (jako zwykły komponent który przesyłam tablicę przez propsy)- przeczytać jak działa przesyłanie parametrów w nawigacji
-// // navigation.push('tournamentsScreen', {
-//     route:{
-//         params: {
-//             tournament: tournamentState,
-//             ticketTypes: mojStanZTicketTypes,
-//         } 
-//     }
-// })
 
-export default TicketTypesScreen;
+export default TicketOrderScreen;
 
 const styles = StyleSheet.create({
     mainBody: {
@@ -112,15 +105,22 @@ const styles = StyleSheet.create({
         width: 25,
         justifyContent: 'flex-end',
     },
-    deleteButton: {
-        flexDirection: 'row',
+    button: {
+        backgroundColor: '#005b98',
         borderRadius: 10,
-        paddingVertical: -5,
-        paddingHorizontal: -5,
-        elevation: 1,
-        width: '100%',
-        backgroundColor: '#eeedef',
+        textAlign: 'center',
+        fontSize: 16,
         justifyContent: 'space-between',
+        alignItems: 'center',
+        width: 250,
+    },
+    buttonTextStyle: {
+        color: 'white',
+        fontSize: 14,
+        paddingVertical: 10,
+
+
+
     },
     modalView: {
         flex: 1,
@@ -133,5 +133,6 @@ const styles = StyleSheet.create({
         elevation: 5,
         margin: '10%',
     },
+
 
 })

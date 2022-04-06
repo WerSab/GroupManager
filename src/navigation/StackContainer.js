@@ -21,7 +21,6 @@ import { SCREEN } from './screens';
 import { TournamentContext } from '../context/TournamentContextProvider';
 import { Text } from 'react-native'
 import ErrorComponent from '../screens/ErrorScreen';
-import TicketTypesScreen from '../screens/TicketTypesScreen';
 import MyTournamentsListScreen from '../screens/MyTournamentsListScreen';
 import BookingsListScreen from '../screens/BookingsListScreen';
 import MessagesListScreen from '../screens/MessagesListScreen';
@@ -159,15 +158,6 @@ function StackContainer() {
                 <Stack.Screen
                   name={SCREEN.MANAGER_TAB.USERS_LIST}
                   component={UsersScreen}
-                  options={{
-                    headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
-                    headerStyle: { backgroundColor: 'white', flex: 1, alignSelf: 'center', height: 100 },
-                    headerTitleAlign: 'center'
-                  }}
-                />
-                <Stack.Screen
-                  name='Rodzaje biletów'
-                  component={TicketTypesScreen}
                   options={{
                     headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
                     headerStyle: { backgroundColor: 'white', flex: 1, alignSelf: 'center', height: 100 },
