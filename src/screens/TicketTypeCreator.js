@@ -8,25 +8,25 @@ export function TicketTypeCreator(props) {
         slots: ""
     });
 
-    const onSavePrice = () => {
-        const parsedPrice = parseInt(price);
-        if (isNaN(parsedPrice)) {
-            Alert.alert('Wystąpił błąd', `Prosze wprowadzić liczbę`, [
-                { text: 'Ok' },
-            ])
-            return undefined;
-        }
-    }
+    // const onSavePrice = () => {
+    //     const parsedPrice = parseInt(price);
+    //     if (isNaN(parsedPrice)) {
+    //         Alert.alert('Wystąpił błąd', `Prosze wprowadzić liczbę`, [
+    //             { text: 'Ok' },
+    //         ])
+    //         return undefined;
+    //     }
+    // }
 
-    const onSaveSlots = () => {
-        const parsedSlots = parseInt(slot);
-        if (isNaN(parsedSlots)) {
-            Alert.alert('Wystąpił błąd', `Prosze wprowadzić liczbę`, [
-                { text: 'Ok' },
-            ])
-            return undefined;
-        }
-    }
+    // const onSaveSlots = () => {
+    //     const parsedSlots = parseInt(slot);
+    //     if (isNaN(parsedSlots)) {
+    //         Alert.alert('Wystąpił błąd', `Prosze wprowadzić liczbę`, [
+    //             { text: 'Ok' },
+    //         ])
+    //         return undefined;
+    //     }
+    // }
 
 
     const handleStateChange = (field, text) => {

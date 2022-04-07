@@ -95,7 +95,7 @@ const TournamentsScreen = () => {
                 
 
             };
-            validateTournament(tournament, ticketTypes);
+            validateTournament(tournament.link, ticketTypes);
             addNewTournamentToCollection(
                 tournament,
                 ticketTypes,
@@ -136,9 +136,9 @@ const TournamentsScreen = () => {
                     }}
                 >
                     <Text style={styles.textDark}>
-                        {item.name}{'\n'}
-                        {item.date}{'\n'}
-                        {item.place}
+                        <Text>{item.name}</Text>
+                        <Text>{item.date}</Text>
+                        <Text>{item.place}</Text>
                     </Text>
 
                 </TouchableOpacity>
