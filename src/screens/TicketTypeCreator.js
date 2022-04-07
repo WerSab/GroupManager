@@ -62,8 +62,8 @@ export function TicketTypeCreator(props) {
 
                 onPress={() => {
                     props.onTicketTypeAdd(ticketType);
-                    onSavePrice();
-                    onSaveSlots();
+                    // onSavePrice();
+                    // onSaveSlots();
                 }}
             >
                 <Text style={styles.textButton}>Zapisz bilet</Text>

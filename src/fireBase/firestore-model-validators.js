@@ -5,8 +5,8 @@
         '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
         '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
         '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
-  
-    if (!!regex.test(tournament.link)) {
+    if (!regex.test(tournament.link)) {
         throw new Error('Nieprawidlowy link');
     }
 };
+
