@@ -95,7 +95,9 @@ const TournamentsScreen = () => {
                 
 
             };
-            validateTournament(tournament.link, ticketTypes);
+            
+
+            validateTournament(tournament, ticketTypes);
             addNewTournamentToCollection(
                 tournament,
                 ticketTypes,
@@ -103,6 +105,7 @@ const TournamentsScreen = () => {
                 .then(() => {
                     setIsModalAddTournamentVisible(!isModalAddTournamentVisible);
                     clearInputs();
+                    setIsCreatorVisible(true);
                     requeryTournaments();
                 })
 
