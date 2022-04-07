@@ -1,12 +1,12 @@
-const regex = new RegExp('^(https?:\/\/)?'+ 
-    '((([a-z\d]([a-z\d-]*[a-z\d])*)\.)+[a-z]{2,}|'+
-    '((\d{1,3}\.){3}\d{1,3}))'+ 
-    '(\:\d+)?(\/[-a-z\d%_.~+]*)*'+
-    '(\?[;&a-z\d%_.~+=-]*)?'+ 
-    '(\#[-a-z\d_]*)?$','i');
-  
     export function validateTournament(tournament,ticketTypes) {
-    if (!regex.test(tournament.link)) {
+        const regex = new RegExp('^(https?:\\/\\/)?'+ // protocol
+        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+        '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+        '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+        '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+  
+    if (!!regex.test(tournament.link)) {
         throw new Error('Nieprawidlowy link');
     }
 };
