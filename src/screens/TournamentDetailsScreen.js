@@ -11,8 +11,6 @@ import {
     Image,
     Linking,
     TouchableOpacity,
-    Modal,
-    TextInput,
     Alert,
     ScrollView,
 
@@ -24,14 +22,10 @@ import { UserContext } from '../context/UserContextProvider';
 import { useTournamentTicketTypes } from '../hooks/useTournamentTicketTypes';
 import { updateBookingsToTournament, getTournaments, bookingsCounter } from '../tournaments-examples';
 import TicketOrderScreen from './TicketOrderingScreen';
-
-
-function getTournamentFromContext(context, tournamentId) {
-    const [tournamentList] = context;
-    return tournamentList.find(function (tournament) {
-        return tournament.id === tournamentId;
-    });
-};
+import { getTournamentFromContext } from '../common/context-methods';
+import { NavigationContainer, useNavigation } from '@react-navigation/core';
+import { SCREEN } from '../navigation/screens';
+import { CustomButton } from '../styles/CustomButton';
 
 function parsedTicketTypesDataView(element) {
     return <Text style={styles.listStyle} key={element.id}>
@@ -58,6 +52,7 @@ const TournamentDetails = ({ route }) => {
     const tournamentContext = useContext(TournamentContext);
     const tournament = getTournamentFromContext(tournamentContext, id);
     const [ticketTypesData, loading, error] = useTournamentTicketTypes(tournament);
+    const navigation = useNavigation();
 
     const parsedTicketTypesData = ticketTypesData?.map(parsedTicketTypesDataView);
 
@@ -83,23 +78,27 @@ const TournamentDetails = ({ route }) => {
 
     }
 
-
-
     return (
         <View style={styles.mainBody}>
             <ScrollView>
-
-                <Text style={styles.text}>{tournament.name} {'\n'}
+                <Text>
+                    <TouchableOpacity
+                    onPress={() => navigation.navigate(SCREEN.MODIFY_TOURNAMENT, { id: id })}>
+                    <Text>Edit</Text>
+                </TouchableOpacity>
                 </Text>
+
+                <Text style={styles.text}>{tournament.name}
+                </Text>
+
                 <Text style={styles.listStyle}>
+
                     <View >
+
                         <Text style={styles.textDark}>Miejsce:  {tournament.place}</Text>
                         <Text style={styles.textDark}>Termin: {tournament.date}</Text>
                         <Text style={styles.textDark}>Godzina rozpoczęcia: {tournament.startTime}</Text>
                         <Text style={styles.textDark}>Czas trwania: {tournament.interval}</Text>
-                        <Image source={{ uri: tournament.picture }}
-                            style={{ width: 60, height: 60 }} />
-
                         <TouchableOpacity
                             onPress={() => Linking.openURL(tournament.link)}//(then i catch/ obsłużyć w promisie/sprawdzić Regex/https://regex101.com/https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url#:~:text=javascript%3Avoid%20%280%29%20is%20valid%20URL%2C%20although%20not%20an,DNS%29%20https%3A%2F%2Fexample..com%20is%20valid%20URL%2C%20same%20as%20above
                         >
@@ -162,8 +161,8 @@ const styles = StyleSheet.create({
     linkStyle: {
         color: '#fbb713',
         height: 40,
-        
-        
+
+
     },
     buttonStyle: {
         backgroundColor: 'white',

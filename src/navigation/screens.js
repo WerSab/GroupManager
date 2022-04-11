@@ -13,6 +13,7 @@ export const SCREEN = {
         USERS_LIST: 'Lista Użytkowników',
         BOOKINGS_LIST: 'Lista rezerwacji',
         MESSAGES_LIST: 'Lista Wiadomości',
+        
     },
     
     TICKET_TYPES:'Rodzaje biletów',
@@ -26,6 +27,7 @@ export const SCREEN = {
     TOURNAMENTDETAILS: 'Szczegóły turnieju',
     USERSDETAILS: 'UserDetailsScreen',
     ERROR: 'ErrorScreen',
+    MODIFY_TOURNAMENT: 'Edycja turnieju'
     
         
     

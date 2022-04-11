@@ -16,7 +16,6 @@ import {
 import addIcon from '../assets/icons/add.png';
 import addIconDark from '../assets/icons/add_dark.png';
 import deleteIcon from '../assets/icons/delete.png';
-import wielkanoc from '../assets/icons/wielkanoc.png'
 import { Picker } from '@react-native-picker/picker';
 import { removeFromArray } from '../fireBase/firestoreHelper';
 import { SCREEN } from '../navigation/screens';
@@ -25,6 +24,7 @@ import { TournamentContext } from '../context/TournamentContextProvider';
 import { ticketTypePresets } from '../fireBase/ticket-types-presets';
 import { TicketTypeCreator } from './TicketTypeCreator';
 import { validateTournament, validateTournmanetFields } from '../fireBase/firestore-model-validators';
+import { roundToNearestPixel } from 'react-native/Libraries/Utilities/PixelRatio';
 
 
 const TournamentsScreen = () => {
@@ -38,7 +38,6 @@ const TournamentsScreen = () => {
     const [intervalInput, setIntervalInput] = useState();
     const [placeInput, setPlaceInput] = useState();
     const [linkInput, setLinkInput] = useState('');
-    const [urlInput, setUrlInput] = useState('');
     const [tournamentCategoryInput, setTournamentCategoryInput] = useState('Kategoria');
     const [isCreatorVisible, setIsCreatorVisible] = useState(true);
     const [ticketTypes, setTicketTypes] = useState([]);
@@ -59,7 +58,7 @@ const TournamentsScreen = () => {
         setTournamentCategoryInput('Kategoria');
         setTicketTypes([]);
         setLinkInput('');
-        setUrlInput('');
+
     };
 
     const deleteAlert = (id, name) => {
@@ -91,13 +90,11 @@ const TournamentsScreen = () => {
                 place: placeInput,
                 tournamentCategory: tournamentCategoryInput,
                 link: linkInput,
-                url: urlInput,
-                
-
             };
-            
+
 
             validateTournament(tournament, ticketTypes);
+
             addNewTournamentToCollection(
                 tournament,
                 ticketTypes,
@@ -117,8 +114,8 @@ const TournamentsScreen = () => {
 
                 });
 
-               // const promiseResult = await addNewTournamentToCollection({},[]); // async/await sugar syntax for promise
-                // console.log(promiseResult);
+            // const promiseResult = await addNewTournamentToCollection({},[]); // async/await sugar syntax for promise
+            // console.log(promiseResult);
 
         } catch (error) {
             console.log('try/catch blad: ', error.message);//wyświetlić text błędu
@@ -126,6 +123,7 @@ const TournamentsScreen = () => {
     }
 
     const navigation = useNavigation();
+
 
     const renderItem = item => {
         return (
@@ -217,12 +215,6 @@ const TournamentsScreen = () => {
                                     onChangeText={setLinkInput}
                                     value={linkInput}
                                     placeholder="Link do strony..."
-                                />
-                                 <TextInput
-                                    style={styles.input}
-                                    onChangeText={setUrlInput}
-                                    value={urlInput}
-                                    placeholder="Link do obrazka..."
                                 />
 
                                 <View style={styles.ticketStyle}>
