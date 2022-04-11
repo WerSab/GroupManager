@@ -25,10 +25,13 @@ import MyTournamentsListScreen from '../screens/MyTournamentsListScreen';
 import BookingsListScreen from '../screens/BookingsListScreen';
 import MessagesListScreen from '../screens/MessagesListScreen';
 import MyProfileScreen from '../screens/MyProfileScreen';
+import ModifyTournamentScreen from '../screens/ModifyTournamentScreen';
 
 
 
 const Stack = createNativeStackNavigator();
+
+const options = {};
 
 function StackContainer() {
 
@@ -191,7 +194,15 @@ function StackContainer() {
                     headerTitleAlign: 'center'
                   }}
                 />
-                
+                <Stack.Screen
+                  name={SCREEN.MODIFY_TOURNAMENT}
+                  component={ModifyTournamentScreen}
+                  options={{
+                    headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
+                    headerStyle: { backgroundColor: 'white', flex: 1, alignSelf: 'center', height: 100 },
+                    headerTitleAlign: 'center'
+                  }}
+                />
               </>
             )
           }

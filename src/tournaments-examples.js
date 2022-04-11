@@ -25,26 +25,25 @@ export function getTournaments() {
     })
 }
 
-export function getTicketTypesFromTournament(tournament){
-    return new Promise((resolve,reject)=>{
+export function getTicketTypesFromTournament(tournament) {
+    return new Promise((resolve, reject) => {
         getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
-        .doc(tournament.id)
-        .collection(FIRESTORE_COLLECTION.SUB_COLLECTION.TICKET_TYPES)
-        .get()
-        .then(querySnapshot=>{
-            const ticketTypes = querySnapshot.docs;
-            const ticketTypesList = ticketTypes.map(function(document)
-            {
-                return{
-                    id: document.id,
-                    ...document.data(),
+            .doc(tournament.id)
+            .collection(FIRESTORE_COLLECTION.SUB_COLLECTION.TICKET_TYPES)
+            .get()
+            .then(querySnapshot => {
+                const ticketTypes = querySnapshot.docs;
+                const ticketTypesList = ticketTypes.map(function (document) {
+                    return {
+                        id: document.id,
+                        ...document.data(),
+                    }
                 }
-            }
-            )
-            resolve(ticketTypesList)
+                )
+                resolve(ticketTypesList)
 
-        })
-        .catch((error) => reject(error))
+            })
+            .catch((error) => reject(error))
 
     })
 }
@@ -75,6 +74,26 @@ export function updateBookingsToTournament(tournamentId, bookings) {
             numberOfBookings: bookings
         })
 
+}
+export function modifyTournament(tournamentId, tournament) {
+
+    return new Promise((resolve, reject) => {
+        getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
+            .doc(tournamentId)
+            .update({
+                name: tournament.name,
+                date: tournament.date,
+                startTime: tournament.startTime,
+                interval: tournament.interval,
+                place: tournament.place,
+                tournamentCategory: tournament.tournamentCategory,
+                link: tournament.link,
+            })
+            .then(() => {
+                resolve();
+            })
+            .catch((error) => reject(error));
+    })
 }
 
 /*
@@ -134,7 +153,7 @@ export function addNewTournamentToCollection(tournament, ticketTypes) {
                 console.log(`Added document with id ${newTournamentReference.id} to tournaments collection`);
             })
             .catch((error) => {
-                console.log('Add new tournament with ticketTypes error occured:' ,error);
+                console.log('Add new tournament with ticketTypes error occured:', error);
                 reject(error);
             });
         /*
