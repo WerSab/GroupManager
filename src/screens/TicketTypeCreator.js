@@ -4,29 +4,29 @@ import { View, StyleSheet, Text, TextInput, TouchableOpacity } from "react-nativ
 export function TicketTypeCreator(props) {
     const [ticketType, setTicketType] = useState({
         name: "",
-        price: "",
-        slots: ""
+        price: null,
+        slots: null 
     });
 
-    // const onSavePrice = () => {
-    //     const parsedPrice = parseInt(price);
-    //     if (isNaN(parsedPrice)) {
-    //         Alert.alert('Wystąpił błąd', `Prosze wprowadzić liczbę`, [
-    //             { text: 'Ok' },
-    //         ])
-    //         return undefined;
-    //     }
-    // }
+    const onSavePrice = () => {
+        const parsedPrice = parseInt(price);
+        if (isNaN(parsedPrice)) {
+            Alert.alert('Wystąpił błąd', `Prosze wprowadzić liczbę`, [
+                { text: 'Ok' },
+            ])
+            return undefined;
+        }
+    }
 
-    // const onSaveSlots = () => {
-    //     const parsedSlots = parseInt(slot);
-    //     if (isNaN(parsedSlots)) {
-    //         Alert.alert('Wystąpił błąd', `Prosze wprowadzić liczbę`, [
-    //             { text: 'Ok' },
-    //         ])
-    //         return undefined;
-    //     }
-    // }
+    const onSaveSlots = () => {
+        const parsedSlots = parseInt(slot);
+        if (isNaN(parsedSlots)) {
+            Alert.alert('Wystąpił błąd', `Prosze wprowadzić liczbę`, [
+                { text: 'Ok' },
+            ])
+            return undefined;
+        }
+    }
 
 
     const handleStateChange = (field, text) => {
@@ -62,8 +62,8 @@ export function TicketTypeCreator(props) {
 
                 onPress={() => {
                     props.onTicketTypeAdd(ticketType);
-                    // onSavePrice();
-                    // onSaveSlots();
+                    onSavePrice();
+                    onSaveSlots();
                 }}
             >
                 <Text style={styles.textButton}>Zapisz bilet</Text>

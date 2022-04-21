@@ -14,7 +14,7 @@ import {
     Alert,
     ScrollView,
     Button
-    
+
 } from 'react-native';
 import linkIcon from '../assets/icons/link.png';
 import { useEffect } from 'react/cjs/react.production.min';
@@ -26,79 +26,76 @@ import { getTournamentFromContext } from '../common/context-methods';
 import { NavigationContainer, useNavigation } from '@react-navigation/core';
 import { SCREEN } from '../navigation/screens';
 import { CustomButton } from '../styles/CustomButton';
-import TicketOrderingScreen from './TicketOrderingScreen';
-
-function parsedTicketTypesDataView(element) {
-    const navigation = useNavigation();
-    console.log('navigation', navigation)
-    return <Text style={styles.listStyle} key={element.id}>
-        {
-            `${element.name}:   
-        Cena: ${element.price}  
-        Ilość biletów: ${element.slots}`
-        }
-        {'\n'}
-        {'\n'}
-        <View >
-            <Button
-                activeOpacity={0.5}
-                background='#005b98'
-                title="Kup bilet/Zarezerwuj"
-                onPress={() => navigation.navigate(SCREEN.TICKET_ORDERING)}
-            />
-            
-        </View>
-        {'\n'}
-        {'\n'}
-
-    </Text>
-}
+import {TicketOrderingScreen} from './TicketOrderingScreen'
 
 
-const TournamentDetails = ({ route }) => {
+const MyTournamentDetails = ({ route }) => {
     //const { id } = route.params;- ten lub poniższy sposób
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const [bookings, setBookings] = useState(null);
     const id = route.params.id;
     const tournamentContext = useContext(TournamentContext);
     const tournament = getTournamentFromContext(tournamentContext, id);
     const [ticketTypesData, loading, error] = useTournamentTicketTypes(tournament);
     const navigation = useNavigation();
+    const [ticketOrders, setTicketOrders] = useState([]);
 
-    console.log('tt data:', ticketTypesData);
     const parsedTicketTypesData = ticketTypesData?.map(parsedTicketTypesDataView);
+    const [isTicketOrderingScreenVisible, setIsTicketOrderingScreenVisible] = useState(true);
 
-    // const onSavePress = () => {
-    //     const parsedBookings = parseInt(bookings);
-    //     if (isNaN(parsedBookings)) {
-    //         Alert.alert('Wystąpił błąd', `Prosze wprowadzić liczbę`, [
-    //             { text: 'Ok' },
-    //         ])
-    //         return undefined;
-    //     }
+    const handleTicketOrderAdd = (ticketOrder) => {
+        setTicketOrder([...ticketOrders, ticketOrder]);
+        setIsTicketOrderingScreenVisible(false);
+    };
+    const clearInputs = () => {
+        setTicketOrder([]);
+    }
+    const onSavePress = () => {
+        addNewTicketOrderToCollection(ticketOrders)
+            .then(() => {
+                setIsTicketOrderingScreenVisible(true);
+                clearInputs()
+            })
+            .catch(function (err) {
+                console.log('catch error in promise.catch:', err);
+                Alert.alert('Wystąpił błąd', `Przepraszamy mamy problem z serwerem, prosze spróbować później`, [
+                    { text: 'Ok' },
+                ]);
 
-    //     updateBookingsToTournament(id, parsedBookings)
-    //         .then(() => {
-    //             setIsModalVisible(!isModalVisible);
-    //         })
-    //         .catch(function (err) {
-    //             Alert.alert('Wystąpił błąd', `Przepraszamy mamy problem z serwerem, prosze spróbować później`, [
-    //                 { text: 'Ok' },
-    //             ]);
-    //             console.log("TournamentsDetailsScreen error: ", err);
-    //         })
+            })
+    }
 
-    // }
+
+    function parsedTicketTypesDataView(element) {
+        return <Text style={styles.listStyle} key={element.id}>
+            {
+                `${element.name}:   
+            Cena: ${element.price}  
+            Ilość biletów: ${element.slots}`
+            }
+            {'\n'}
+            {'\n'}
+            <View >
+                <Text style={styles.textDark}>Moje rezerwacje:</Text>
+                {isTicketOrderingScreenVisible && (
+                     <TicketOrderingScreen onTicketOrderAdd={handleTicketOrderAdd}  />
+                )}
+                <Text style={styles.textDark}>{JSON.stringify(ticketOrders)}</Text>
+                <Button
+                    activeOpacity={0.5}
+                    background='#005b98'
+                    title="Kup bilet/Zarezerwuj"
+                    onPress={() => <TicketOrderingScreen onTicketOrderAdd={handleTicketOrderAdd} />/*navigation.navigate(SCREEN.TICKET_ORDERING)*/}
+                />
+
+            </View>
+            {'\n'}
+            {'\n'}
+
+        </Text>
+    }
 
     return (
         <View style={styles.mainBody}>
             <ScrollView>
-                <Text>
-                    <TouchableOpacity
-                        onPress={() => navigation.navigate(SCREEN.MODIFY_TOURNAMENT, { id: id })}>
-                        <Text>Edit</Text>
-                    </TouchableOpacity>
-                </Text>
 
                 <Text style={styles.text}>{tournament.name}
                 </Text>
@@ -126,6 +123,7 @@ const TournamentDetails = ({ route }) => {
                             <View style={styles.listStyle}>
                                 <Text style={styles.textDark}> Bilety:</Text>
                                 <Text> {parsedTicketTypesData}</Text>
+
                             </View>
                         )
                     )
@@ -136,7 +134,7 @@ const TournamentDetails = ({ route }) => {
         //{JSON.stringify(tournament, null, 2)}
     )
 }
-export default TournamentDetails;
+export default MyTournamentDetails;
 const styles = StyleSheet.create({
     mainBody: {
         flex: 1,

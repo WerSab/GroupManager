@@ -6,6 +6,7 @@ export const SCREEN = {
         MY_TICKETS: 'Moje bilety',
         
         
+        
     },
 
     MANAGER_TAB: {
@@ -14,8 +15,12 @@ export const SCREEN = {
         BOOKINGS_LIST: 'Lista rezerwacji',
         MESSAGES_LIST: 'Lista Wiadomości',
         
+        
     },
     
+    TOURNAMENTDETAILS: 'Szczegóły turnieju',
+    MY_TOURNAMENTDETAILS: 'Mój turniej',
+    TICKET_ORDERING: 'Zamów bilet',
     TICKET_TYPES:'Rodzaje biletów',
     ACTIVITYINDICATOR: 'ActivityIndicatorScreen',
     HEADER:'Header',
@@ -24,7 +29,6 @@ export const SCREEN = {
     MANAGER:'ManagerScreen',
     PLAYER:'PlayerScreen',
     REGISTER:'RegisterScreen',
-    TOURNAMENTDETAILS: 'Szczegóły turnieju',
     USERSDETAILS: 'UserDetailsScreen',
     ERROR: 'ErrorScreen',
     MODIFY_TOURNAMENT: 'Edycja turnieju'

@@ -6,31 +6,75 @@ import {
     Text,
     StyleSheet,
     TouchableOpacity,
-    Image,
-    Button
+    Alert, 
+    TextInput
 } from 'react-native';
-import { updateBookingsToTournament, getTournaments, bookingsCounter } from '../tournaments-examples';
+import { updateTicketOrdersToTournament } from '../tournaments-examples';
 
-const TicketOrderScreen = () => {
-    // const [isModalVisible, setIsModalVisible] = useState(false);
-    // const [bookings, setBookings] = useState(null);
+export function TicketOrderingScreen (props) {
+   const [ticketOrders, setTicketOrders] = useState({
+       amount:null,
+       ticket:'',
+       tournament: '',
+       user:'',
+   });
+   
+  const onSaveTicketOrders=()=>{
+   const parsedTicketOrders = parseInt(ticketOrders);
+   if (isNaN(parsedTicketOrders)) {
+       Alert.alert('Wystąpił błąd', `Prosze wprowadzić liczbę`, [
+           { text: 'Ok' },
+       ])
+       return undefined;
+   }
+}
 
+   const onSavePress = () => {
+    
+    updateTicketOrdersToTournament(id, parsedTickedOrders)
+        .then(() => {
+            setIsModalVisible(!isModalVisible);
+        })
+        .catch(function (err) {
+            Alert.alert('Wystąpił błąd', `Przepraszamy mamy problem z serwerem, prosze spróbować później`, [
+                { text: 'Ok' },
+            ]);
+            console.log("OrdersScreen error: ", err);
+        })
+
+}
+
+   const handleStateChange = (field, text) => {
+    console.log("Nazwa i wartość", field, text);
+    setTicketOrders((prev) => ({
+        ...prev,
+        [field]: text
+    }));
+};
     return (
         <View >
-            <Button
-                activeOpacity={0.5}
-                background='#005b98'
-                title="Kup bilet/Zarezerwuj"
-                onPress={() => {
-                    setIsModalVisible(true);
-                }}
+            <Text>Zamów bilet</Text>
+            <TextInput
+                style={styles.textDark}
+                onChangeText={(text) => handleStateChange("slots", text)}
+                value={ticketOrders.slots}
+                placeholder="Ilość biletów..."
             />
+            <TouchableOpacity
+                style={styles.buttonTextStyle}
+
+                onPress={() => {
+                    props.onTicketOrdersAdd(ticketOrders);
+                    onSaveTicketOrders();
+                    }}
+            >
+                <Text style={styles.textButton}>Zamów bilet</Text>
+
+            </TouchableOpacity>
             
         </View>
     )
 }
-
-export default TicketOrderScreen;
 
 const styles = StyleSheet.create({
     mainBody: {

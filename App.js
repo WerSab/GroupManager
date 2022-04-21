@@ -4,12 +4,13 @@ import UserContextProvider from './src/context/UserContextProvider';
 import { addNewTournamentToCollection, addParticipantToTournament, getTicketTypesFromTournament, getTournaments, sampleTicketTypes, sampleTournament } from './src/tournaments-examples';
 import TournamentContextProvider from './src/context/TournamentContextProvider';
 import { getUsers } from './src/users-examples';
-import SelectedUserContextProvider from './src/context/SelectedUserContextProvider';
+import UserListContextProvider from './src/context/UserListContextProvider';
 import firestore from '@react-native-firebase/firestore';
 import { getUserTickets } from './src/ticket-examples';
 import { extractTicketsInfo } from './src/ticket-examples';
 import { getCollection, getFirestoreTimestampFromDate, getFirestoreTimestampFromMillis } from './src/fireBase/firestoreHelper';
 import { FIRESTORE_COLLECTION } from './src/config';
+import MessagesContextProvider from './src/context/MessageContextProvider';
 
 
 const App = () => {
@@ -40,9 +41,11 @@ const App = () => {
 
     <UserContextProvider>
       <TournamentContextProvider>
-        <SelectedUserContextProvider>
+        <UserListContextProvider>
+          <MessagesContextProvider>
           <StackContainer />
-        </SelectedUserContextProvider>
+          </MessagesContextProvider>
+        </UserListContextProvider>
       </TournamentContextProvider>
     </UserContextProvider>
 

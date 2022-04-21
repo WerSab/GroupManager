@@ -1,6 +1,6 @@
 import { FIRESTORE_COLLECTION } from './config';
 import { FirestoreDataContext } from './context/FirestoreDataProvider';
-import { addToArray, getCollection, getFirestoreTimestampFromDate } from './fireBase/firestoreHelper';
+import { addToArray, getCollection, getFirestoreTimestampFromDate } from './fireBase/firestore-Helper';
 import firestore from '@react-native-firebase/firestore';
 
 //lista turniejów - tournaments FlatList
@@ -67,7 +67,7 @@ export function deleteTournament(tournamentId) {
     return getCollection(FIRESTORE_COLLECTION.TOURNAMENTS).doc(tournamentId).delete();
 }
 // dopisać funkcję zliczania rezerwacji
-export function updateBookingsToTournament(tournamentId, bookings) {
+export function updateTicketOrdersToTournament(tournamentId, bookings) {
     return getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
         .doc(tournamentId)
         .update({
@@ -76,24 +76,10 @@ export function updateBookingsToTournament(tournamentId, bookings) {
 
 }
 export function modifyTournament(tournamentId, tournament) {
-
-    return new Promise((resolve, reject) => {
-        getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
+     return getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
             .doc(tournamentId)
-            .update({
-                name: tournament.name,
-                date: tournament.date,
-                startTime: tournament.startTime,
-                interval: tournament.interval,
-                place: tournament.place,
-                tournamentCategory: tournament.tournamentCategory,
-                link: tournament.link,
-            })
-            .then(() => {
-                resolve();
-            })
-            .catch((error) => reject(error));
-    })
+            .update(tournament)
+           
 }
 
 /*
