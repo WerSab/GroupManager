@@ -3,7 +3,6 @@ import { useNavigation } from '@react-navigation/core';
 import {
     View,
     Image,
-    Linking,
     Text,
     StyleSheet,
     FlatList,
@@ -17,7 +16,7 @@ import addIcon from '../assets/icons/add.png';
 import addIconDark from '../assets/icons/add_dark.png';
 import deleteIcon from '../assets/icons/delete.png';
 import { Picker } from '@react-native-picker/picker';
-import { removeFromArray } from '../fireBase/firestoreHelper';
+import { removeFromArray } from '../fireBase/firestore-Helper';
 import { SCREEN } from '../navigation/screens';
 import { addNewTournamentToCollection, deleteTournament } from '../tournaments-examples';
 import { TournamentContext } from '../context/TournamentContextProvider';
@@ -30,7 +29,7 @@ import { roundToNearestPixel } from 'react-native/Libraries/Utilities/PixelRatio
 const TournamentsScreen = () => {
     // Zaznaczanie takich samych wystapein -> ctrl+d
     // ctrl+z -> cofnij
-    const [tournamentList, , { requeryTournaments }] = useContext(TournamentContext);
+    const [tournamentList, { requeryTournaments }] = useContext(TournamentContext);
     const [isModalAddTournamentVisible, setIsModalAddTournamentVisible] = useState(false);
     const [nameInput, setNameInput] = useState();
     const [dateInput, setDateInput] = useState();

@@ -26,6 +26,8 @@ import BookingsListScreen from '../screens/BookingsListScreen';
 import MessagesListScreen from '../screens/MessagesListScreen';
 import MyProfileScreen from '../screens/MyProfileScreen';
 import ModifyTournamentScreen from '../screens/ModifyTournamentScreen';
+import MyTournamentDetails from '../screens/MyTournamentDetailsScreen';
+import { TicketOrderingScreen } from '../screens/TicketOrderingScreen';
 
 
 
@@ -125,8 +127,17 @@ function StackContainer() {
                   }}
                 />
                 <Stack.Screen
-                  name='Szczegóły turnieju'
-                  component={TournamentDetailsScreen}
+                  name={SCREEN.MY_TOURNAMENTDETAILS}
+                  component={MyTournamentDetails}
+                  options={{
+                    headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
+                    headerStyle: { backgroundColor: 'white', flex: 1, alignSelf: 'center', height: 100 },
+                    headerTitleAlign: 'center'
+                  }}
+                />
+                <Stack.Screen
+                  name={SCREEN.TICKET_ORDERING}
+                  component={TicketOrderingScreen}
                   options={{
                     headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
                     headerStyle: { backgroundColor: 'white', flex: 1, alignSelf: 'center', height: 100 },
@@ -177,7 +188,7 @@ function StackContainer() {
                   }}
                 />
                 <Stack.Screen
-                  name='Lista Wiadomości'
+                  name={SCREEN.MANAGER_TAB.MESSAGES_LIST}
                   component={MessagesListScreen}
                   options={{
                     headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
@@ -197,6 +208,15 @@ function StackContainer() {
                 <Stack.Screen
                   name={SCREEN.MODIFY_TOURNAMENT}
                   component={ModifyTournamentScreen}
+                  options={{
+                    headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
+                    headerStyle: { backgroundColor: 'white', flex: 1, alignSelf: 'center', height: 100 },
+                    headerTitleAlign: 'center'
+                  }}
+                />
+                 <Stack.Screen
+                  name={SCREEN.TICKET_ORDERING}
+                  component={TicketOrderingScreen}
                   options={{
                     headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
                     headerStyle: { backgroundColor: 'white', flex: 1, alignSelf: 'center', height: 100 },

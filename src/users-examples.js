@@ -1,5 +1,5 @@
 import { FIRESTORE_COLLECTION } from './config';
-import { getCollection } from './fireBase/firestoreHelper';
+import { getCollection } from './fireBase/firestore-Helper';
 
 export function getUsers() {
     return new Promise((resolve, reject) => {

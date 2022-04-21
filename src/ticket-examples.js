@@ -1,6 +1,6 @@
 import { FIRESTORE_COLLECTION } from './config';
-import { getCollection } from './fireBase/firestoreHelper';
-import { getDocumentReferenceById } from './fireBase/firestoreHelper';
+import { getCollection } from './fireBase/firestore-Helper';
+import { getDocumentReferenceById } from './fireBase/firestore-Helper';
 ///tickets/1c3KBRLcK085IUOdhOfg
 export function getUserTickets(userId) {
     return new Promise((resolve, reject) => {
