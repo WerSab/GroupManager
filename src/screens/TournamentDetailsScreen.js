@@ -65,7 +65,6 @@ const TournamentDetails = ({ route }) => {
     const [ticketTypesData, loading, error] = useTournamentTicketTypes(tournament);
     const navigation = useNavigation();
 
-    console.log('tt data:', ticketTypesData);
     const parsedTicketTypesData = ticketTypesData?.map(parsedTicketTypesDataView);
 
     // const onSavePress = () => {

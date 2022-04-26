@@ -23,7 +23,7 @@ import { TournamentContext } from '../context/TournamentContextProvider';
 import { ticketTypePresets } from '../fireBase/ticket-types-presets';
 import { TicketTypeCreator } from './TicketTypeCreator';
 import { validateTournament, validateTournmanetFields } from '../fireBase/firestore-model-validators';
-import { roundToNearestPixel } from 'react-native/Libraries/Utilities/PixelRatio';
+
 
 
 const TournamentsScreen = () => {
@@ -275,6 +275,7 @@ const TournamentsScreen = () => {
                     style={styles.container}
                     withSearchbar={true}
                 />
+                
 
             </View >
         </>
