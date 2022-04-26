@@ -22,3 +22,12 @@ export function getUsers() {
     })
 }
 
+export function updateTicketOrdersToUser(userId, bookings) {
+    return getCollection(FIRESTORE_COLLECTION.USERS)
+        .doc(userId)
+        .update({
+            numberOfBookings: bookings
+        })
+
+}
+

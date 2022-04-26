@@ -67,11 +67,11 @@ export function deleteTournament(tournamentId) {
     return getCollection(FIRESTORE_COLLECTION.TOURNAMENTS).doc(tournamentId).delete();
 }
 // dopisać funkcję zliczania rezerwacji
-export function updateTicketOrdersToTournament(tournamentId, bookings) {
+export function updateTicketOrdersToTournament(tournamentId, orders) {
     return getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
         .doc(tournamentId)
         .update({
-            numberOfBookings: bookings
+            numberOfOrders: orders
         })
 
 }

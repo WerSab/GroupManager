@@ -27,7 +27,7 @@ import MessagesListScreen from '../screens/MessagesListScreen';
 import MyProfileScreen from '../screens/MyProfileScreen';
 import ModifyTournamentScreen from '../screens/ModifyTournamentScreen';
 import MyTournamentDetails from '../screens/MyTournamentDetailsScreen';
-import { TicketOrderingScreen } from '../screens/TicketOrderingScreen';
+import TicketOrderingScreen from '../screens/TicketOrderingScreen';
 
 
 

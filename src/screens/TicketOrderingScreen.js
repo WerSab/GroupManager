@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/core';
+import { NavigationContainer, useNavigation } from '@react-navigation/core';
 import React, { useEffect, useState } from 'react';
 import { SCREEN } from '../navigation/screens';
 import {
@@ -6,177 +6,186 @@ import {
     Text,
     StyleSheet,
     TouchableOpacity,
-    Alert, 
-    TextInput
+    Alert,
+    TextInput,
+    KeyboardAvoidingView,
+    SafeAreaView,
+    ScrollView,
+    Button,
 } from 'react-native';
 import { updateTicketOrdersToTournament } from '../tournaments-examples';
+import { addNewTicketOrderToCollection } from '../ticket-examples';
+import { updateTicketOrdersToUser } from '../users-examples';
 
-export function TicketOrderingScreen (props) {
-   const [ticketOrders, setTicketOrders] = useState({
-       amount:null,
-       ticket:'',
-       tournament: '',
-       user:'',
-   });
-   
-  const onSaveTicketOrders=()=>{
-   const parsedTicketOrders = parseInt(ticketOrders);
-   if (isNaN(parsedTicketOrders)) {
-       Alert.alert('Wystąpił błąd', `Prosze wprowadzić liczbę`, [
-           { text: 'Ok' },
-       ])
-       return undefined;
-   }
-}
+const TicketOrderingScreen = ({ route }) => {
 
-   const onSavePress = () => {
+    const [slots, setSlots] = useState(null);
+    const [finalPrice, setFinalPrice] = useState(0);
+    const parsedSlots = parseInt(slots);
+    const tournamentName= route.params.tournamentName;
+
+    const data = {
+        ticketTypesId: route.params.ticketTypesId,
+        tournamentId: route.params.tournamentId,
+        userId: route.params.userId,
+        pricePerTicket: route.params.ticketTypesPrice,
+        slots: parsedSlots,
+    };
+
+    function orderValue() {
+        const price = data.pricePerTicket;
+        const slots = data.slots;
+        return price * slots;
+    }
+
     
-    updateTicketOrdersToTournament(id, parsedTickedOrders)
-        .then(() => {
-            setIsModalVisible(!isModalVisible);
-        })
-        .catch(function (err) {
-            Alert.alert('Wystąpił błąd', `Przepraszamy mamy problem z serwerem, prosze spróbować później`, [
-                { text: 'Ok' },
-            ]);
-            console.log("OrdersScreen error: ", err);
-        })
+    console.log('finalPrice', finalPrice)
 
-}
+    const id = data.tournamentId;
+    const uid = data.userId;
 
-   const handleStateChange = (field, text) => {
-    console.log("Nazwa i wartość", field, text);
-    setTicketOrders((prev) => ({
-        ...prev,
-        [field]: text
-    }));
-};
+    const onSaveTicketOrders = () => {
+        // const parsedTicketOrders = parseInt(data);
+        // if (isNaN(parsedTicketOrders)) {
+        //     Alert.alert('Wystąpił błąd', `Prosze wprowadzić liczbę`, [
+        //         { text: 'Ok' },
+        //     ])
+        //     return undefined;
+        // }
+        addNewTicketOrderToCollection(data)
+
+            .then(() => {
+                updateTicketOrdersToTournament(id, data)
+            })
+            .then(() => {
+                updateTicketOrdersToUser(uid, data)
+            })
+            .catch(function (err) {
+                Alert.alert('Wystąpił błąd', `Przepraszamy mamy problem z serwerem, prosze spróbować później`, [
+                    { text: 'Ok' },
+                ]);
+                console.log("OrdersScreen error: ", err);
+            })
+
+    }
+
     return (
-        <View >
-            <Text>Zamów bilet</Text>
-            <TextInput
-                style={styles.textDark}
-                onChangeText={(text) => handleStateChange("slots", text)}
-                value={ticketOrders.slots}
-                placeholder="Ilość biletów..."
-            />
-            <TouchableOpacity
-                style={styles.buttonTextStyle}
+        <View style={styles.mainBody}>
+            <KeyboardAvoidingView enabled>
+                <SafeAreaView>
+                    <ScrollView>
+                    <Text style={styles.headline} > {tournamentName}</Text>
+                        <Text style={styles.buttonTextStyle} > Cena pojedyńczego biletu : {data.pricePerTicket} zł. </Text>
+                        <View style={styles.SectionStyle}>
 
-                onPress={() => {
-                    props.onTicketOrdersAdd(ticketOrders);
-                    onSaveTicketOrders();
-                    }}
-            >
-                <Text style={styles.textButton}>Zamów bilet</Text>
+                            <Text style={styles.buttonTextStyle} > Ilość biletów :  </Text>
 
-            </TouchableOpacity>
-            
+
+                            <TextInput
+                                style={styles.inputStyle}
+                                onChangeText={(text) =>
+                                    setSlots(text)
+                                }
+                                value={slots}
+                                underlineColorAndroid="#f000"
+                                placeholder="Wpisz ilość biletów..."
+                                placeholderTextColor="#8b9cb5"
+                            />
+                        </View>
+                        <View >
+                        <Text style={styles.buttonTextStyleDark} >
+                            <Button
+                                activeOpacity={2}
+                                color='#47b8ce'
+                                title="Przelicz"
+                                onPress={() => {
+                                    orderValue();
+                                    setFinalPrice(orderValue);
+                                    console.log('orderValue', orderValue)
+                                }}
+                            />
+</Text>
+                        </View>
+                        <Text style={styles.buttonTextStyle} > Razem do zapłaty : {finalPrice} zł. </Text>
+                        <Text style={styles.buttonTextStyleDark} >
+                        <Button
+                                activeOpacity={2}
+                                color='#47b8ce'
+                                title="Zatwierdź"
+                                onPress={() => {
+                                    onSaveTicketOrders();
+                                }}
+                            />
+                       </Text>
+                    </ScrollView>
+                </SafeAreaView>
+            </KeyboardAvoidingView>
         </View>
     )
 }
-
+export default TicketOrderingScreen;
 const styles = StyleSheet.create({
     mainBody: {
         flex: 1,
         justifyContent: 'center',
-        backgroundColor: '#005b98',
-        alignItems: 'center',
+        backgroundColor: '#015a92',
+        alignContent: 'center',
     },
-    title: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        backgroundColor: '#005b98',
-        width: '100%',
-
-    },
-
-    text: {
+    headline: {
+        alignSelf: 'center',
         color: 'white',
-        fontSize: 25,
-        padding: 30,
+        paddingVertical: 50,
+        paddingHorizontal: 2,
+        fontSize: 22,
     },
-    textDark: {
-        color: '#005b98',
-        fontSize: 20,
-        padding: 20,
-    },
-    container: {
-        flex: 2,
-    },
-    listStyle: {
+    SectionStyle: {
         flexDirection: 'row',
-        padding: 15,
-        marginBottom: 5,
-        marginRight: 20,
-        marginLeft: 20,
-        borderRadius: 5,
-        textAlign: 'center',
-        fontSize: 16,
-        justifyContent: 'space-between',
-        alignItems: 'center',
-
-    },
-    itemStyle: {
-        flexDirection: 'column',
-        width: 300,
-        padding: 15,
-        marginBottom: 5,
-        color: '#005b98',
-        backgroundColor: "white",
-        marginRight: 20,
-        marginLeft: 20,
-        borderRadius: 5,
-        textAlign: 'center',
-        fontSize: 16,
-        alignItems: 'center',
-
-    },
-    icon_1: {
+        borderColor: '#3175ab',
         height: 40,
-        width: 40,
-        justifyContent: 'flex-end',
-        padding: 15,
-        height: 30,
-        width: 30,
         marginTop: 20,
         marginLeft: 35,
-        marginRight: 15,
+        marginRight: 35,
         margin: 10,
     },
-    icon: {
-        height: 25,
-        width: 25,
-        justifyContent: 'flex-end',
-    },
-    button: {
-        backgroundColor: '#005b98',
-        borderRadius: 10,
-        textAlign: 'center',
-        fontSize: 16,
-        justifyContent: 'space-between',
+    buttonStyle: {
+        backgroundColor: 'white',
+        color: '#FFFFFF',
+        borderColor: '#7DE24E',
+        height: 40,
         alignItems: 'center',
-        width: 250,
+        borderRadius: 30,
+        marginLeft: 35,
+        marginRight: 35,
+        marginTop: 20,
+        marginBottom: 25,
     },
     buttonTextStyle: {
         color: 'white',
-        fontSize: 14,
         paddingVertical: 10,
-
-
-
+        fontSize: 18,
     },
-    modalView: {
+    buttonTextStyleDark: {
         flex: 1,
-        flexDirection: 'column',
+        alignSelf: 'center',
         justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'white',
-        borderRadius: 20,
-        alignItems: 'center',
-        elevation: 5,
-        margin: '10%',
+        color: '#015a92',
+        paddingVertical: 10,
+        fontSize: 16,
+    },
+    inputStyle: {
+        flex: 1,
+        color: 'white',
+        paddingLeft: 15,
+        paddingRight: 15,
+        borderWidth: 2,
+        borderRadius: 5,
+        borderColor: '#3175ab',
     },
 
+    errorTextStyle: {
+        color: 'red',
+        textAlign: 'center',
+        fontSize: 14,
+    },
 
-})
+});

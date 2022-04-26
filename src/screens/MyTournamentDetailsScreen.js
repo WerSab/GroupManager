@@ -26,70 +26,47 @@ import { getTournamentFromContext } from '../common/context-methods';
 import { NavigationContainer, useNavigation } from '@react-navigation/core';
 import { SCREEN } from '../navigation/screens';
 import { CustomButton } from '../styles/CustomButton';
-import {TicketOrderingScreen} from './TicketOrderingScreen'
+import { TicketOrderingScreen } from './TicketOrderingScreen'
 
 
 const MyTournamentDetails = ({ route }) => {
     //const { id } = route.params;- ten lub poniższy sposób
     const id = route.params.id;
+    const userContext = useContext(UserContext);
     const tournamentContext = useContext(TournamentContext);
     const tournament = getTournamentFromContext(tournamentContext, id);
     const [ticketTypesData, loading, error] = useTournamentTicketTypes(tournament);
     const navigation = useNavigation();
-    const [ticketOrders, setTicketOrders] = useState([]);
-
     const parsedTicketTypesData = ticketTypesData?.map(parsedTicketTypesDataView);
-    const [isTicketOrderingScreenVisible, setIsTicketOrderingScreenVisible] = useState(true);
-
-    const handleTicketOrderAdd = (ticketOrder) => {
-        setTicketOrder([...ticketOrders, ticketOrder]);
-        setIsTicketOrderingScreenVisible(false);
-    };
-    const clearInputs = () => {
-        setTicketOrder([]);
-    }
-    const onSavePress = () => {
-        addNewTicketOrderToCollection(ticketOrders)
-            .then(() => {
-                setIsTicketOrderingScreenVisible(true);
-                clearInputs()
-            })
-            .catch(function (err) {
-                console.log('catch error in promise.catch:', err);
-                Alert.alert('Wystąpił błąd', `Przepraszamy mamy problem z serwerem, prosze spróbować później`, [
-                    { text: 'Ok' },
-                ]);
-
-            })
-    }
-
-
-    function parsedTicketTypesDataView(element) {
-        return <Text style={styles.listStyle} key={element.id}>
+    
+        function parsedTicketTypesDataView(element) {
+                return <Text style={styles.listStyle} key={element.id}>
             {
                 `${element.name}:   
             Cena: ${element.price}  
             Ilość biletów: ${element.slots}`
             }
-            {'\n'}
-            {'\n'}
+            
             <View >
-                <Text style={styles.textDark}>Moje rezerwacje:</Text>
-                {isTicketOrderingScreenVisible && (
-                     <TicketOrderingScreen onTicketOrderAdd={handleTicketOrderAdd}  />
-                )}
-                <Text style={styles.textDark}>{JSON.stringify(ticketOrders)}</Text>
-                <Button
+
+                 <Button
                     activeOpacity={0.5}
                     background='#005b98'
                     title="Kup bilet/Zarezerwuj"
-                    onPress={() => <TicketOrderingScreen onTicketOrderAdd={handleTicketOrderAdd} />/*navigation.navigate(SCREEN.TICKET_ORDERING)*/}
+                    onPress={() => {
+                        navigation.navigate(SCREEN.TICKET_ORDERING,
+                        {
+                            tournamentId: id,
+                            userId: userContext.user.uid,
+                            ticketTypesId: element.id,
+                            ticketTypesPrice: element.price,
+                            tournamentName: tournament.name,
+                            
+                        });
+                    }}
                 />
 
             </View>
-            {'\n'}
-            {'\n'}
-
         </Text>
     }
 
@@ -122,6 +99,7 @@ const MyTournamentDetails = ({ route }) => {
                         error ? <Text>Blad pobierania biletów {!!error}</Text> : (
                             <View style={styles.listStyle}>
                                 <Text style={styles.textDark}> Bilety:</Text>
+
                                 <Text> {parsedTicketTypesData}</Text>
 
                             </View>

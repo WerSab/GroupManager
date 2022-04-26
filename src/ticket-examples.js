@@ -55,7 +55,7 @@ export function deleteTicket(ticketId) {
 }
 
 
-export function addNewTicketToCollection(data) {
+export function addNewTicketOrderToCollection(data) {
     return new Promise((resolve, reject) => {
         getCollection(FIRESTORE_COLLECTION.TICKETS)
             .add(data)
