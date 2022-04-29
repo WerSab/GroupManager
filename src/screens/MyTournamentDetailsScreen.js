@@ -17,52 +17,42 @@ import {
 
 } from 'react-native';
 import linkIcon from '../assets/icons/link.png';
-import { useEffect } from 'react/cjs/react.production.min';
 import { TournamentContext } from '../context/TournamentContextProvider';
-import { UserContext } from '../context/UserContextProvider';
 import { useTournamentTicketTypes } from '../hooks/useTournamentTicketTypes';
-import { updateBookingsToTournament, getTournaments, bookingsCounter } from '../tournaments-examples';
 import { getTournamentFromContext } from '../common/context-methods';
-import { NavigationContainer, useNavigation } from '@react-navigation/core';
+import { useNavigation } from '@react-navigation/core';
 import { SCREEN } from '../navigation/screens';
-import { CustomButton } from '../styles/CustomButton';
-import { TicketOrderingScreen } from './TicketOrderingScreen'
-
 
 const MyTournamentDetails = ({ route }) => {
     //const { id } = route.params;- ten lub poniższy sposób
-    const id = route.params.id;
-    const userContext = useContext(UserContext);
     const tournamentContext = useContext(TournamentContext);
+    const id = route.params.id;
     const tournament = getTournamentFromContext(tournamentContext, id);
     const [ticketTypesData, loading, error] = useTournamentTicketTypes(tournament);
     const navigation = useNavigation();
     const parsedTicketTypesData = ticketTypesData?.map(parsedTicketTypesDataView);
-    
-        function parsedTicketTypesDataView(element) {
-                return <Text style={styles.listStyle} key={element.id}>
+    console.log('tournamentContext', tournamentContext)
+    function parsedTicketTypesDataView(element) {
+        return <Text style={styles.listStyle} key={element.id}>
             {
                 `${element.name}:   
             Cena: ${element.price}  
             Ilość biletów: ${element.slots}`
             }
-            
+
             <View >
 
-                 <Button
+                <Button
                     activeOpacity={0.5}
                     background='#005b98'
                     title="Kup bilet/Zarezerwuj"
                     onPress={() => {
                         navigation.navigate(SCREEN.TICKET_ORDERING,
-                        {
-                            tournamentId: id,
-                            userId: userContext.user.uid,
-                            ticketTypesId: element.id,
-                            ticketTypesPrice: element.price,
-                            tournamentName: tournament.name,
-                            
-                        });
+                            {
+                                tournamentId: id,
+                                ticketType: element,
+
+                            });
                     }}
                 />
 

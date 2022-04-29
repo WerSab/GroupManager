@@ -1,5 +1,12 @@
+//UUID?? - id ticket
+//odliczanie czasu - przy rezerwacji biletu np. 2 dni
+//wyświetlanie rezerwacji na ekranach booking (u managera i playera)
+//licznik rezerwacji - update slots w tournamentCollection_ ticketTypes_slots
+//ustawienie blokady if slots==0 => alert (brak biletów) && buttons zatwierdz i przelicz inactive
+//screen moje rezerwacje = wrzucic info o zarezerwowanych biletach jako oczekujące na potwierdzenie i potwierdzone po zapłaceniu
+
 import { NavigationContainer, useNavigation } from '@react-navigation/core';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState,  } from 'react';
 import { SCREEN } from '../navigation/screens';
 import {
     View,
@@ -16,49 +23,48 @@ import {
 import { updateTicketOrdersToTournament } from '../tournaments-examples';
 import { addNewTicketOrderToCollection } from '../ticket-examples';
 import { updateTicketOrdersToUser } from '../users-examples';
+import { UserContext } from '../context/UserContextProvider';
+import { TournamentContext } from '../context/TournamentContextProvider';
+import { getTournamentFromContext } from '../common/context-methods';
 
 const TicketOrderingScreen = ({ route }) => {
-
-    const [slots, setSlots] = useState(null);
+    const userContext = useContext(UserContext);
+    const {tournamentId, ticketType} = route.params;
+    const tournamentContext = useContext(TournamentContext);
+    const tournament = getTournamentFromContext(tournamentContext, tournamentId);
+    const {user} = userContext;
+    const [takenSlots, setTakenSlots] = useState(0);
     const [finalPrice, setFinalPrice] = useState(0);
-    const parsedSlots = parseInt(slots);
-    const tournamentName= route.params.tournamentName;
-
-    const data = {
-        ticketTypesId: route.params.ticketTypesId,
-        tournamentId: route.params.tournamentId,
-        userId: route.params.userId,
-        pricePerTicket: route.params.ticketTypesPrice,
-        slots: parsedSlots,
-    };
+        console.log('tournamentContext', tournamentContext)
+   
+//referencje?
 
     function orderValue() {
-        const price = data.pricePerTicket;
-        const slots = data.slots;
-        return price * slots;
+        const price = ticketType.pricePerTicket;
+       return Math.round(price * parseInt(takenSlots));
     }
-
-    
-    console.log('finalPrice', finalPrice)
-
-    const id = data.tournamentId;
-    const uid = data.userId;
+  
 
     const onSaveTicketOrders = () => {
-        // const parsedTicketOrders = parseInt(data);
-        // if (isNaN(parsedTicketOrders)) {
-        //     Alert.alert('Wystąpił błąd', `Prosze wprowadzić liczbę`, [
-        //         { text: 'Ok' },
-        //     ])
-        //     return undefined;
-        // }
+      const parsedTakenSlots = parseInt(takenSlots)
+        if (isNaN(parsedTakenSlots) || parsedTakenSlots<=0) {
+            Alert.alert('Wystąpił błąd', `Prosze wprowadzić liczbę`, [
+                { text: 'Ok' },
+            ])
+            return ;
+        }
+        const data = {
+                ticketType,
+                tournamentId,
+                userId: user.uid,
+                slots: parsedTakenSlots,
+            
+            };
+        //blokowanie buttona zatwierdź na inactive
         addNewTicketOrderToCollection(data)
 
             .then(() => {
-                updateTicketOrdersToTournament(id, data)
-            })
-            .then(() => {
-                updateTicketOrdersToUser(uid, data)
+                //odblokowanie buttona zatwierdź
             })
             .catch(function (err) {
                 Alert.alert('Wystąpił błąd', `Przepraszamy mamy problem z serwerem, prosze spróbować później`, [
@@ -74,8 +80,8 @@ const TicketOrderingScreen = ({ route }) => {
             <KeyboardAvoidingView enabled>
                 <SafeAreaView>
                     <ScrollView>
-                    <Text style={styles.headline} > {tournamentName}</Text>
-                        <Text style={styles.buttonTextStyle} > Cena pojedyńczego biletu : {data.pricePerTicket} zł. </Text>
+                    <Text style={styles.headline} > {tournament.name}</Text>
+                        <Text style={styles.buttonTextStyle} > Cena pojedyńczego biletu : {ticketType.pricePerTicket} zł. </Text>
                         <View style={styles.SectionStyle}>
 
                             <Text style={styles.buttonTextStyle} > Ilość biletów :  </Text>
@@ -84,9 +90,9 @@ const TicketOrderingScreen = ({ route }) => {
                             <TextInput
                                 style={styles.inputStyle}
                                 onChangeText={(text) =>
-                                    setSlots(text)
+                                    setTakenSlots(text)
                                 }
-                                value={slots}
+                                value={takenSlots}
                                 underlineColorAndroid="#f000"
                                 placeholder="Wpisz ilość biletów..."
                                 placeholderTextColor="#8b9cb5"

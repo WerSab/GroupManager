@@ -6,7 +6,7 @@ import TournamentContextProvider from './src/context/TournamentContextProvider';
 import { getUsers } from './src/users-examples';
 import UserListContextProvider from './src/context/UserListContextProvider';
 import firestore from '@react-native-firebase/firestore';
-import { getUserTickets } from './src/ticket-examples';
+import { addNewTicketOrderToCollection, getUserTickets } from './src/ticket-examples';
 import { extractTicketsInfo } from './src/ticket-examples';
 import { getCollection, getFirestoreTimestampFromDate, getFirestoreTimestampFromMillis } from './src/fireBase/firestoreHelper';
 import { FIRESTORE_COLLECTION } from './src/config';
@@ -17,7 +17,9 @@ const App = () => {
 
   // useEffect(function () {
   //   setTimeout(function () {
-  //     getTicketTypesFromTournament({ id: '2uaoWvPZfqGGfH3PBVzs' })
+  //     addNewTicketOrderToCollection({
+  //       createdAt: getFirestoreTimestampFromDate()
+  //     })
   //       .then(result => {
   //         console.log('zapisane dane:', result);
   //       })

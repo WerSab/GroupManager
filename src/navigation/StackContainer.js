@@ -38,7 +38,7 @@ const options = {};
 function StackContainer() {
 
   const userContext = useContext(UserContext);
-  const [, { isLoaded, error }] = useContext(TournamentContext);
+  const {isLoaded, error} = useContext(TournamentContext);
 
   const getStackScreenBasedOnRole = () => {
 

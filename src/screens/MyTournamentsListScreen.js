@@ -15,10 +15,8 @@ import { SCREEN } from '../navigation/screens';
 import { TournamentContext } from '../context/TournamentContextProvider';
 
 const MyTournamentsListScreen = () => {
-    const [tournamentList, , { requeryTournaments }] = useContext(TournamentContext);
-        
-
-         
+    const {tournamentList} = useContext(TournamentContext);
+                 
     const navigation = useNavigation();
 
     const renderItem = item => {
