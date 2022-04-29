@@ -1,18 +1,18 @@
 import { FIRESTORE_COLLECTION } from './config';
-import { getCollection } from './fireBase/firestore-Helper';
+import { getCollection, getFirestoreTimestampFromDate } from './fireBase/firestore-Helper';
 import { getDocumentReferenceById } from './fireBase/firestore-Helper';
 ///tickets/1c3KBRLcK085IUOdhOfg
 export function getUserTickets(userId) {
     return new Promise((resolve, reject) => {
         console.log(`${FIRESTORE_COLLECTION.USERS}/${userId}`);
         const userRef = getDocumentReferenceById(`${FIRESTORE_COLLECTION.USERS}/${userId}`);
-        
+
         getCollection(FIRESTORE_COLLECTION.TICKETS)
             .where('user', '==', userRef) // SELECT * FROM users WHERE user = ?
             .get()
             .then(querySnapshot => {
                 const allDocuments = querySnapshot.docs;
-                                const ticketList = allDocuments.map(function (collectionElement) {
+                const ticketList = allDocuments.map(function (collectionElement) {
                     return {
                         id: collectionElement.id,
                         ...collectionElement.data(),
@@ -55,10 +55,29 @@ export function deleteTicket(ticketId) {
 }
 
 
+const data = {
+    ticketType: route.params.ticketType,
+    tournamentId: route.params.tournamentId,
+    userId: userContext.user.uid,
+    slots: parsedSlots,
+}
+
+// Object.assign() i spread operator
+
+const add = {
+  
+        // tutaj
+
+    createdAt: timestamp,
+}
 export function addNewTicketOrderToCollection(data) {
+    
     return new Promise((resolve, reject) => {
         getCollection(FIRESTORE_COLLECTION.TICKETS)
-            .add(data)
+            .add({
+                ...data,
+                createdAt: getFirestoreTimestampFromDate(),
+            })
             .then(() => {
                 resolve();
             })
@@ -68,7 +87,7 @@ export function addNewTicketOrderToCollection(data) {
 
 //firestore_reference -> promise -> pending -> fullfilled -> ticket_type
 
-// const sumuj = (a, b) => a + b; 
+// const sumuj = (a, b) => a + b;
 
 // const sumuj2 = (a,b) => {
 //     return a + b;
@@ -109,7 +128,7 @@ export function addNewTicketOrderToCollection(data) {
 // const v = y.map(el => el.get());
 // const z = Promise.all(v);
 // z.then(results => {
-//     // results reprezentuje rozpakowane referencje 
+//     // results reprezentuje rozpakowane referencje
 // });
 
 // Promise.all();

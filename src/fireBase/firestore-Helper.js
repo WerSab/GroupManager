@@ -18,7 +18,7 @@ export function getDocumentReferenceById(documentPath) {
   return firestore().doc(documentPath);
 }
 
-export function getFirestoreTimestampFromDate(date) {
+export function getFirestoreTimestampFromDate(date = Date.now()) {
   return firebase.firestore.Timestamp.fromDate(date);
 }
 

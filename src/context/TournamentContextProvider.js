@@ -10,21 +10,22 @@ import { createContext } from 'react';
 import { useTournaments } from '../hooks/useTournaments';
 
 export const TournamentContext = createContext({
-    tournament: [null, false, null],
-    });
+    tournamentList: undefined,
+    isLoaded: undefined,
+    error: undefined,
+    actions:undefined,
+});
 
 const TournamentContextProvider = (props) => {
     const [tournamentList, isLoaded, error, requeryTournaments] = useTournaments();
-    const providerValue = [
+    const providerValue = {
         tournamentList,
-        {
-            isLoaded: isLoaded,
-            error: error,
-        },
-        {
+        isLoaded,
+        error,
+        actions: {
             requeryTournaments: requeryTournaments,
         },
-    ];
+    };
 
     return (
 

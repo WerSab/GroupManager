@@ -29,7 +29,8 @@ import { validateTournament, validateTournmanetFields } from '../fireBase/firest
 const TournamentsScreen = () => {
     // Zaznaczanie takich samych wystapein -> ctrl+d
     // ctrl+z -> cofnij
-    const [tournamentList, { requeryTournaments }] = useContext(TournamentContext);
+    const {tournamentList, isLoaded, error , actions} = useContext(TournamentContext);
+    console.log('requeryfn:', requeryTournaments);
     const [isModalAddTournamentVisible, setIsModalAddTournamentVisible] = useState(false);
     const [nameInput, setNameInput] = useState();
     const [dateInput, setDateInput] = useState();
@@ -67,7 +68,7 @@ const TournamentsScreen = () => {
                 text: 'Ok', onPress: () => {
                     deleteTournament(id)
                         .then(() => {
-                            requeryTournaments();
+                            actions.requeryTournaments();
                         })
                         .catch(function (err) {
                             Alert.alert('Spróbuj ponownie później')
@@ -102,7 +103,7 @@ const TournamentsScreen = () => {
                     setIsModalAddTournamentVisible(!isModalAddTournamentVisible);
                     clearInputs();
                     setIsCreatorVisible(true);
-                    requeryTournaments();
+                    actions.requeryTournaments();
                 })
 
                 .catch(function (err) {
