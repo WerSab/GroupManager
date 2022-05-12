@@ -28,6 +28,7 @@ import MyProfileScreen from '../screens/MyProfileScreen';
 import ModifyTournamentScreen from '../screens/ModifyTournamentScreen';
 import MyTournamentDetails from '../screens/MyTournamentDetailsScreen';
 import TicketOrderingScreen from '../screens/TicketOrderingScreen';
+import TicketPaymentSummaryScreen from '../screens/TicketPaymentSummaryScreen';
 
 
 
@@ -138,6 +139,15 @@ function StackContainer() {
                 <Stack.Screen
                   name={SCREEN.TICKET_ORDERING}
                   component={TicketOrderingScreen}
+                  options={{
+                    headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
+                    headerStyle: { backgroundColor: 'white', flex: 1, alignSelf: 'center', height: 100 },
+                    headerTitleAlign: 'center'
+                  }}
+                />
+                <Stack.Screen
+                  name={SCREEN.TICKET_PAYMENT_SUMMARY}
+                  component={TicketPaymentSummaryScreen}
                   options={{
                     headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
                     headerStyle: { backgroundColor: 'white', flex: 1, alignSelf: 'center', height: 100 },

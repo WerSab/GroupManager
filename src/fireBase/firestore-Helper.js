@@ -18,11 +18,11 @@ export function getDocumentReferenceById(documentPath) {
   return firestore().doc(documentPath);
 }
 
-export function getFirestoreTimestampFromDate(date = Date.now()) {
+export function getFirestoreTimestampFromDate(date = new Date()) {
   return firebase.firestore.Timestamp.fromDate(date);
 }
 
-export function getFirestoreTimestampFromMillis(millis) {
+export function getFirestoreTimestampFromMillis(millis = Date.now()) {
   return firebase.firestore.Timestamp.fromMillis(millis);
 }
 

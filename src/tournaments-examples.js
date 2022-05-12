@@ -98,6 +98,17 @@ const x: ITicketType = {
     slots: 100,
 }
 */
+//Typy generyczne dla useState z wykorzystaniem typeScript
+// type MyData {
+//     title: string;
+//     price: number;
+// }
+
+// const [state, setState] = useState<MyData>();
+
+// setState({
+//     xxx: 10,
+// })
 
 export function addNewTournamentToCollection(tournament, ticketTypes) {
     return new Promise((resolve, reject) => {
@@ -111,7 +122,7 @@ export function addNewTournamentToCollection(tournament, ticketTypes) {
         const ticketTypeResponse = [];
         for (let i = 0; i < ticketTypesLength; i++) {
 
-            const ticketTypeReference = ticketTypesCollectionReference.doc();
+            ticketTypesCollectionReference.doc()
 
             batch.set(ticketTypeReference, ticketTypes[i]);
 

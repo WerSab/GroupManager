@@ -2,6 +2,26 @@ import { FIRESTORE_COLLECTION } from './config';
 import { getCollection, getFirestoreTimestampFromDate } from './fireBase/firestore-Helper';
 import { getDocumentReferenceById } from './fireBase/firestore-Helper';
 ///tickets/1c3KBRLcK085IUOdhOfg
+
+export function getTicketsOrdersList() {
+    return new Promise((resolve, reject) => {
+        getCollection(FIRESTORE_COLLECTION.TICKETS)
+            .get()
+            .then(querySnapshot => {
+                const allDocuments = querySnapshot.docs;
+                const ticketOrdersList = allDocuments.map(function (collectionElement) {
+                    return {
+                        id: collectionElement.id,
+                        ...collectionElement.data(),
+                    }
+
+                })
+                resolve(ticketOrdersList)
+
+            })
+            .catch((error) => reject(error))
+    });
+}
 export function getUserTickets(userId) {
     return new Promise((resolve, reject) => {
         console.log(`${FIRESTORE_COLLECTION.USERS}/${userId}`);
@@ -25,7 +45,6 @@ export function getUserTickets(userId) {
             .catch((error) => reject(error))
     });
 }
-
 
 
 export function extractTicketsInfo(tickets) {
@@ -55,31 +74,31 @@ export function deleteTicket(ticketId) {
 }
 
 
-const data = {
-    ticketType: route.params.ticketType,
-    tournamentId: route.params.tournamentId,
-    userId: userContext.user.uid,
-    slots: parsedSlots,
-}
+
 
 // Object.assign() i spread operator
 
-const add = {
-  
-        // tutaj
+// const add = {
 
-    createdAt: timestamp,
-}
+//         // tutaj
+
+//     createdAt: timestamp,
+// }
+
+//odczytywanie promisa: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
+
+
 export function addNewTicketOrderToCollection(data) {
-    
+
     return new Promise((resolve, reject) => {
+
         getCollection(FIRESTORE_COLLECTION.TICKETS)
             .add({
                 ...data,
                 createdAt: getFirestoreTimestampFromDate(),
             })
-            .then(() => {
-                resolve();
+            .then((documentReference) => {
+                resolve(documentReference);
             })
             .catch((error) => reject(error));
     })
