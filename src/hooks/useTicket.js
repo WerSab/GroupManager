@@ -1,20 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { getTicket } from '../ticket-examples';
+import React, { useState, useEffect, useCallback } from 'react';
+
 
 export function useTicket() {
-    const [ticketList, setTicketList] = useState();
-    const [error, setError] = useState();
+    const [ticketOrdersList, setTicketOrdersList] = useState();
+    const [isLoaded, setisLoaded] = useState(false);
+    const [error, setError] = useState();                         
 
-    useEffect(() => {
-        getTicket()
+    const requeryTicketOrdersList = useCallback(()=>{
+
         .then((result) => {
-            setTicketList(result);
+            setTicketOrdersList(result);
+            setisLoaded(true)
         })
         .catch((error) => {
             setError(error);
+            setisLoaded(true)
         })
+    },[setTicketOrdersList, setisLoaded, setError]);
+    
+    useEffect(() => {
+        requeryTicketOrdersList();
         
     },[]);
-    return [ticketList, error];
+    return [ticketOrdersList, isLoaded, error, requeryTicketOrdersList];
 
 };

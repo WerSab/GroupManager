@@ -4,7 +4,7 @@ export const SCREEN = {
         MY_MESSAGES:  'Moje wiadomości',
         MY_PROFILE: 'Mój profil',
         MY_TICKETS: 'Moje bilety',
-        
+               
         
         
     },
@@ -31,7 +31,8 @@ export const SCREEN = {
     REGISTER:'RegisterScreen',
     USERSDETAILS: 'UserDetailsScreen',
     ERROR: 'ErrorScreen',
-    MODIFY_TOURNAMENT: 'Edycja turnieju'
+    MODIFY_TOURNAMENT: 'Edycja turnieju',
+    TICKET_PAYMENT_SUMMARY: 'Podsumowanie zamówienia'
     
         
     

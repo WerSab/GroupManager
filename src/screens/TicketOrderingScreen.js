@@ -6,7 +6,7 @@
 //screen moje rezerwacje = wrzucic info o zarezerwowanych biletach jako oczekujące na potwierdzenie i potwierdzone po zapłaceniu
 
 import { NavigationContainer, useNavigation } from '@react-navigation/core';
-import React, { useContext, useEffect, useState,  } from 'react';
+import React, { useContext, useEffect, useState, } from 'react';
 import { SCREEN } from '../navigation/screens';
 import {
     View,
@@ -26,44 +26,65 @@ import { updateTicketOrdersToUser } from '../users-examples';
 import { UserContext } from '../context/UserContextProvider';
 import { TournamentContext } from '../context/TournamentContextProvider';
 import { getTournamentFromContext } from '../common/context-methods';
+import { getCollection } from '../fireBase/firestore-Helper';
+import { FIRESTORE_COLLECTION } from '../config';
 
 const TicketOrderingScreen = ({ route }) => {
     const userContext = useContext(UserContext);
-    const {tournamentId, ticketType} = route.params;
+    const { tournamentId, ticketType } = route.params;
     const tournamentContext = useContext(TournamentContext);
     const tournament = getTournamentFromContext(tournamentContext, tournamentId);
-    const {user} = userContext;
-    const [takenSlots, setTakenSlots] = useState(0);
+    const navigation = useNavigation();
+    const { user } = userContext;
+    const [takenSlots, setTakenSlots] = useState(String(0));
     const [finalPrice, setFinalPrice] = useState(0);
-        console.log('tournamentContext', tournamentContext)
-   
-//referencje?
 
-    function orderValue() {
-        const price = ticketType.pricePerTicket;
-       return Math.round(price * parseInt(takenSlots));
+    function getCalculatedOrderPrice() {
+        const price = ticketType.price;
+        return Math.round(price * parseInt(takenSlots) * 100) / 100;//zaokrąglenie
     }
-  
 
+    const handleFinalPriceBlur = () => {
+        const total = getCalculatedOrderPrice();
+        setFinalPrice(total);
+    }
     const onSaveTicketOrders = () => {
-      const parsedTakenSlots = parseInt(takenSlots)
-        if (isNaN(parsedTakenSlots) || parsedTakenSlots<=0) {
+        const parsedTakenSlots = parseInt(takenSlots)
+        if (isNaN(parsedTakenSlots) || parsedTakenSlots <= 0) {
             Alert.alert('Wystąpił błąd', `Prosze wprowadzić liczbę`, [
                 { text: 'Ok' },
             ])
-            return ;
+            return;
         }
+
+        // tournaments -> [doc1,doc2,doc3] -> ticketTypes -> [doc1,doc2,doc3]
+        // tournaments -> doc(id) -> ticketType(id)
+        const ticketTypeReference = getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
+            .doc(tournamentId)
+            .collection(FIRESTORE_COLLECTION.SUB_COLLECTION.TICKET_TYPES)
+            .doc(ticketType.id);
+        const tournamentReference = getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
+            .doc(tournamentId);
+
+        const userReference = getCollection(FIRESTORE_COLLECTION.USERS)
+            .doc(user.uid)
+
         const data = {
-                ticketType,
-                tournamentId,
-                userId: user.uid,
-                slots: parsedTakenSlots,
-            
-            };
+            ticketType: ticketTypeReference,
+            tournament: tournamentReference,
+            user: userReference,
+            slots: parsedTakenSlots,
+            price: finalPrice,
+        };
         //blokowanie buttona zatwierdź na inactive
         addNewTicketOrderToCollection(data)
-
-            .then(() => {
+            .then((ticketOrderDocumentReference) => {
+                navigation.navigate(SCREEN.TICKET_PAYMENT_SUMMARY,
+                    {
+                        ticketOrderDocumentReference,
+                    }
+                )
+                console.log('reference', ticketOrderDocumentReference)
                 //odblokowanie buttona zatwierdź
             })
             .catch(function (err) {
@@ -80,14 +101,15 @@ const TicketOrderingScreen = ({ route }) => {
             <KeyboardAvoidingView enabled>
                 <SafeAreaView>
                     <ScrollView>
-                    <Text style={styles.headline} > {tournament.name}</Text>
-                        <Text style={styles.buttonTextStyle} > Cena pojedyńczego biletu : {ticketType.pricePerTicket} zł. </Text>
+                        <Text style={styles.headline} > {tournament.name}</Text>
+                        <Text style={styles.buttonTextStyle} > Cena pojedyńczego biletu : {ticketType.price} zł. </Text>
                         <View style={styles.SectionStyle}>
 
                             <Text style={styles.buttonTextStyle} > Ilość biletów :  </Text>
 
 
                             <TextInput
+                                onBlur={handleFinalPriceBlur}
                                 style={styles.inputStyle}
                                 onChangeText={(text) =>
                                     setTakenSlots(text)
@@ -98,31 +120,30 @@ const TicketOrderingScreen = ({ route }) => {
                                 placeholderTextColor="#8b9cb5"
                             />
                         </View>
-                        <View >
-                        <Text style={styles.buttonTextStyleDark} >
-                            <Button
-                                activeOpacity={2}
-                                color='#47b8ce'
-                                title="Przelicz"
-                                onPress={() => {
-                                    orderValue();
-                                    setFinalPrice(orderValue);
-                                    console.log('orderValue', orderValue)
-                                }}
-                            />
-</Text>
-                        </View>
+                        {/* <View >
+                            <Text style={styles.buttonTextStyleDark} >
+                                <Button
+                                    activeOpacity={2}
+                                    color='#47b8ce'
+                                    title="Przelicz"
+                                    onPress={() => {
+                                        setFinalPrice(getCalculatedOrderPrice());
+                                    }}
+                                />
+                            </Text>
+                        </View> */}
                         <Text style={styles.buttonTextStyle} > Razem do zapłaty : {finalPrice} zł. </Text>
                         <Text style={styles.buttonTextStyleDark} >
-                        <Button
+                            <Button
                                 activeOpacity={2}
                                 color='#47b8ce'
                                 title="Zatwierdź"
                                 onPress={() => {
                                     onSaveTicketOrders();
+
                                 }}
                             />
-                       </Text>
+                        </Text>
                     </ScrollView>
                 </SafeAreaView>
             </KeyboardAvoidingView>
