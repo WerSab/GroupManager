@@ -1,3 +1,13 @@
+//odliczanie czasu=> w local stroage pobrac info kiedy był czyszczenie starych bietów (pamiętac, że na początku ma być null lub zero)
+
+// pobieram informacje ze storage'u kiedy byly "czyszczone" bilety (bedzie ona przechowywana pod kluczem np. tickets-cleared-at: DATE | undefined)
+// 1. tickets-cleared-at istnieje to: analizuje czy czyszczenie jest wymagane w tym momencie
+// 2. tickets-cleared-at nie istnieje: od razu wykonuje czyszczenie biletow
+
+
+// tickets -> tournament(ref) -> tournament(ref).id
+// tickets.where(tournament == 'tournaments/tournamentId');
+
 import { useNavigation } from '@react-navigation/core';
 import React, { useContext, useEffect, useState } from 'react';
 import {
@@ -6,27 +16,11 @@ import {
     StyleSheet,
     TouchableOpacity,
     Image,
+    FlatList,
 } from 'react-native';
 import { UserContext } from '../context/UserContextProvider';
-import { runTransaction } from "firebase/firestore";
-import { extractTicketsInfo, getUserTickets } from '../ticket-examples';
+import { getUserTickets } from '../ticket-examples';
 import ErrorScreen from './ErrorScreen';
-
-
-function getExtractedTickets(userID) {
-    return new Promise((resolve, reject) => {
-        getUserTickets(userID)
-            .then(function (tickets) {
-
-                return extractTicketsInfo(tickets);
-            })
-            .then(function (extractedTickets) {
-                resolve(extractedTickets)
-            })
-            .catch((error) => reject(error))
-    });
-
-};
 
 const MyTicketsScreen = () => {
     //const navigation = useNavigation();
@@ -36,13 +30,12 @@ const MyTicketsScreen = () => {
     const userContext = useContext(UserContext);
     const userID = userContext.user.uid;
 
-    // const [data, error, loading] = useMyTickets();
+    //const [userTickets, loading, error] = useUserTickets(userID);//stwqorzyć nowego hooka i tam wrzucić metodę
 
     useEffect(() => {
-        getExtractedTickets(userID) // "pending"
+        getUserTickets(userID) // "pending"
             .then(result => {
                 // i know that the promise is fullfilled
-
                 setMyTickets(result);
                 setLoading(false);
             })
@@ -51,7 +44,6 @@ const MyTicketsScreen = () => {
                 setError(error);
             })
     }, []);
-
 
     //const myTickets = getExtractedTickets(userID);
     if (loading) {
@@ -72,15 +64,39 @@ const MyTicketsScreen = () => {
 
     //     }
 
+    const renderItem = item => {
+        return (
+            <View style={styles.listStyle} key={item.id}>
+                <Text style={styles.itemStyle}>
+                    <Text>Nazwa wydarzenia:  </Text>
+                    {'\n'}<Text>Rodzaj biletu: </Text>
+                    {'\n'}<Text>Razem do zapłaty: {item.price} zł.                     </Text>
+                    {'\n'}<Text>Ilość biletów: {item.slots} </Text>
+                    {'\n'}<Text>Zamówienie wygaśnie za: </Text>
+
+
+                </Text>
+            </View>
+        )
+    }
+
+    const myTicketList = myTickets.map(ticket => renderItem(ticket));
+    
     return (
         <View style={styles.mainBody}>
-            {
-                // TODO: zadanie
-                myTickets.map(ticket => <Text>{ticket}</Text>)//zadanie!!!!- pomapowac bilety - zamiana struktur java scriptowych na komponenty Reactowe (żeby je mozna było wyswuetlić w komponnetach View, text itd.)
-            }
             <View style={styles.buttonContainer}>
-                <Text style={styles.text}>Moje Bilety</Text>
-                <Text style={styles.text}>Amount: {myTickets.amount} </Text>
+                <Text style={styles.text}>Moje Bilety:</Text>
+                {myTicketList}
+                {/* // TODO: zadanie
+                //zadanie!!!!- pomapowac bilety - zamiana struktur java scriptowych na komponenty Reactowe (żeby je mozna było wyswuetlić w komponnetach View, text itd.) */}
+
+                {/* <FlatList
+                    data={myTickets}
+                    renderItem={({ item }) => renderItem(item)} 
+                    keyExtractor={(item, index) => index.toString()}
+                    style={styles.container}
+                    withSearchbar={false}
+                /> */}
             </View>
         </View>
     )
@@ -139,7 +155,7 @@ const styles = StyleSheet.create({
         marginRight: 20,
         marginLeft: 20,
         borderRadius: 5,
-        textAlign: 'center',
+        textAlign: 'left',
         fontSize: 16,
         alignItems: 'center',
 

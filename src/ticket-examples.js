@@ -39,10 +39,12 @@ export function getUserTickets(userId) {
                     }
 
                 })
+                console.log('ticketList', ticketList);
                 resolve(ticketList)
-
+                
             })
             .catch((error) => reject(error))
+
     });
 }
 
