@@ -42,7 +42,7 @@ const PlayerScreen = () => {
                 <TouchableOpacity
                     onPress={() => {
                         navigation.navigate(item.name)
-                    }}
+                        }}
 
                 >
                     <Text style={styles.itemName}>{item.name}</Text>

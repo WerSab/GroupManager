@@ -84,7 +84,7 @@ const TicketOrderingScreen = ({ route }) => {
                         ticketOrderDocumentReference,
                     }
                 )
-                console.log('reference', ticketOrderDocumentReference)
+               
                 //odblokowanie buttona zatwierdź
             })
             .catch(function (err) {
