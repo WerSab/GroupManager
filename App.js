@@ -8,7 +8,7 @@ import UserListContextProvider from './src/context/UserListContextProvider';
 import firestore from '@react-native-firebase/firestore';
 import { addNewTicketOrderToCollection, getUserTickets } from './src/ticket-examples';
 import { extractTicketsInfo } from './src/ticket-examples';
-import { getCollection, getFirestoreTimestampFromDate, getFirestoreTimestampFromMillis } from './src/fireBase/firestoreHelper';
+//import { getCollection, getFirestoreTimestampFromDate, getFirestoreTimestampFromMillis } from './src/fireBase/firestoreHelper';
 import { FIRESTORE_COLLECTION } from './src/config';
 import MessagesContextProvider from './src/context/MessageContextProvider';
 
