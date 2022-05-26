@@ -5,6 +5,12 @@
 //ustawienie blokady if slots==0 => alert (brak biletów) && buttons zatwierdz i przelicz inactive
 //screen moje rezerwacje = wrzucic info o zarezerwowanych biletach jako oczekujące na potwierdzenie i potwierdzone po zapłaceniu
 
+
+//odliczanie czasu=> w local stroage pobrac info kiedy był czyszczenie starych bietów (pamiętac, że na początku ma być null lub zero)
+// pobieram informacje ze storage'u kiedy byly "czyszczone" bilety (bedzie ona przechowywana pod kluczem np. tickets-cleared-at: DATE | undefined)
+
+// 1. tickets-cleared-at istnieje to: analizuje czy czyszczenie jest wymagane w tym momencie
+// 2. tickets-cleared-at nie istnieje: od razu wykonuje czyszczenie biletow
 import { NavigationContainer, useNavigation } from '@react-navigation/core';
 import React, { useContext, useEffect, useState, } from 'react';
 import { SCREEN } from '../navigation/screens';
@@ -28,6 +34,8 @@ import { TournamentContext } from '../context/TournamentContextProvider';
 import { getTournamentFromContext } from '../common/context-methods';
 import { getCollection } from '../fireBase/firestore-Helper';
 import { FIRESTORE_COLLECTION } from '../config';
+import { setDateTicketClearedAt } from '../store/localStore';
+
 
 const TicketOrderingScreen = ({ route }) => {
     const userContext = useContext(UserContext);
@@ -38,7 +46,7 @@ const TicketOrderingScreen = ({ route }) => {
     const { user } = userContext;
     const [takenSlots, setTakenSlots] = useState(String(0));
     const [finalPrice, setFinalPrice] = useState(0);
-
+    
     function getCalculatedOrderPrice() {
         const price = ticketType.price;
         return Math.round(price * parseInt(takenSlots) * 100) / 100;//zaokrąglenie
@@ -92,8 +100,9 @@ const TicketOrderingScreen = ({ route }) => {
                     { text: 'Ok' },
                 ]);
                 console.log("OrdersScreen error: ", err);
-            })
+            });
 
+                    
     }
 
     return (

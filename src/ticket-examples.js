@@ -1,6 +1,7 @@
 import { FIRESTORE_COLLECTION } from './config';
 import { getCollection, getFirestoreTimestampFromDate } from './fireBase/firestore-Helper';
 import { getDocumentReferenceById } from './fireBase/firestore-Helper';
+import { setDateTicketClearedAt } from './store/localStore';
 ///tickets/1c3KBRLcK085IUOdhOfg
 
 export function getTicketsOrdersList() {
@@ -39,7 +40,6 @@ export function getUserTickets(userId) {
                     }
 
                 })
-                console.log('ticketList', ticketList);
                 resolve(ticketList)
                 
             })
@@ -91,17 +91,22 @@ export function deleteTicket(ticketId) {
 
 
 export function addNewTicketOrderToCollection(data) {
-
+    let createdAt = {
+        date: getFirestoreTimestampFromDate(),
+    }
+    
     return new Promise((resolve, reject) => {
 
         getCollection(FIRESTORE_COLLECTION.TICKETS)
             .add({
                 ...data,
-                createdAt: getFirestoreTimestampFromDate(),
-            })
+                createdAt: createdAt.date.seconds,
+                
+            }, console.log('AddcreatedAt', createdAt)
+            )
             .then((documentReference) => {
                 resolve(documentReference);
-            })
+                })
             .catch((error) => reject(error));
     })
 }

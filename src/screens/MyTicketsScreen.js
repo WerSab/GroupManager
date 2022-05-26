@@ -19,6 +19,7 @@ import {
     FlatList,
 } from 'react-native';
 import { UserContext } from '../context/UserContextProvider';
+import { checkIfTicketsCheckingDateUpdated, localStogrageGetItem, setAsyncItem } from '../store/localStore';
 import { getUserTickets } from '../ticket-examples';
 import ErrorScreen from './ErrorScreen';
 
@@ -29,15 +30,17 @@ const MyTicketsScreen = () => {
     const [loading, setLoading] = useState(true);
     const userContext = useContext(UserContext);
     const userID = userContext.user.uid;
-
-    //const [userTickets, loading, error] = useUserTickets(userID);//stwqorzyć nowego hooka i tam wrzucić metodę
-
+        
     useEffect(() => {
+        deleteOutdatedTickets();
         getUserTickets(userID) // "pending"
             .then(result => {
                 // i know that the promise is fullfilled
                 setMyTickets(result);
                 setLoading(false);
+         
+            
+                                
             })
             .catch((error) => {
                 // i know that the promise is rejected
@@ -45,7 +48,7 @@ const MyTicketsScreen = () => {
             })
     }, []);
 
-    //const myTickets = getExtractedTickets(userID);
+    
     if (loading) {
         return (<View style={styles.buttonContainer}>
             <Text style={styles.textDark}>Ładuje się</Text>
@@ -65,6 +68,12 @@ const MyTicketsScreen = () => {
     //     }
 
     const renderItem = item => {
+        // const ticketDate = {
+        //     date: item.createdAt,
+        // }
+        // console.log('ticketDate', ticketDate)
+        // checkIfTicketsCheckingDateUpdated(ticketDate);
+        
         return (
             <View style={styles.listStyle} key={item.id}>
                 <Text style={styles.itemStyle}>
@@ -81,6 +90,7 @@ const MyTicketsScreen = () => {
     }
 
     const myTicketList = myTickets.map(ticket => renderItem(ticket));
+    
     
     return (
         <View style={styles.mainBody}>
