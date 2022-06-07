@@ -13,11 +13,12 @@ import {
 } from 'react-native';
 import { SCREEN } from '../navigation/screens';
 import { TournamentContext } from '../context/TournamentContextProvider';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const MyTournamentsListScreen = () => {
-    
-    const {tournamentList} = useContext(TournamentContext);
-                     
+
+    const { tournamentList } = useContext(TournamentContext);
+
     const navigation = useNavigation();
 
     const renderItem = item => {
@@ -34,7 +35,7 @@ const MyTournamentsListScreen = () => {
                         {item.name}
                     </Text>
                 </TouchableOpacity>
-                
+
             </View>
         )
     }
@@ -46,14 +47,15 @@ const MyTournamentsListScreen = () => {
                 <View style={styles.title}>
                     <Text style={styles.text}>Lista wydarzeń </Text>
                 </View>
-
-                <FlatList
-                    data={tournamentList}
-                    renderItem={({ item }) => renderItem(item)} //do renderItem przekazujemy wartośc funkcji renderItem
-                    keyExtractor={(item, index) => index.toString()}
-                    style={styles.container}
-                    withSearchbar={false}
-                />
+                
+                    <FlatList
+                        data={tournamentList}
+                        renderItem={({ item }) => renderItem(item)} //do renderItem przekazujemy wartośc funkcji renderItem
+                        keyExtractor={(item, index) => index.toString()}
+                        style={styles.container}
+                        withSearchbar={false}
+                    />
+                
 
             </View>
         </>

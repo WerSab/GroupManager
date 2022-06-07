@@ -19,7 +19,6 @@ const TicketPaymentSummaryScreen = ({ route }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [isDisabled, setIsDisabled] = useState(false);
     const { ticketOrderDocumentReference } = route.params;
-
     const ticketOrderDocumentId = ticketOrderDocumentReference.id;
     const ticketID = ticketOrderDocumentId.toString();
     //const presentDate = getFirestoreTimestampFromDate().seconds;
@@ -39,51 +38,76 @@ const TicketPaymentSummaryScreen = ({ route }) => {
         <>
             {/*<CustomHeader/>*/}
             <View style={styles.mainBody}>
-                <Text style={styles.text}>Podsumowanie płatności</Text>
+                <Text style={styles.text}>Podsumowanie zamówienia</Text>
 
                 {isLoading ? <Text>Is loading...</Text> : (
                     <>
                         <Text style={styles.text}>Kwota do zapłaty: {ticketOrder.price} zł.</Text>
-                        <Text style={styles.text}>Termin rezerwacji biletu upłynie za 3 dni</Text>
                     </>
                 )}
-
                 <Text style={styles.text}>Kod zamówienia: {ticketOrderDocumentId}</Text>
                 <View style={styles.buttonContainer}>
-                    <Button
-                        activeOpacity={2}
+                    <View style={styles.singleButtonView}>
+                        <Button
+                            activeOpacity={2}
 
-                        color='#47b8ce'
-                        title="Kopiuj kod"
+                            color='#47b8ce'
+                            title="Kopiuj kod"
 
-                        onPress={() => {
-                            Clipboard.setString(ticketID);
-                            Alert.alert('Kod zamówienia został pomyslnie skopiowany');                         
+                            onPress={() => {
+                                Clipboard.setString(ticketID);
+                                Alert.alert('Kod zamówienia został pomyslnie skopiowany');
                             }}
-                    />
-                    <Button
-                        activeOpacity={2}
-                        color='#47b8ce'
-                        disabled={isDisabled}
-                        title="Usuń rezerwację"
-                        onPress={() => {
-                            deleteTicket(ticketOrderDocumentId)
-                                .then(() => {
-                                    setIsDisabled(true);
-                                    Alert.alert('Zamówienie zostało pomyślnie anulowane');
-                                    navigation.navigate(SCREEN.PLAYER_TAB.MY_TOURNAMENTS);
-                                })
-                                .catch(function (err) {
-                                    Alert.alert('Wystąpił błąd', `Przepraszamy mamy problem z serwerem, prosze spróbować później`, [
-                                        { text: 'Ok' },
-                                    ]);
-                                    console.log("Deleting ticket Error error: ", err);
-                                })
-                                ;
+                        />
+                    </View>
+                    <View style={styles.singleButtonView}>
+                        <Button
+                            activeOpacity={2}
+                            color='#47b8ce'
+                            disabled={isDisabled}
+                            title="Usuń rezerwację"
+                            onPress={() => {
+                                deleteTicket(ticketOrderDocumentId)
+                                    .then(() => {
+                                        setIsDisabled(true);
+                                        Alert.alert('Zamówienie zostało pomyślnie anulowane');
+                                        navigation.navigate(SCREEN.PLAYER_TAB.MY_TOURNAMENTS);
+                                    })
+                                    .catch(function (err) {
+                                        Alert.alert('Wystąpił błąd', `Przepraszamy mamy problem z serwerem, prosze spróbować później`, [
+                                            { text: 'Ok' },
+                                        ]);
+                                        console.log("Deleting ticket Error error: ", err);
+                                    })
+                                    ;
+                            }}
+                        />
+                    </View>
+                </View>
+                <View style={styles.buttonContainer}>
+                    <View style={styles.singleButtonView}>
+                        <Button
+                            activeOpacity={2}
+                            color='#47b8ce'
+                            title="Przejdź do moich zamówień"
 
+                            onPress={() => {
+                                navigation.navigate(SCREEN.PLAYER_TAB.MY_TICKETS)
+                            }}
+                        />
+                    </View>
 
-                        }}
-                    />
+                    <View style={styles.singleButtonView}>
+                        <Button
+                            activeOpacity={2}
+                            color='#47b8ce'
+                            title="Zamknij"
+
+                            onPress={() => {
+                                navigation.navigate(SCREEN.PLAYER)
+                            }}
+                        />
+                    </View>
                 </View>
 
 
@@ -97,25 +121,26 @@ export default TicketPaymentSummaryScreen;
 const styles = StyleSheet.create({
     mainBody: {
         flex: 1,
-        //justifyContent: 'center',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         backgroundColor: '#015a92',
 
     },
     text: {
         color: 'white',
-        fontSize: 20,
-        padding: 40,
+        fontSize: 18,
+        padding: 10,
     },
     container: {
         flex: 1,
     },
     buttonContainer: {
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'space-around',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         borderRadius: 5,
-        flex: 1,
+        paddingVertical:10 
+    },
+    singleButtonView: {
+        paddingHorizontal: 10,
     },
     listStyle: {
         padding: 40,

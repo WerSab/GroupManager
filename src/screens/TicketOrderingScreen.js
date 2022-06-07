@@ -11,8 +11,8 @@
 
 // 1. tickets-cleared-at istnieje to: analizuje czy czyszczenie jest wymagane w tym momencie
 // 2. tickets-cleared-at nie istnieje: od razu wykonuje czyszczenie biletow
-import { NavigationContainer, useNavigation } from '@react-navigation/core';
-import React, { useContext, useEffect, useState, } from 'react';
+import { useNavigation } from '@react-navigation/core';
+import React, { useContext, useState, } from 'react';
 import { SCREEN } from '../navigation/screens';
 import {
     View,
@@ -46,15 +46,18 @@ const TicketOrderingScreen = ({ route }) => {
     const { user } = userContext;
     const [takenSlots, setTakenSlots] = useState(String(0));
     const [finalPrice, setFinalPrice] = useState(0);
+    const [status, setStatus] = useState();
     
     function getCalculatedOrderPrice() {
         const price = ticketType.price;
+        price!=0?setStatus('unpaid'): setStatus('paid');
         return Math.round(price * parseInt(takenSlots) * 100) / 100;//zaokrąglenie
     }
 
     const handleFinalPriceBlur = () => {
         const total = getCalculatedOrderPrice();
         setFinalPrice(total);
+
     }
     const onSaveTicketOrders = () => {
         const parsedTakenSlots = parseInt(takenSlots)
@@ -77,12 +80,14 @@ const TicketOrderingScreen = ({ route }) => {
         const userReference = getCollection(FIRESTORE_COLLECTION.USERS)
             .doc(user.uid)
 
+
         const data = {
             ticketType: ticketTypeReference,
             tournament: tournamentReference,
             user: userReference,
             slots: parsedTakenSlots,
             price: finalPrice,
+            status: status,
         };
         //blokowanie buttona zatwierdź na inactive
         addNewTicketOrderToCollection(data)
@@ -90,9 +95,10 @@ const TicketOrderingScreen = ({ route }) => {
                 navigation.navigate(SCREEN.TICKET_PAYMENT_SUMMARY,
                     {
                         ticketOrderDocumentReference,
+                        
                     }
                 )
-               
+                console.log('ticketOrderDocumentReference', ticketOrderDocumentReference);
                 //odblokowanie buttona zatwierdź
             })
             .catch(function (err) {

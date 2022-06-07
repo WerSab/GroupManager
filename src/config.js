@@ -14,4 +14,10 @@ export const FIRESTORE_ROLES = {
 }
 
 
+export const TICKET_PAYMENT_STATUS = {
+    PAID: 'paid',
+    UNPAID: 'unpaid',
+}
+
+
 

@@ -14,7 +14,7 @@ import {
     Alert,
     ScrollView,
     Button
-    
+
 } from 'react-native';
 import linkIcon from '../assets/icons/link.png';
 import { useEffect } from 'react/cjs/react.production.min';
@@ -46,7 +46,7 @@ function parsedTicketTypesDataView(element) {
                 title="Kup bilet/Zarezerwuj"
                 onPress={() => navigation.navigate(SCREEN.TICKET_ORDERING)}
             />
-            
+
         </View>
         {'\n'}
         {'\n'}
@@ -66,28 +66,6 @@ const TournamentDetails = ({ route }) => {
     const navigation = useNavigation();
 
     const parsedTicketTypesData = ticketTypesData?.map(parsedTicketTypesDataView);
-
-    // const onSavePress = () => {
-    //     const parsedBookings = parseInt(bookings);
-    //     if (isNaN(parsedBookings)) {
-    //         Alert.alert('Wystąpił błąd', `Prosze wprowadzić liczbę`, [
-    //             { text: 'Ok' },
-    //         ])
-    //         return undefined;
-    //     }
-
-    //     updateBookingsToTournament(id, parsedBookings)
-    //         .then(() => {
-    //             setIsModalVisible(!isModalVisible);
-    //         })
-    //         .catch(function (err) {
-    //             Alert.alert('Wystąpił błąd', `Przepraszamy mamy problem z serwerem, prosze spróbować później`, [
-    //                 { text: 'Ok' },
-    //             ]);
-    //             console.log("TournamentsDetailsScreen error: ", err);
-    //         })
-
-    // }
 
     return (
         <View style={styles.mainBody}>

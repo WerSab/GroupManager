@@ -22,7 +22,7 @@ export function getTournaments() {
 
             })
             .catch((error) => reject(error))
-    })
+    });
 }
 
 export function getTicketTypesFromTournament(tournament) {

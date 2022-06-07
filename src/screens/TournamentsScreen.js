@@ -30,7 +30,6 @@ const TournamentsScreen = () => {
     // Zaznaczanie takich samych wystapein -> ctrl+d
     // ctrl+z -> cofnij
     const {tournamentList, isLoaded, error , actions} = useContext(TournamentContext);
-    console.log('requeryfn:', requeryTournaments);
     const [isModalAddTournamentVisible, setIsModalAddTournamentVisible] = useState(false);
     const [nameInput, setNameInput] = useState();
     const [dateInput, setDateInput] = useState();

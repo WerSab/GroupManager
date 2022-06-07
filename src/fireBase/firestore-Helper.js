@@ -25,6 +25,10 @@ export function getFirestoreTimestampFromDate(date = new Date()) {
 export function getFirestoreTimestampFromMillis(millis = Date.now()) {
   return firebase.firestore.Timestamp.fromMillis(millis);
 }
+export function getDateFromTimestamp(timestamp){
+    return timestamp.toDate();
+}
+
 
 export function getFirestoreBatch() {
   return firestore().batch();
