@@ -17,38 +17,55 @@ import {
     TouchableOpacity,
     Image,
     FlatList,
+    Alert,
 } from 'react-native';
+import Clipboard from '@react-native-clipboard/clipboard';
+import { Button } from 'react-native-elements';
+import { getTournamentFromContext } from '../common/context-methods';
+import { TicketContext } from '../context/TicketContextProvider';
+import { TournamentContext } from '../context/TournamentContextProvider';
 import { UserContext } from '../context/UserContextProvider';
-import { checkIfTicketsCheckingDateUpdated, localStogrageGetItem, setAsyncItem } from '../store/localStore';
-import { getUserTickets } from '../ticket-examples';
+import { SCREEN } from '../navigation/screens';
+import { deleteOutdatedTickets, getCurrentDate, getDayFromMillis, setNewCleanUpDate } from '../store/localStore';
+import { getUserOrders, getUserTickets } from '../ticket-examples';
 import ErrorScreen from './ErrorScreen';
+import { ScrollView } from 'react-native-gesture-handler';
 
-const MyTicketsScreen = () => {
+const MyTicketsScreen = ({ route }) => {
     //const navigation = useNavigation();
     const [myTickets, setMyTickets] = useState();
     const [error, setError] = useState();
     const [loading, setLoading] = useState(true);
     const userContext = useContext(UserContext);
     const userID = userContext.user.uid;
-        
+    const presentDate = new Date(1653026946).getTime();
+    const navigation = useNavigation();
+
     useEffect(() => {
-        deleteOutdatedTickets();
-        getUserTickets(userID) // "pending"
+        Promise.resolve()
+            .then(() => {
+                return setNewCleanUpDate(presentDate);
+            })
+            .then(() => {
+                return deleteOutdatedTickets(userID);
+            })
+
             .then(result => {
-                // i know that the promise is fullfilled
-                setMyTickets(result);
-                setLoading(false);
-         
-            
-                                
+                console.log('deleteOutdatedTickets(userID)', result);
             })
             .catch((error) => {
-                // i know that the promise is rejected
+                setError(error);
+            })
+        getUserOrders(userID)
+            .then(result => {
+                setMyTickets(result);
+                setLoading(false);
+            })  
+            .catch((error) => {
                 setError(error);
             })
     }, []);
 
-    
     if (loading) {
         return (<View style={styles.buttonContainer}>
             <Text style={styles.textDark}>Ładuje się</Text>
@@ -62,46 +79,53 @@ const MyTicketsScreen = () => {
             <Text style={styles.text}>Nie posiadasz żadnych biletów.</Text>
         </View>)
     }
-    // const myNumber = 0;
-    //     if(!!!myNumber || myNumber !== undefined && myNumber !== null) {
-
-    //     }
-
+    const now = getCurrentDate();
     const renderItem = item => {
-        // const ticketDate = {
-        //     date: item.createdAt,
-        // }
-        // console.log('ticketDate', ticketDate)
-        // checkIfTicketsCheckingDateUpdated(ticketDate);
-        
+
         return (
             <View style={styles.listStyle} key={item.id}>
-                <Text style={styles.itemStyle}>
-                    <Text>Nazwa wydarzenia:  </Text>
-                    {'\n'}<Text>Rodzaj biletu: </Text>
-                    {'\n'}<Text>Razem do zapłaty: {item.price} zł.                     </Text>
-                    {'\n'}<Text>Ilość biletów: {item.slots} </Text>
-                    {'\n'}<Text>Zamówienie wygaśnie za: </Text>
+                  <Text style={styles.itemStyle}>
+                  
+                  <View style={styles.singleButtonView}>
+                      <Button 
+                            activeOpacity={2}
+
+                            color='#47b8ce'
+                            title="Kopiuj kod"
+
+                            onPress={() => {
+                                Clipboard.setString(item.id);
+                                Alert.alert('Kod zamówienia został pomyslnie skopiowany');
+                            }}
+                        />
+                        </View>
+                        {'\n'}<Text style={styles.textBold}>Kod zamówienia:</Text> <Text>{item.id}
+                        </Text>
+                        {'\n'}<Text style={styles.textBold}>Razem do zapłaty:</Text> <Text>{item.price}</Text> <Text>zł.</Text>
+                        {'\n'}<Text style={styles.textBold}>Ilość biletów:</Text><Text> {item.slots} </Text>
+                        {'\n'}<Text style={styles.textBold}>Zamówienie wygaśnie za:</Text><Text> {Math.round(getDayFromMillis(now - item.createdAt.seconds))} dni</Text>
 
 
-                </Text>
+                    </Text>
+                
             </View>
         )
     }
 
     const myTicketList = myTickets.map(ticket => renderItem(ticket));
-    
-    
+
     return (
         <View style={styles.mainBody}>
             <View style={styles.buttonContainer}>
-                <Text style={styles.text}>Moje Bilety:</Text>
+                <Text style={styles.text}>Moje Zamówienia:</Text>
+                <ScrollView>
                 {myTicketList}
+                </ScrollView>
                 {/* // TODO: zadanie
                 //zadanie!!!!- pomapowac bilety - zamiana struktur java scriptowych na komponenty Reactowe (żeby je mozna było wyswuetlić w komponnetach View, text itd.) */}
 
                 {/* <FlatList
-                    data={myTickets}
+                    data={myTicketList}
                     renderItem={({ item }) => renderItem(item)} 
                     keyExtractor={(item, index) => index.toString()}
                     style={styles.container}
@@ -128,11 +152,23 @@ const styles = StyleSheet.create({
         width: '100%',
 
     },
+    singleButtonView: {
+        flexDirection: 'row',
+        textAlign: 'right',
+        justifyContent: 'flex-end',
+        alignItems: 'flex-end',
+    },
 
     text: {
         color: 'white',
         fontSize: 25,
-        padding: 30,
+        padding: 10,
+    },
+    textBold: {
+        color: '#005b98',
+        fontSize: 16,
+        padding: 10,
+        fontWeight: 'bold',
     },
     textDark: {
         color: '#005b98',
@@ -144,10 +180,10 @@ const styles = StyleSheet.create({
     },
     listStyle: {
         flexDirection: 'row',
-        padding: 15,
+        padding: 5,
         marginBottom: 5,
-        marginRight: 20,
-        marginLeft: 20,
+        marginRight: 5,
+        marginLeft: 5,
         borderRadius: 5,
         textAlign: 'center',
         fontSize: 16,
@@ -157,16 +193,16 @@ const styles = StyleSheet.create({
     },
     itemStyle: {
         flexDirection: 'column',
-        width: 300,
-        padding: 15,
+        width: '95%',
+        padding: 7,
         marginBottom: 5,
         color: '#005b98',
         backgroundColor: "white",
-        marginRight: 20,
-        marginLeft: 20,
+        marginRight: 5,
+        marginLeft: 5,
         borderRadius: 5,
         textAlign: 'left',
-        fontSize: 16,
+        fontSize: 15,
         alignItems: 'center',
 
     },

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { createContext} from 'react';
-import { getTicketsOrdersList, getUserTickets } from '../ticket-examples';
+import { useTickets } from '../hooks/useTickets';
 
 
 export const TicketContext = createContext({
@@ -12,7 +12,7 @@ export const TicketContext = createContext({
     }
 });
 const TicketContextProvider = (props) => {
-    const [ticketOrdersList, isLoaded, error, requeryTicketOrdersList] = useTicket();
+    const [ticketOrdersList, isLoaded, error, requeryTicketOrdersList] = useTickets();
     const providerValue = useMemo(() =>{
         return{
             ticketOrdersList,

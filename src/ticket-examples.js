@@ -1,5 +1,5 @@
-import { FIRESTORE_COLLECTION } from './config';
-import { getCollection, getFirestoreTimestampFromDate } from './fireBase/firestore-Helper';
+import { FIRESTORE_COLLECTION, TICKET_PAYMENT_STATUS } from './config';
+import { getCollection, getFirestoreBatch, getFirestoreTimestampFromDate } from './fireBase/firestore-Helper';
 import { getDocumentReferenceById } from './fireBase/firestore-Helper';
 import { setDateTicketClearedAt } from './store/localStore';
 ///tickets/1c3KBRLcK085IUOdhOfg
@@ -7,6 +7,7 @@ import { setDateTicketClearedAt } from './store/localStore';
 export function getTicketsOrdersList() {
     return new Promise((resolve, reject) => {
         getCollection(FIRESTORE_COLLECTION.TICKETS)
+        .where('status', '==', TICKET_PAYMENT_STATUS.UNPAID)
             .get()
             .then(querySnapshot => {
                 const allDocuments = querySnapshot.docs;
@@ -27,9 +28,9 @@ export function getUserTickets(userId) {
     return new Promise((resolve, reject) => {
         console.log(`${FIRESTORE_COLLECTION.USERS}/${userId}`);
         const userRef = getDocumentReferenceById(`${FIRESTORE_COLLECTION.USERS}/${userId}`);
-
-        getCollection(FIRESTORE_COLLECTION.TICKETS)
-            .where('user', '==', userRef) // SELECT * FROM users WHERE user = ?
+                getCollection(FIRESTORE_COLLECTION.TICKETS)
+            .where('user', '==', userRef) 
+            .where('status', '==', TICKET_PAYMENT_STATUS.PAID)
             .get()
             .then(querySnapshot => {
                 const allDocuments = querySnapshot.docs;
@@ -40,14 +41,58 @@ export function getUserTickets(userId) {
                     }
 
                 })
+                    
                 resolve(ticketList)
-                
+
             })
             .catch((error) => reject(error))
 
     });
 }
 
+export function getUserOrders(userId) {
+    return new Promise((resolve, reject) => {
+        console.log(`${FIRESTORE_COLLECTION.USERS}/${userId}`);
+        const userRef = getDocumentReferenceById(`${FIRESTORE_COLLECTION.USERS}/${userId}`);
+                getCollection(FIRESTORE_COLLECTION.TICKETS)
+            .where('user', '==', userRef)
+            .where('status', '==', TICKET_PAYMENT_STATUS.UNPAID)
+            .get()
+            .then(querySnapshot => {
+                const allDocuments = querySnapshot.docs;
+                const ticketList = allDocuments.map(function (collectionElement) {
+                    return {
+                        id: collectionElement.id,
+                        ...collectionElement.data(),
+                    }
+
+                })
+                    
+                resolve(ticketList)
+
+            })
+            .catch((error) => reject(error))
+
+    });
+}
+
+
+export function bulkDeleteTicket(documentReferences) {
+    return new Promise((reject) => {
+        const batch = getFirestoreBatch();
+        documentReferences.forEach(element => {
+            batch.delete(element);
+        });
+        batch.commit()
+            .then(
+                console.log('ticket order deleted')
+            )
+            .catch((error) => {
+                console.log('deleting ticket order error ocured');
+                reject(error);
+            })
+    })
+}
 
 export function extractTicketsInfo(tickets) {
     const ticketPromises = tickets.map(function (element) {
@@ -72,6 +117,9 @@ export function extractTicketsInfo(tickets) {
 
 
 export function deleteTicket(ticketId) {
+    // tworzysz batcha
+    // batch.delete(ref)
+    // batch.commit();
     return getCollection(FIRESTORE_COLLECTION.TICKETS).doc(ticketId).delete();
 }
 
@@ -91,22 +139,20 @@ export function deleteTicket(ticketId) {
 
 
 export function addNewTicketOrderToCollection(data) {
-    let createdAt = {
-        date: getFirestoreTimestampFromDate(),
-    }
-    
+    const createdAt = getFirestoreTimestampFromDate();
+
     return new Promise((resolve, reject) => {
 
         getCollection(FIRESTORE_COLLECTION.TICKETS)
             .add({
                 ...data,
-                createdAt: createdAt.date.seconds,
-                
+                createdAt: createdAt,
+
             }, console.log('AddcreatedAt', createdAt)
             )
             .then((documentReference) => {
                 resolve(documentReference);
-                })
+            })
             .catch((error) => reject(error));
     })
 }

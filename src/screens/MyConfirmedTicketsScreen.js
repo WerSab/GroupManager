@@ -1,33 +1,50 @@
+//odliczanie czasu=> w local stroage pobrac info kiedy był czyszczenie starych bietów (pamiętac, że na początku ma być null lub zero)
+
+// pobieram informacje ze storage'u kiedy byly "czyszczone" bilety (bedzie ona przechowywana pod kluczem np. tickets-cleared-at: DATE | undefined)
+// 1. tickets-cleared-at istnieje to: analizuje czy czyszczenie jest wymagane w tym momencie
+// 2. tickets-cleared-at nie istnieje: od razu wykonuje czyszczenie biletow
+
+
+// tickets -> tournament(ref) -> tournament(ref).id
+// tickets.where(tournament == 'tournaments/tournamentId');
+
 import { useNavigation } from '@react-navigation/core';
 import React, { useContext, useEffect, useState } from 'react';
-import { SCREEN } from '../navigation/screens';
 import {
     View,
     Text,
     StyleSheet,
     TouchableOpacity,
     Image,
+    FlatList,
     Alert,
 } from 'react-native';
-import { getTicketsOrdersList } from '../ticket-examples';
+import Clipboard from '@react-native-clipboard/clipboard';
 import { Button } from 'react-native-elements';
+import { getTournamentFromContext } from '../common/context-methods';
+import { TicketContext } from '../context/TicketContextProvider';
+import { TournamentContext } from '../context/TournamentContextProvider';
+import { UserContext } from '../context/UserContextProvider';
+import { SCREEN } from '../navigation/screens';
+import { deleteOutdatedTickets, getCurrentDate, getDayFromMillis, setNewCleanUpDate } from '../store/localStore';
+import { getUserTickets } from '../ticket-examples';
+import ErrorScreen from './ErrorScreen';
 import { ScrollView } from 'react-native-gesture-handler';
 
-
-
-const BookingsListScreen = () => {
-    //const navigation = useNavigation();
+const MyConfirmedTicketsScreen = ({ route }) => {
     const [myTickets, setMyTickets] = useState();
     const [error, setError] = useState();
     const [loading, setLoading] = useState(true);
-
+    const userContext = useContext(UserContext);
+    const userID = userContext.user.uid;
+    
     useEffect(() => {
         Promise.resolve()
-        getTicketsOrdersList()
+            getUserTickets(userID)
             .then(result => {
                 setMyTickets(result);
                 setLoading(false);
-            })
+            })  
             .catch((error) => {
                 setError(error);
             })
@@ -46,39 +63,17 @@ const BookingsListScreen = () => {
             <Text style={styles.text}>Nie posiadasz żadnych biletów.</Text>
         </View>)
     }
-
     const renderItem = item => {
 
         return (
             <View style={styles.listStyle} key={item.id}>
-                <Text style={styles.itemStyle}>
-
-                    <View style={styles.singleButtonView}>
-
-                    </View>
-                    {'\n'}<Text style={styles.textBold}>Kod zamówienia:</Text>
-                    <Text> {item.id}
+                  <Text style={styles.itemStyle}>
+                        {'\n'}<Text style={styles.textBold}>Kod zamówienia:</Text> <Text>{item.id}</Text>
+                        {'\n'}<Text style={styles.textBold}>Koszt biletów:</Text> <Text>{item.price}</Text> <Text>zł.</Text>
+                        {'\n'}<Text style={styles.textBold}>Ilość biletów:</Text><Text> {item.slots} </Text>
+                      
                     </Text>
-                    {'\n'}<Text style={styles.textBold}>Razem do zapłaty:</Text>
-                    <Text> {item.price}</Text> <Text>zł.</Text>
-                    </Text>
-                    <View>
-                        <Button
-                            activeOpacity={2}
-
-                            color='#47b8ce'
-                            title="Zatwierdź"
-
-                            onPress={() => {
-                                Clipboard.setString(item.id);
-                                Alert.alert('Kod zamówienia został pomyslnie skopiowany');
-                            }}
-                        />
-                    </View>
-
-
                 
-
             </View>
         )
     }
@@ -88,17 +83,26 @@ const BookingsListScreen = () => {
     return (
         <View style={styles.mainBody}>
             <View style={styles.buttonContainer}>
-                <Text style={styles.text}>Zamówienia:</Text>
+                <Text style={styles.text}>Moje Bilety:</Text>
                 <ScrollView>
-                    {myTicketList}
+                {myTicketList}
                 </ScrollView>
-                
+                {/* // TODO: zadanie
+                //zadanie!!!!- pomapowac bilety - zamiana struktur java scriptowych na komponenty Reactowe (żeby je mozna było wyswuetlić w komponnetach View, text itd.) */}
+
+                {/* <FlatList
+                    data={myTicketList}
+                    renderItem={({ item }) => renderItem(item)} 
+                    keyExtractor={(item, index) => index.toString()}
+                    style={styles.container}
+                    withSearchbar={false}
+                /> */}
             </View>
         </View>
     )
 }
 
-export default BookingsListScreen;
+export default MyConfirmedTicketsScreen;
 
 const styles = StyleSheet.create({
     mainBody: {
@@ -155,7 +159,7 @@ const styles = StyleSheet.create({
     },
     itemStyle: {
         flexDirection: 'column',
-        width: '65%',
+        width: '95%',
         padding: 7,
         marginBottom: 5,
         color: '#005b98',

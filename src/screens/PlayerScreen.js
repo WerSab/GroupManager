@@ -56,8 +56,7 @@ const PlayerScreen = () => {
             <View style={styles.mainBody}>
                 <View style={styles.buttonContainer}>
                     <Text style={styles.text}>Witaj  {currentUser.data.firstName} {currentUser.data.lastName}
-                        {'\n'}{currentUser.data.role}
-                    </Text>
+                                          </Text>
                     <TouchableOpacity
 
                         onPress={isSigningOut ? undefined : () => {

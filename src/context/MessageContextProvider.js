@@ -24,14 +24,6 @@ const MessagesContextProvider = (props) => {
         }
         
     }, [messagesList, isLoaded, error, requeryMessages])
-
-//    const[message, ] 
-//     const messagesContextValue = context;
-//     messagesContextValue.messagesList;
-//    const requeryMessages =  messagesContextValue.actions.requeryMessages;
-   //requeryMessages();
-  
-
     return (
 
         <MessagesContext.Provider value={providerValue}>

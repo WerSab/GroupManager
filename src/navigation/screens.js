@@ -3,7 +3,8 @@ export const SCREEN = {
         MY_TOURNAMENTS: 'Moje turnieje',
         MY_MESSAGES:  'Moje wiadomości',
         MY_PROFILE: 'Mój profil',
-        MY_TICKETS: 'Moje bilety',
+        MY_TICKETS: 'Moje zamówienia',
+        MY_CONFIRMED_TICKETS: 'Moje bilety'
                
         
         
