@@ -38,25 +38,18 @@ const MyTicketsScreen = ({ route }) => {
     const [loading, setLoading] = useState(true);
     const userContext = useContext(UserContext);
     const userID = userContext.user.uid;
-    const presentDate = new Date(1653026946).getTime();
+    
     const navigation = useNavigation();
 
     useEffect(() => {
-        Promise.resolve()
-            .then(() => {
-                return setNewCleanUpDate(presentDate);
-            })
-            .then(() => {
+        Promise.resolve()//przy łańcuchu wywołań
+           .then(() => {
                 return deleteOutdatedTickets(userID);
             })
-
-            .then(result => {
-                console.log('deleteOutdatedTickets(userID)', result);
-            })
-            .catch((error) => {
-                setError(error);
-            })
-        getUserOrders(userID)
+            .then(()=>{
+                return getUserOrders(userID);
+            }
+            )
             .then(result => {
                 setMyTickets(result);
                 setLoading(false);

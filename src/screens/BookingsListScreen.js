@@ -9,7 +9,7 @@ import {
     Image,
     Alert,
 } from 'react-native';
-import { getTicketsOrdersList } from '../ticket-examples';
+import { getTicketsOrdersList, updateTicketPaymentStatus, updateTicketPaymentStatusToPaid, updateTicketPaymentStatusToUnPaid } from '../ticket-examples';
 import { Button } from 'react-native-elements';
 import { ScrollView } from 'react-native-gesture-handler';
 
@@ -22,7 +22,6 @@ const BookingsListScreen = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        Promise.resolve()
         getTicketsOrdersList()
             .then(result => {
                 setMyTickets(result);
@@ -70,8 +69,19 @@ const BookingsListScreen = () => {
                             title="Zatwierdź"
 
                             onPress={() => {
-                                Clipboard.setString(item.id);
-                                Alert.alert('Kod zamówienia został pomyslnie skopiowany');
+                                updateTicketPaymentStatusToPaid(item.id)
+                            }}
+                        />
+                    </View>
+                    <View>
+                        <Button
+                            activeOpacity={2}
+
+                            color='#47b8ce'
+                            title="Cofnij zatwierdź"
+
+                            onPress={() => {
+                                updateTicketPaymentStatusToUnPaid(item.id)
                             }}
                         />
                     </View>

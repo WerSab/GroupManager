@@ -22,6 +22,18 @@ import { useTournamentTicketTypes } from '../hooks/useTournamentTicketTypes';
 import { getTournamentFromContext } from '../common/context-methods';
 import { useNavigation } from '@react-navigation/core';
 import { SCREEN } from '../navigation/screens';
+import { convertMilisToReadabletime } from '../common/time-methods';
+import { getDateFromTimestamp } from '../fireBase/firestore-Helper';
+import dayjs from 'dayjs';
+import { getEventDuration } from './common/tournament-methods';
+
+const EVENT_DURATION_FORMAT = 'HH:mm';
+
+const parseEventDurationTime = (tournament) => {
+    const eventDuration = getEventDuration(tournament, EVENT_DURATION_FORMAT);
+    const [hours, minutes] = eventDuration.split(':');
+    return `${hours} godzin, ${minutes} minut`;
+}
 
 const MyTournamentDetails = ({ route }) => {
     //const { id } = route.params;- ten lub poniższy sposób
@@ -31,7 +43,12 @@ const MyTournamentDetails = ({ route }) => {
     const [ticketTypesData, loading, error] = useTournamentTicketTypes(tournament);
     const navigation = useNavigation();
     const parsedTicketTypesData = ticketTypesData?.map(parsedTicketTypesDataView);
+    const startTime = getDateFromTimestamp(tournament.startDate);
+    const startTimeFormated = dayjs(startTime).format('DD/MM/YYYY HH:mm');
+    const eventDuration = parseEventDurationTime(tournament);
+
     console.log('tournamentContext', tournamentContext)
+    console.log('getEventDuration', getEventDuration(tournament, EVENT_DURATION_FORMAT));
     function parsedTicketTypesDataView(element) {
         return <Text style={styles.listStyle} key={element.id}>
             {
@@ -72,9 +89,8 @@ const MyTournamentDetails = ({ route }) => {
                     <View >
 
                         <Text style={styles.textDark}>Miejsce:  {tournament.place}</Text>
-                        <Text style={styles.textDark}>Termin: {tournament.date}</Text>
-                        <Text style={styles.textDark}>Godzina rozpoczęcia: {tournament.startTime}</Text>
-                        <Text style={styles.textDark}>Czas trwania: {tournament.interval}</Text>
+                        <Text style={styles.textDark}>Godzina rozpoczęcia: {startTimeFormated}</Text>
+                        <Text style={styles.textDark}>Czas trwania: {eventDuration}</Text>
                         <TouchableOpacity
                             onPress={() => Linking.openURL(tournament.link)}//(then i catch/ obsłużyć w promisie/sprawdzić Regex/https://regex101.com/https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url#:~:text=javascript%3Avoid%20%280%29%20is%20valid%20URL%2C%20although%20not%20an,DNS%29%20https%3A%2F%2Fexample..com%20is%20valid%20URL%2C%20same%20as%20above
                         >

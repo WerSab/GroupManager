@@ -28,6 +28,8 @@ import { SCREEN } from '../navigation/screens';
 import { CustomButton } from '../styles/CustomButton';
 import TicketOrderingScreen from './TicketOrderingScreen';
 
+const EVENT_DURATION_FORMAT = 'HH:mm';
+
 function parsedTicketTypesDataView(element) {
     const navigation = useNavigation();
     console.log('navigation', navigation)
@@ -37,21 +39,7 @@ function parsedTicketTypesDataView(element) {
         Cena: ${element.price}  
         Ilość biletów: ${element.slots}`
         }
-        {'\n'}
-        {'\n'}
-        <View >
-            <Button
-                activeOpacity={0.5}
-                background='#005b98'
-                title="Kup bilet/Zarezerwuj"
-                onPress={() => navigation.navigate(SCREEN.TICKET_ORDERING)}
-            />
-
-        </View>
-        {'\n'}
-        {'\n'}
-
-    </Text>
+        </Text>
 }
 
 
@@ -88,6 +76,11 @@ const TournamentDetails = ({ route }) => {
                         <Text style={styles.textDark}>Termin: {tournament.date}</Text>
                         <Text style={styles.textDark}>Godzina rozpoczęcia: {tournament.startTime}</Text>
                         <Text style={styles.textDark}>Czas trwania: {tournament.interval}</Text>
+                        <Text style={styles.textDark}>Ilość wszystkich miejsc: {tournament.interval}</Text>
+                        <Text style={styles.textDark}>Sprzedane bilety: {tournament.interval}</Text>
+                        <Text style={styles.textDark}>Rezerwacje: {tournament.interval}</Text>
+                        <Text style={styles.textDark}>Ilośc wolnych miejsc: {tournament.interval}</Text>
+
                         <TouchableOpacity
                             onPress={() => Linking.openURL(tournament.link)}//(then i catch/ obsłużyć w promisie/sprawdzić Regex/https://regex101.com/https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url#:~:text=javascript%3Avoid%20%280%29%20is%20valid%20URL%2C%20although%20not%20an,DNS%29%20https%3A%2F%2Fexample..com%20is%20valid%20URL%2C%20same%20as%20above
                         >

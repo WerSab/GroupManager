@@ -29,7 +29,7 @@ export function getDateFromTimestamp(timestamp){
     return timestamp.toDate();
 }
 
-
 export function getFirestoreBatch() {
   return firestore().batch();
 }
+

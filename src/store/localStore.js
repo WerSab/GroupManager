@@ -7,7 +7,7 @@ import { getCollection, getDocumentReferenceById, getFirestoreTimestampFromMilli
 import { bulkDeleteTicket, deleteTicket } from '../ticket-examples';
 
 const THREE_DAYS_MILLIS = 259_200_000;
-const nowMillis = new Date().getTime();
+
 
 export function getCurrentDate(nowMillis = Date.now()) {
     return nowMillis;
@@ -72,6 +72,7 @@ const deleteOldUserTickets = (userId, nowMillis) => {
 // tab.fn();
 
 export const deleteOutdatedTickets = (userID) => {
+    const nowMillis = new Date().getTime();
     return new Promise((resolve, reject) => {
         console.log('deleteOutdatedTickets ');
         getLatestCleanupDate()
@@ -85,12 +86,16 @@ export const deleteOutdatedTickets = (userID) => {
             })
             .then(deltaTime => {
                 console.log('deltaTime ', deltaTime);
-                if (deltaTime && deltaTime >= THREE_DAYS_MILLIS) {
-                    resolve(deleteOldUserTickets(userID, nowMillis));
+                if (!deltaTime || deltaTime >= THREE_DAYS_MILLIS) {
+                    deleteOldUserTickets(userID, nowMillis)
+                        .then(() => {
+                            return setNewCleanUpDate(nowMillis);
+                        })
+                        .then(() => {
+                            resolve();
+                        });
                 }
-            }
-
-            )
+            })
             .catch(reject);
     })
 }
