@@ -64,6 +64,7 @@ export function addParticipantToTournament(tournamentId, userId) {
 }
 
 export function deleteTournament(tournamentId) {
+    // deletedAt: timestamp firestore
     return getCollection(FIRESTORE_COLLECTION.TOURNAMENTS).doc(tournamentId).delete();
 }
 // dopisać funkcję zliczania rezerwacji
@@ -122,7 +123,7 @@ export function addNewTournamentToCollection(tournament, ticketTypes) {
         const ticketTypeResponse = [];
         for (let i = 0; i < ticketTypesLength; i++) {
 
-            ticketTypesCollectionReference.doc()
+            const ticketTypeReference=ticketTypesCollectionReference.doc()
 
             batch.set(ticketTypeReference, ticketTypes[i]);
 

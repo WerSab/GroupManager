@@ -68,6 +68,13 @@ const TicketOrderingScreen = ({ route }) => {
             return;
         }
 
+        // tickets = [];
+        // firstTicket = tickets[0];
+        // const promise = firstTicket.tournament.get();
+        // promise.then(documentSnapshot => { // https://rnfirebase.io/reference/firestore/documentsnapshot
+            // tournamentDocumentData.data(),
+        // })
+
         // tournaments -> [doc1,doc2,doc3] -> ticketTypes -> [doc1,doc2,doc3]
         // tournaments -> doc(id) -> ticketType(id)
         const ticketTypeReference = getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)

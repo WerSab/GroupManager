@@ -78,14 +78,20 @@ export function getUserOrders(userId) {
 
 
 export function bulkDeleteTicket(documentReferences) {
-    return new Promise((reject) => {
+    return new Promise((resolve, reject) => {
         const batch = getFirestoreBatch();
         documentReferences.forEach(element => {
             batch.delete(element);
         });
         batch.commit()
             .then(
-                console.log('ticket order deleted')
+                ()=>{
+                    
+                    const documentIds = documentReferences.map(element=>element.id);
+                    console.log('Bulk delete ticket order', documentIds);
+                    resolve();
+                }
+                
             )
             .catch((error) => {
                 console.log('deleting ticket order error ocured');
@@ -121,6 +127,23 @@ export function deleteTicket(ticketId) {
     // batch.delete(ref)
     // batch.commit();
     return getCollection(FIRESTORE_COLLECTION.TICKETS).doc(ticketId).delete();
+}
+export function updateTicketPaymentStatusToPaid(ticketOrderID) {
+    return getCollection(FIRESTORE_COLLECTION.TICKETS)
+        .doc(ticketOrderID)
+        .update({
+            status: 'paid',
+        })
+
+}
+
+export function updateTicketPaymentStatusToUnPaid(ticketOrderID) {
+    return getCollection(FIRESTORE_COLLECTION.TICKETS)
+        .doc(ticketOrderID)
+        .update({
+            status: 'unpaid',
+        })
+
 }
 
 

@@ -16,13 +16,18 @@ import addIcon from '../assets/icons/add.png';
 import addIconDark from '../assets/icons/add_dark.png';
 import deleteIcon from '../assets/icons/delete.png';
 import { Picker } from '@react-native-picker/picker';
-import { removeFromArray } from '../fireBase/firestore-Helper';
+import { getFirestoreTimestampFromDate, removeFromArray } from '../fireBase/firestore-Helper';
 import { SCREEN } from '../navigation/screens';
 import { addNewTournamentToCollection, deleteTournament } from '../tournaments-examples';
 import { TournamentContext } from '../context/TournamentContextProvider';
 import { ticketTypePresets } from '../fireBase/ticket-types-presets';
 import { TicketTypeCreator } from './TicketTypeCreator';
 import { validateTournament, validateTournmanetFields } from '../fireBase/firestore-model-validators';
+import DatePicker from 'react-native-date-picker';
+
+const MIN_EVENT_DURATION_IN_MILLIS = 60*1000;
+
+
 
 
 
@@ -32,16 +37,18 @@ const TournamentsScreen = () => {
     const {tournamentList, isLoaded, error , actions} = useContext(TournamentContext);
     const [isModalAddTournamentVisible, setIsModalAddTournamentVisible] = useState(false);
     const [nameInput, setNameInput] = useState();
-    const [dateInput, setDateInput] = useState();
-    const [startTimeInput, setStartTimeInput] = useState();
-    const [intervalInput, setIntervalInput] = useState();
     const [placeInput, setPlaceInput] = useState();
     const [linkInput, setLinkInput] = useState('');
     const [tournamentCategoryInput, setTournamentCategoryInput] = useState('Kategoria');
     const [isCreatorVisible, setIsCreatorVisible] = useState(true);
     const [ticketTypes, setTicketTypes] = useState([]);
+    const [date, setDate] = useState(new Date());
+    const [endDate, setEndDate]= useState(new Date());
+    
+    const minimumEndDate= new Date(date.getTime()+MIN_EVENT_DURATION_IN_MILLIS);
 
-
+console.log('date', date);
+console.log('endDate', endDate);
     const handleTicketTypeAdd = (ticketType) => {
         setTicketTypes([...ticketTypes, ticketType]);
         setIsCreatorVisible(false);
@@ -50,9 +57,8 @@ const TournamentsScreen = () => {
 
     const clearInputs = () => {
         setNameInput('');
-        setDateInput('');
-        setStartTimeInput('');
-        setIntervalInput('');
+        setDate(new Date());
+        setDate(date);
         setPlaceInput('');
         setTournamentCategoryInput('Kategoria');
         setTicketTypes([]);
@@ -83,9 +89,8 @@ const TournamentsScreen = () => {
 
             const tournament = {
                 name: nameInput,
-                date: dateInput,
-                startTime: startTimeInput,
-                interval: intervalInput,
+                startDate: date,
+                endDate: endDate,
                 place: placeInput,
                 tournamentCategory: tournamentCategoryInput,
                 link: linkInput,
@@ -102,7 +107,7 @@ const TournamentsScreen = () => {
                     setIsModalAddTournamentVisible(!isModalAddTournamentVisible);
                     clearInputs();
                     setIsCreatorVisible(true);
-                    actions.requeryTournaments();
+                    actions.requeryTournaments;
                 })
 
                 .catch(function (err) {
@@ -191,26 +196,18 @@ const TournamentsScreen = () => {
                                     value={placeInput}
                                     placeholder="Miejsce..."
                                 />
+                                <View style={styles.datePicker}>
+                                <Text style={styles.textDark}>Data rozpoczęcia</Text>
+                                <DatePicker date={date} onDateChange={setDate} minimumDate={new Date()} />
+                                </View>
+                                
+                                <View>
+                                <Text style={styles.textDark}>Data zakończenia</Text> 
+                                <DatePicker date={minimumEndDate} onDateChange={setEndDate} minimumDate={minimumEndDate} />
+                                </View>
+                                
                                 <TextInput
                                     style={styles.textDark}
-                                    onChangeText={setDateInput}
-                                    value={dateInput}
-                                    placeholder="Termin..."
-                                />
-                                <TextInput
-                                    style={styles.textDark}
-                                    onChangeText={setStartTimeInput}
-                                    value={startTimeInput}
-                                    placeholder="Godzina rozpoczęcia..."
-                                />
-                                <TextInput
-                                    style={styles.textDark}
-                                    onChangeText={setIntervalInput}
-                                    value={intervalInput}
-                                    placeholder="Czas trwania..."
-                                />
-                                <TextInput
-                                    style={styles.input}
                                     onChangeText={setLinkInput}
                                     value={linkInput}
                                     placeholder="Link do strony..."
@@ -415,5 +412,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 20,
     },
+    datePicker:{
+        paddingVertical: 40,
+    }
 
 })

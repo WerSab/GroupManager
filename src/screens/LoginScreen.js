@@ -57,8 +57,7 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <View style={styles.mainBody}>
-       <Text style={styles.textStyle}>Witamy w aplikacji 
-       {'\n'}
+       <Text style={styles.textStyle}>
           Centrum Kultury i Sportu w Skawinie</Text>
       <ScrollView
         keyboardShouldPersistTaps="handled"
@@ -198,7 +197,7 @@ const styles = StyleSheet.create({
     color: '#3175ab',
     textAlign: 'center',
     fontWeight: 'bold',
-    fontSize: 25,
+    fontSize: 23,
     alignSelf: 'center',
     padding: 60,
   },
