@@ -22,18 +22,11 @@ import { useTournamentTicketTypes } from '../hooks/useTournamentTicketTypes';
 import { getTournamentFromContext } from '../common/context-methods';
 import { useNavigation } from '@react-navigation/core';
 import { SCREEN } from '../navigation/screens';
-import { convertMilisToReadabletime } from '../common/time-methods';
+import { convertMilisToReadabletime, EVENT_DURATION_FORMAT, parseEventDurationTime } from '../common/time-methods';
 import { getDateFromTimestamp } from '../fireBase/firestore-Helper';
 import dayjs from 'dayjs';
 import { getEventDuration } from './common/tournament-methods';
 
-const EVENT_DURATION_FORMAT = 'HH:mm';
-
-const parseEventDurationTime = (tournament) => {
-    const eventDuration = getEventDuration(tournament, EVENT_DURATION_FORMAT);
-    const [hours, minutes] = eventDuration.split(':');
-    return `${hours} godzin, ${minutes} minut`;
-}
 
 const MyTournamentDetails = ({ route }) => {
     //const { id } = route.params;- ten lub poniższy sposób
