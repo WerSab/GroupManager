@@ -20,6 +20,8 @@ const BookingsListScreen = () => {
     const [myTickets, setMyTickets] = useState();
     const [error, setError] = useState();
     const [loading, setLoading] = useState(true);
+    const [isButtonConfirmedDisabled, setIsButtonConfirmedDisabled] = useState(false)
+    const [isButtonUndoDisabled, setIsButtonUndoDisabled] = useState(false)
 
     useEffect(() => {
         getTicketsOrdersList()
@@ -60,34 +62,37 @@ const BookingsListScreen = () => {
                     </Text>
                     {'\n'}<Text style={styles.textBold}>Razem do zapłaty:</Text>
                     <Text> {item.price}</Text> <Text>zł.</Text>
-                    </Text>
-                    <View>
-                        <Button
-                            activeOpacity={2}
+                </Text>
+                <View style={styles.itemView}>
+                    <Button
+                        activeOpacity={2}
+                        color='#47b8ce'
+                        title="Zatwierdź"
+                        disabled={isButtonConfirmedDisabled}
+                        onPress={() => {
+                            updateTicketPaymentStatusToPaid(item.id);
+                            setIsButtonConfirmedDisabled(true);
+                            setIsButtonUndoDisabled(false);
+                        }}
+                    />
 
-                            color='#47b8ce'
-                            title="Zatwierdź"
+                    <Button
+                        activeOpacity={2}
 
-                            onPress={() => {
-                                updateTicketPaymentStatusToPaid(item.id)
-                            }}
-                        />
-                    </View>
-                    <View>
-                        <Button
-                            activeOpacity={2}
+                        color='#47b8ce'
+                        title="Cofnij zatwierdź"
+                        disabled={isButtonUndoDisabled}
+                        onPress={() => {
+                            updateTicketPaymentStatusToUnPaid(item.id);
+                            setIsButtonUndoDisabled(true);
+                            setIsButtonConfirmedDisabled(false);
+                        }}
+                    />
 
-                            color='#47b8ce'
-                            title="Cofnij zatwierdź"
-
-                            onPress={() => {
-                                updateTicketPaymentStatusToUnPaid(item.id)
-                            }}
-                        />
-                    </View>
+                </View>
 
 
-                
+
 
             </View>
         )
@@ -102,7 +107,7 @@ const BookingsListScreen = () => {
                 <ScrollView>
                     {myTicketList}
                 </ScrollView>
-                
+
             </View>
         </View>
     )
@@ -129,6 +134,12 @@ const styles = StyleSheet.create({
         textAlign: 'right',
         justifyContent: 'flex-end',
         alignItems: 'flex-end',
+    },
+
+    itemView: {
+        flexDirection: 'column',
+        padding: 10, 
+                 
     },
 
     text: {
