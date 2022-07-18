@@ -85,19 +85,7 @@ const TicketPaymentSummaryScreen = ({ route }) => {
                     </View>
                 </View>
                 <View style={styles.buttonContainer}>
-                    <View style={styles.singleButtonView}>
-                        <Button
-                            activeOpacity={2}
-                            color='#47b8ce'
-                            title="Przejdź do moich zamówień"
-
-                            onPress={() => {
-                                navigation.navigate(SCREEN.PLAYER_TAB.MY_TICKETS)
-                            }}
-                        />
-                    </View>
-
-                    <View style={styles.singleButtonView}>
+                        <View style={styles.singleButtonView}>
                         <Button
                             activeOpacity={2}
                             color='#47b8ce'

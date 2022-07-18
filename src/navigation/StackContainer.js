@@ -30,6 +30,7 @@ import MyTournamentDetails from '../screens/MyTournamentDetailsScreen';
 import TicketOrderingScreen from '../screens/TicketOrderingScreen';
 import TicketPaymentSummaryScreen from '../screens/TicketPaymentSummaryScreen';
 import MyConfirmedTicketsScreen from '../screens/MyConfirmedTicketsScreen';
+import PaidTicketListScreen from '../screens/PaidTicketsListScreen';
 
 
 
@@ -237,6 +238,15 @@ function StackContainer() {
                  <Stack.Screen
                   name={SCREEN.TICKET_ORDERING}
                   component={TicketOrderingScreen}
+                  options={{
+                    headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
+                    headerStyle: { backgroundColor: 'white', flex: 1, alignSelf: 'center', height: 100 },
+                    headerTitleAlign: 'center'
+                  }}
+                />
+                 <Stack.Screen
+                  name={SCREEN.MANAGER_TAB.PAID_TICKETS_LIST}
+                  component={PaidTicketListScreen}
                   options={{
                     headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
                     headerStyle: { backgroundColor: 'white', flex: 1, alignSelf: 'center', height: 100 },

@@ -7,7 +7,7 @@ import { setDateTicketClearedAt } from './store/localStore';
 export function getTicketsOrdersList() {
     return new Promise((resolve, reject) => {
         getCollection(FIRESTORE_COLLECTION.TICKETS)
-        .where('status', '==', TICKET_PAYMENT_STATUS.UNPAID)
+            .where('status', '==', TICKET_PAYMENT_STATUS.UNPAID)
             .get()
             .then(querySnapshot => {
                 const allDocuments = querySnapshot.docs;
@@ -28,8 +28,8 @@ export function getUserTickets(userId) {
     return new Promise((resolve, reject) => {
         console.log(`${FIRESTORE_COLLECTION.USERS}/${userId}`);
         const userRef = getDocumentReferenceById(`${FIRESTORE_COLLECTION.USERS}/${userId}`);
-                getCollection(FIRESTORE_COLLECTION.TICKETS)
-            .where('user', '==', userRef) 
+        getCollection(FIRESTORE_COLLECTION.TICKETS)
+            .where('user', '==', userRef)
             .where('status', '==', TICKET_PAYMENT_STATUS.PAID)
             .get()
             .then(querySnapshot => {
@@ -41,7 +41,7 @@ export function getUserTickets(userId) {
                     }
 
                 })
-                    
+
                 resolve(ticketList)
 
             })
@@ -54,7 +54,7 @@ export function getUserOrders(userId) {
     return new Promise((resolve, reject) => {
         console.log(`${FIRESTORE_COLLECTION.USERS}/${userId}`);
         const userRef = getDocumentReferenceById(`${FIRESTORE_COLLECTION.USERS}/${userId}`);
-                getCollection(FIRESTORE_COLLECTION.TICKETS)
+        getCollection(FIRESTORE_COLLECTION.TICKETS)
             .where('user', '==', userRef)
             .where('status', '==', TICKET_PAYMENT_STATUS.UNPAID)
             .get()
@@ -67,7 +67,7 @@ export function getUserOrders(userId) {
                     }
 
                 })
-                    
+
                 resolve(ticketList)
 
             })
@@ -85,13 +85,13 @@ export function bulkDeleteTicket(documentReferences) {
         });
         batch.commit()
             .then(
-                ()=>{
-                    
-                    const documentIds = documentReferences.map(element=>element.id);
+                () => {
+
+                    const documentIds = documentReferences.map(element => element.id);
                     console.log('Bulk delete ticket order', documentIds);
                     resolve();
                 }
-                
+
             )
             .catch((error) => {
                 console.log('deleting ticket order error ocured');
@@ -119,6 +119,29 @@ export function extractTicketsInfo(tickets) {
 
     });
     return Promise.all(ticketPromises);
+}
+
+export function getPaidTickets() {
+    return new Promise((resolve, reject) => {
+        getCollection(FIRESTORE_COLLECTION.TICKETS)
+            .where('status', '==', TICKET_PAYMENT_STATUS.PAID)
+            .get()
+            .then(querySnapshot => {
+                const allDocuments = querySnapshot.docs;
+                const ticketList = allDocuments.map(function (collectionElement) {
+                    return {
+                        id: collectionElement.id,
+                        ...collectionElement.data(),
+                    }
+
+                })
+
+                resolve(ticketList)
+
+            })
+            .catch((error) => reject(error))
+
+    });
 }
 
 
@@ -161,23 +184,73 @@ export function updateTicketPaymentStatusToUnPaid(ticketOrderID) {
 //odczytywanie promisa: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
 
 
+/**
+ * @param data - 
+ * @return 
+* const {
+* user,
+* tournament,
+* tickets:[ticket1, ticket2]
+}  
+*/
 export function addNewTicketOrderToCollection(data) {
+    //parametr data to tablica z obiektami gdzie obiekt to np. 3 bilety ulgowe lub dwa normalne
+    //tworzymy dokumenty biletowe, które zapisujemy najpierw w kolekcji tickets, 
+    //referencje do zapisanych biletów zapisuję w kolekcji orders
+    //wszystko co dodajemy to dodajemy na poziome transakcji
+
+    // plyta 10zl 50 - x
+    // cena ulgowa = podaj cene
+    // ilosc miejsc = podaj dostepna ilosc miejsc
+    // tworze obiekt y na podstawie x
+    // [x,y]
+
     const createdAt = getFirestoreTimestampFromDate();
-
+// const map = new Map();
+// // const obj = {
+//     key: 'v',
+// };
     return new Promise((resolve, reject) => {
+        const batch = getFirestoreBatch();
 
-        getCollection(FIRESTORE_COLLECTION.TICKETS)
-            .add({
-                ...data,
-                createdAt: createdAt,
-
-            }, console.log('AddcreatedAt', createdAt)
-            )
-            .then((documentReference) => {
-                resolve(documentReference);
-            })
-            .catch((error) => reject(error));
+        const ticketsCollectionReference = getCollection(FIRESTORE_COLLECTION.TICKETS);
+        const ordersCollectionReference = getCollection(FIRESTORE_COLLECTION.ORDERS);//tworzymy referencję do kolekcji
+        const orderReference = ordersCollectionReference.doc();//tworzymy referencję do dokumentu
+        const ticketReferences = [];//deklarujemy tablicę referencji do tickets
+        data.tickets.forEach(ticket => {
+            const ticketReference = ticketsCollectionReference.doc();
+            ticketReferences.push(ticketReference);//wypełniamy tablicę referencjami do tickets
+            // array[ticketReference]
+            // Object.assign();
+            batch.set(ticketReference,
+                {
+                    user: data.user,
+                    tournament: data.tournament,
+                    ...ticket,
+                    createdAt: createdAt,
+                });
+        });
+        batch.set(orderReference, {
+            user: data.user,
+            tickets: ticketReferences,
+            createdAt: createdAt,
+            status: data.status,
+        });
+        batch.commit()
+        .then(() => {
+            resolve();
+        })
+        .catch((error)=>{
+            console.log('order creation failed', error)
+            reject(error)
+        })
+        //napisać transakcję( użyc batcha)
+        //jak stworzyć kolejny dokument do kolekcji orders w którym bedzie tablica z referencjami do ticketów
     })
+}
+
+export function calculateAvailableSlots(ticket, tournament) {
+    //const ticketOrders=
 }
 
 //firestore_reference -> promise -> pending -> fullfilled -> ticket_type

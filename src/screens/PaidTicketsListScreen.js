@@ -9,13 +9,13 @@ import {
     Image,
     Alert,
 } from 'react-native';
-import { getTicketsOrdersList, updateTicketPaymentStatus, updateTicketPaymentStatusToPaid, updateTicketPaymentStatusToUnPaid } from '../ticket-examples';
+import { getPaidTickets, getTicketsOrdersList, updateTicketPaymentStatus, updateTicketPaymentStatusToPaid, updateTicketPaymentStatusToUnPaid } from '../ticket-examples';
 import { Button } from 'react-native-elements';
 import { ScrollView } from 'react-native-gesture-handler';
 
 
 
-const BookingsListScreen = () => {
+const PaidTicketListScreen = () => {
     //const navigation = useNavigation();
     const [myTickets, setMyTickets] = useState();
     const [error, setError] = useState();
@@ -24,7 +24,7 @@ const BookingsListScreen = () => {
     const [isButtonUndoDisabled, setIsButtonUndoDisabled] = useState(false)
 
     useEffect(() => {
-        getTicketsOrdersList()
+        getPaidTickets()
             .then(result => {
                 setMyTickets(result);
                 setLoading(false);
@@ -56,40 +56,10 @@ const BookingsListScreen = () => {
                     {'\n'}<Text style={styles.textBold}>Kod zamówienia:</Text>
                     <Text> {item.id}
                     </Text>
-                    {'\n'}<Text style={styles.textBold}>Razem do zapłaty:</Text>
+                    {'\n'}<Text style={styles.textBold}>Zapłacono:</Text>
                     <Text> {item.price}</Text> <Text>zł.</Text>
                 </Text>
-                <View style={styles.itemView}>
-                    <Button
-                        activeOpacity={2}
-                        color='#47b8ce'
-                        title="Zatwierdź"
-                        disabled={isButtonConfirmedDisabled}
-                        onPress={() => {
-                            updateTicketPaymentStatusToPaid(item.id);
-                            setIsButtonConfirmedDisabled(true);
-                            setIsButtonUndoDisabled(false);
-                        }}
-                    />
-
-                    <Button
-                        activeOpacity={2}
-
-                        color='#47b8ce'
-                        title="Cofnij zatwierdź"
-                        disabled={isButtonUndoDisabled}
-                        onPress={() => {
-                            updateTicketPaymentStatusToUnPaid(item.id);
-                            setIsButtonUndoDisabled(true);
-                            setIsButtonConfirmedDisabled(false);
-                        }}
-                    />
-
-                </View>
-
-
-
-
+                
             </View>
         )
     }
@@ -99,7 +69,7 @@ const BookingsListScreen = () => {
     return (
         <View style={styles.mainBody}>
             <View style={styles.buttonContainer}>
-                <Text style={styles.text}>Zamówienia:</Text>
+                <Text style={styles.text}>Zapłacone bilety:</Text>
                 <ScrollView>
                     {myTicketList}
                 </ScrollView>
@@ -109,7 +79,7 @@ const BookingsListScreen = () => {
     )
 }
 
-export default BookingsListScreen;
+export default PaidTicketListScreen;
 
 const styles = StyleSheet.create({
     mainBody: {
@@ -125,13 +95,7 @@ const styles = StyleSheet.create({
         width: '100%',
 
     },
-    singleButtonView: {
-        flexDirection: 'row',
-        textAlign: 'right',
-        justifyContent: 'flex-end',
-        alignItems: 'flex-end',
-    },
-
+    
     itemView: {
         flexDirection: 'column',
         padding: 10, 
@@ -166,13 +130,12 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         textAlign: 'center',
         fontSize: 16,
-        justifyContent: 'space-between',
-        alignItems: 'center',
+        alignItems: 'center', 
 
     },
     itemStyle: {
         flexDirection: 'column',
-        width: '65%',
+        width: '90%',
         padding: 7,
         marginBottom: 5,
         color: '#005b98',
