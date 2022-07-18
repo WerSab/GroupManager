@@ -11,15 +11,29 @@ import { extractTicketsInfo } from './src/ticket-examples';
 //import { getCollection, getFirestoreTimestampFromDate, getFirestoreTimestampFromMillis } from './src/fireBase/firestoreHelper';
 import { FIRESTORE_COLLECTION } from './src/config';
 import MessagesContextProvider from './src/context/MessageContextProvider';
+import { getCollection } from './src/fireBase/firestore-Helper';
 
 
 const App = () => {
 
   // useEffect(function () {
   //   setTimeout(function () {
-  //     addNewTicketOrderToCollection({
-  //       createdAt: getFirestoreTimestampFromDate()
-  //     })
+  //     const tournamentReference = getCollection(FIRESTORE_COLLECTION.TOURNAMENTS).doc('123');
+  //     const data = {
+  //       user: getCollection(FIRESTORE_COLLECTION.USERS).doc('12'),
+  //       tournament: tournamentReference,
+  //       tickets: [
+  //         {
+  //           tournament: tournamentReference,
+  //           status: 'unpaid',
+  //         },
+  //         {
+  //           tournament: tournamentReference,
+  //           slots: 10,
+  //         }
+  //       ]
+  //     }
+  //     addNewTicketOrderToCollection(data)
   //       .then(result => {
   //         console.log('zapisane dane:', result);
   //       })
@@ -45,7 +59,7 @@ const App = () => {
       <TournamentContextProvider>
         <UserListContextProvider>
           <MessagesContextProvider>
-          <StackContainer />
+            <StackContainer />
           </MessagesContextProvider>
         </UserListContextProvider>
       </TournamentContextProvider>

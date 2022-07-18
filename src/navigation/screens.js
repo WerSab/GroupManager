@@ -11,10 +11,11 @@ export const SCREEN = {
     },
 
     MANAGER_TAB: {
-        TOURNAMENT_LIST: 'Lista Wydarzeń',
-        USERS_LIST: 'Lista Użytkowników',
-        BOOKINGS_LIST: 'Lista rezerwacji',
-        MESSAGES_LIST: 'Lista Wiadomości',
+        TOURNAMENT_LIST: 'Wydarzenia',
+        USERS_LIST: 'Użytkownicy',
+        BOOKINGS_LIST: 'Rezerwacje',
+        MESSAGES_LIST: 'Wiadomości',
+        PAID_TICKETS_LIST: 'Zapłacone bilety',
         
         
     },

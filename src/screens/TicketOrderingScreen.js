@@ -47,6 +47,7 @@ const TicketOrderingScreen = ({ route }) => {
     const [takenSlots, setTakenSlots] = useState(String(0));
     const [finalPrice, setFinalPrice] = useState(0);
     const [status, setStatus] = useState();
+    const [isButtonSafeDisabled, setIsButtonSafeDisabled] = useState(false);
     
     function getCalculatedOrderPrice() {
         const price = ticketType.price;
@@ -89,14 +90,14 @@ const TicketOrderingScreen = ({ route }) => {
 
 
         const data = {
-            ticketType: ticketTypeReference,
             tournament: tournamentReference,
             user: userReference,
+            ticketType: ticketTypeReference,
             slots: parsedTakenSlots,
             price: finalPrice,
             status: status,
         };
-        //blokowanie buttona zatwierdź na inactive
+        setIsButtonSafeDisabled(true);
         addNewTicketOrderToCollection(data)
             .then((ticketOrderDocumentReference) => {
                 navigation.navigate(SCREEN.TICKET_PAYMENT_SUMMARY,
@@ -106,7 +107,7 @@ const TicketOrderingScreen = ({ route }) => {
                     }
                 )
                 console.log('ticketOrderDocumentReference', ticketOrderDocumentReference);
-                //odblokowanie buttona zatwierdź
+                setIsButtonSafeDisabled(false);
             })
             .catch(function (err) {
                 Alert.alert('Wystąpił błąd', `Przepraszamy mamy problem z serwerem, prosze spróbować później`, [
@@ -160,6 +161,7 @@ const TicketOrderingScreen = ({ route }) => {
                                 activeOpacity={2}
                                 color='#47b8ce'
                                 title="Zatwierdź"
+                                disabled={isButtonSafeDisabled}
                                 onPress={() => {
                                     onSaveTicketOrders();
 

@@ -3,6 +3,7 @@ export const FIRESTORE_COLLECTION = {
     TOURNAMENTS: 'tournaments',
     TICKETS: 'tickets',
     MESSAGES:'messages',
+    ORDERS:'orders',
     SUB_COLLECTION: {
         TICKET_TYPES: 'ticketTypes',
     }
