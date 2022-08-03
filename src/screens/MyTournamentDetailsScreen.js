@@ -13,7 +13,8 @@ import {
     TouchableOpacity,
     Alert,
     ScrollView,
-    Button
+    Button,
+    Modal,
 
 } from 'react-native';
 import linkIcon from '../assets/icons/link.png';
@@ -26,6 +27,7 @@ import { convertMilisToReadabletime, EVENT_DURATION_FORMAT, parseEventDurationTi
 import { getDateFromTimestamp } from '../fireBase/firestore-Helper';
 import dayjs from 'dayjs';
 import { getEventDuration } from './common/tournament-methods';
+import { Picker } from '@react-native-picker/picker';
 
 
 const MyTournamentDetails = ({ route }) => {
@@ -39,6 +41,8 @@ const MyTournamentDetails = ({ route }) => {
     const startTime = getDateFromTimestamp(tournament.startDate);
     const startTimeFormated = dayjs(startTime).format('DD/MM/YYYY HH:mm');
     const eventDuration = parseEventDurationTime(tournament);
+    const [orderedTickets, setOrderedTickets] = useState([]);
+    const [isModalAddTicketVisible, setIsModalAddTicketVisible] = useState(false);
 
     console.log('tournamentContext', tournamentContext)
     console.log('getEventDuration', getEventDuration(tournament, EVENT_DURATION_FORMAT));
@@ -49,27 +53,27 @@ const MyTournamentDetails = ({ route }) => {
             Cena: ${element.price}  
             Ilość biletów: ${element.slots}`
             }
+            <Button
+                activeOpacity={0.5}
+                background='#005b98'
+                title="Zarezerwuj bilet"
+                onPress={() => setIsModalAddTicketVisible(true)
+                //     {
+                    
+                //     // setOrderedTickets(prevState => [...prevState, {}])
+                //     // navigation.navigate(SCREEN.TICKET_ORDERING,
+                //     //     {
+                //     //         tournamentId: id,
+                //     //         ticketType: element,
 
-            <View >
-
-                <Button
-                    activeOpacity={0.5}
-                    background='#005b98'
-                    title="Kup bilet/Zarezerwuj"
-                    onPress={() => {
-                        navigation.navigate(SCREEN.TICKET_ORDERING,
-                            {
-                                tournamentId: id,
-                                ticketType: element,
-
-                            });
-                    }}
-                />
-
-            </View>
+                //     //     });
+                // }
+            }
+            />
         </Text>
-    }
 
+        //po kupieniu biletu ustawić button na anuluj zakup
+    }
     return (
         <View style={styles.mainBody}>
             <ScrollView>
@@ -104,6 +108,22 @@ const MyTournamentDetails = ({ route }) => {
                             </View>
                         )
                     )
+                }
+                  {isModalAddTicketVisible && (
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        onRequestClose={() => setIsModalAddTicketVisible(false)}
+                        onBackdropPress={() => setIsModalAddTicketVisible(false)}
+                        onBackButtonPress={() => setIsModalAddTicketVisible(false)}>
+                        <View style={styles.modalView}>
+                            <Text style={styles.textHeader}>Dodaj bilet</Text>
+                            <ScrollView>
+                                
+                            </ScrollView>
+                        </View>
+                    </Modal>
+                )
                 }
 
             </ScrollView>

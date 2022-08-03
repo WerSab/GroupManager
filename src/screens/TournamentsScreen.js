@@ -27,10 +27,6 @@ import DatePicker from 'react-native-date-picker';
 
 const MIN_EVENT_DURATION_IN_MILLIS = 60*1000;
 
-
-
-
-
 const TournamentsScreen = () => {
     // Zaznaczanie takich samych wystapein -> ctrl+d
     // ctrl+z -> cofnij
@@ -41,6 +37,7 @@ const TournamentsScreen = () => {
     const [linkInput, setLinkInput] = useState('');
     const [tournamentCategoryInput, setTournamentCategoryInput] = useState('Kategoria');
     const [isCreatorVisible, setIsCreatorVisible] = useState(true);
+
     const [ticketTypes, setTicketTypes] = useState([]);
     const [date, setDate] = useState(new Date());
     const [endDate, setEndDate]= useState(new Date());
@@ -52,6 +49,7 @@ console.log('endDate', endDate);
     const handleTicketTypeAdd = (ticketType) => {
         setTicketTypes([...ticketTypes, ticketType]);
         setIsCreatorVisible(false);
+      
     };
 
 
@@ -102,6 +100,7 @@ console.log('endDate', endDate);
             addNewTournamentToCollection(
                 tournament,
                 ticketTypes,
+                console.log('ticketTypes', ticketTypes),
             )
                 .then(() => {
                     setIsModalAddTournamentVisible(!isModalAddTournamentVisible);
