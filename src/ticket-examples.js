@@ -1,5 +1,5 @@
 import { FIRESTORE_COLLECTION, TICKET_PAYMENT_STATUS } from './config';
-import { getCollection, getFirestoreBatch, getFirestoreTimestampFromDate } from './fireBase/firestore-Helper';
+import { getCollection, getFirestoreBatch, getFirestoreTimestampFromDate, increment } from './fireBase/firestore-Helper';
 import { getDocumentReferenceById } from './fireBase/firestore-Helper';
 import { setDateTicketClearedAt } from './store/localStore';
 ///tickets/1c3KBRLcK085IUOdhOfg
@@ -233,10 +233,10 @@ export function addNewTicketOrderToCollection(data) {
                 });
             batch.update(ticket.ticketTypeRef,
                 {
-                    slotsTaken: // slotsToken += ticket.amount
+                    slotsTaken: increment(ticket.amount),// slotsToken += ticket.amount
                 } // https://rnfirebase.io/reference/firestore/fieldvalue
 
-            )
+            );
         });
         // to tworzy zamowienie (dokument)
         batch.set(orderReference, {
