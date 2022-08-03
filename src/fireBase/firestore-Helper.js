@@ -14,6 +14,10 @@ export function removeFromArray(element) {
   return firestore.FieldValue.arrayRemove(element);
 }
 
+export function increment(number){
+  return firestore.FieldValue.increment(number);
+}
+
 export function getDocumentReferenceById(documentPath) {
   return firestore().doc(documentPath);
 }
