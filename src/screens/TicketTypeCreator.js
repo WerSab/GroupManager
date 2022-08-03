@@ -2,27 +2,28 @@ import React, { useState } from "react";
 import { View, StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
 
 export function TicketTypeCreator(props) {
-    const [ticketType, setTicketType] = useState({
-        name: "",
+      const [ticketType, setTicketType] = useState({
+        seatType: "",
         price: null,
-        slots: null 
+        slots: null,
+     
     });
-
-    const handleStateChange = (field, text) => {
+       const handleStateChange = (field, text) => {
         console.log("Nazwa i wartość", field, text);
         setTicketType((prev) => ({
             ...prev,
             [field]: text
         }));
+
     };
 
     return (
         <View >
             <TextInput
                 style={styles.textDark}
-                onChangeText={(text) => handleStateChange("name", text)}
-                value={ticketType.name}
-                placeholder="Nazwa biletu..."
+                onChangeText={(text) => handleStateChange("seatType", text)}
+                value={ticketType.seatType}
+                placeholder="Rodzaj miejsca..."
             />
             <TextInput
                 style={styles.textDark}
@@ -36,6 +37,8 @@ export function TicketTypeCreator(props) {
                 value={ticketType.slots}
                 placeholder="Ilość miejsc..."
             />
+           
+            <View style={styles.ticketStyle}>
             <TouchableOpacity
                 style={styles.buttonTextStyle}
 
@@ -48,6 +51,14 @@ export function TicketTypeCreator(props) {
                 <Text style={styles.textButton}>Zapisz bilet</Text>
 
             </TouchableOpacity>
+                             
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => { setIsDiscountCreatorVisible(true) }}>
+                    <Text style={styles.textButton}>Dodaj zniżkę  </Text>
+                </TouchableOpacity>
+                            </View>
+            
         </View>
     )
 }
@@ -129,5 +140,19 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         // elevation: 5,
         margin: '2%',
+    },
+    button: {
+        backgroundColor: '#005b98',
+        borderWidth: 0,
+        borderColor: '#3175ab',
+        height: 40,
+        alignItems: 'center',
+        borderRadius: 15,
+        marginLeft: 35,
+        marginRight: 35,
+        marginTop: 20,
+        marginBottom: 25,
+        margin: 10,
+        justifyContent: 'center',
     },
 })

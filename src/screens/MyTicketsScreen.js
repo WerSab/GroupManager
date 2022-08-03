@@ -40,7 +40,7 @@ const MyTicketsScreen = ({ route }) => {
     const userID = userContext.user.uid;
     
     const navigation = useNavigation();
-
+ 
     useEffect(() => {
         Promise.resolve()//przy łańcuchu wywołań
            .then(() => {
@@ -48,9 +48,9 @@ const MyTicketsScreen = ({ route }) => {
             })
             .then(()=>{
                 return getUserOrders(userID);
-            }
-            )
+            })
             .then(result => {
+                console.log('result', result);
                 setMyTickets(result);
                 setLoading(false);
             })  
@@ -58,15 +58,15 @@ const MyTicketsScreen = ({ route }) => {
                 setError(error);
             })
     }, []);
-
+    if (error) {
+        return <ErrorScreen errorMessage={error.message} />
+    }
     if (loading) {
         return (<View style={styles.buttonContainer}>
             <Text style={styles.textDark}>Ładuje się</Text>
         </View>)
     }
-    if (error) {
-        return <ErrorScreen errorMessage={error.message} />
-    }
+   
     if (!myTickets && myTickets.length === 0) {
         return (<View style={styles.buttonContainer}>
             <Text style={styles.text}>Nie posiadasz żadnych biletów.</Text>

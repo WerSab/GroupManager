@@ -16,30 +16,36 @@ import { getCollection } from './src/fireBase/firestore-Helper';
 
 const App = () => {
 
-  // useEffect(function () {
-  //   setTimeout(function () {
-  //     const tournamentReference = getCollection(FIRESTORE_COLLECTION.TOURNAMENTS).doc('123');
-  //     const data = {
-  //       user: getCollection(FIRESTORE_COLLECTION.USERS).doc('12'),
-  //       tournament: tournamentReference,
-  //       tickets: [
-  //         {
-  //           tournament: tournamentReference,
-  //           status: 'unpaid',
-  //         },
-  //         {
-  //           tournament: tournamentReference,
-  //           slots: 10,
-  //         }
-  //       ]
-  //     }
-  //     addNewTicketOrderToCollection(data)
-  //       .then(result => {
-  //         console.log('zapisane dane:', result);
-  //       })
+  const testFn = () => {
+    const tournamentReference = getCollection(FIRESTORE_COLLECTION.TOURNAMENTS).doc('1LFKSrf1f3T9tPNOLYIA');
+    const data = {
+      user: getCollection(FIRESTORE_COLLECTION.USERS).doc('12'),
+      tournament: tournamentReference,
+      tickets: [
+        {
+          name: 'Płyta',
+          ticketTypeRef: tournamentReference.collection(FIRESTORE_COLLECTION.SUB_COLLECTION.TICKET_TYPES).doc('Gu9hHfCLliRndDRyTkp5'),
+          amount: 100,
+          type: 'normalny',
+        },
+        {
+          name: 'Trybuny',
+          ticketTypeRef: tournamentReference.collection(FIRESTORE_COLLECTION.SUB_COLLECTION.TICKET_TYPES).doc('C67R7O1UNQXQjFXFTjN4'),
+          amount: 300,
+          type: 'ulgowy',
+        }
+      ],
+      status: 'unpaid',
+    }
+    addNewTicketOrderToCollection(data)
+      .then(result => {
+        console.log('zapisane dane:', result);
+      })
+  }
 
-  //   }, 1500)
-  // }, []);
+  useEffect(function () {
+    testFn();
+  }, []);
   //kolejne kroki: 
   //1. Rozpoczynanie transakcji - tournaments-examples
   //2. Stworzenie turniejowego dokumentu( dta,miejsce itd)  - tournaments-examples

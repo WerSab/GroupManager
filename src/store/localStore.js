@@ -47,7 +47,7 @@ export const setNewCleanUpDate = (presentDate) => {
 
 const deleteOldUserTickets = (userId, nowMillis) => {
 
-    return new Promise((reject) => {
+    return new Promise((resolve, reject) => {
         const timestampFromCurrentDate = getFirestoreTimestampFromMillis(nowMillis - THREE_DAYS_MILLIS);
         console.log('timestampFromMilis', timestampFromCurrentDate);
         const userRef = getDocumentReferenceById(`${FIRESTORE_COLLECTION.USERS}/${userId}`);
@@ -60,7 +60,7 @@ const deleteOldUserTickets = (userId, nowMillis) => {
                 const allDocuments = querySnapshot.docs;
                 console.log('all documents:', allDocuments);
                 const documentReferences = allDocuments.map(element => element.ref);
-                bulkDeleteTicket(documentReferences);
+                return resolve(bulkDeleteTicket(documentReferences)) ;
             })
             .catch((error) => reject(error))
     })
@@ -92,9 +92,11 @@ export const deleteOutdatedTickets = (userID) => {
                             return setNewCleanUpDate(nowMillis);
                         })
                         .then(() => {
+                            console.log('resolve');
                             resolve();
                         });
                 }
+                resolve();
             })
             .catch(reject);
     })

@@ -54,11 +54,13 @@ export function getUserOrders(userId) {
     return new Promise((resolve, reject) => {
         console.log(`${FIRESTORE_COLLECTION.USERS}/${userId}`);
         const userRef = getDocumentReferenceById(`${FIRESTORE_COLLECTION.USERS}/${userId}`);
+        console.log('userRef:', userRef);
         getCollection(FIRESTORE_COLLECTION.TICKETS)
             .where('user', '==', userRef)
             .where('status', '==', TICKET_PAYMENT_STATUS.UNPAID)
             .get()
             .then(querySnapshot => {
+                console.log('querysnapshot.docuemnts:', querySnapshot.docs);
                 const allDocuments = querySnapshot.docs;
                 const ticketList = allDocuments.map(function (collectionElement) {
                     return {
@@ -206,10 +208,10 @@ export function addNewTicketOrderToCollection(data) {
     // [x,y]
 
     const createdAt = getFirestoreTimestampFromDate();
-// const map = new Map();
-// // const obj = {
-//     key: 'v',
-// };
+    // const map = new Map();
+    // // const obj = {
+    //     key: 'v',
+    // };
     return new Promise((resolve, reject) => {
         const batch = getFirestoreBatch();
 
@@ -224,12 +226,19 @@ export function addNewTicketOrderToCollection(data) {
             // Object.assign();
             batch.set(ticketReference,
                 {
-                    user: data.user,
-                    tournament: data.tournament,
-                    ...ticket,
-                    createdAt: createdAt,
+                    name: ticket.name,
+                    ticketType: ticket.ticketTypeRef,
+                    amount: ticket.amount,
+                    type: ticket.type,
                 });
+            batch.update(ticket.ticketTypeRef,
+                {
+                    slotsTaken: // slotsToken += ticket.amount
+                } // https://rnfirebase.io/reference/firestore/fieldvalue
+
+            )
         });
+        // to tworzy zamowienie (dokument)
         batch.set(orderReference, {
             user: data.user,
             tickets: ticketReferences,
@@ -237,13 +246,14 @@ export function addNewTicketOrderToCollection(data) {
             status: data.status,
         });
         batch.commit()
-        .then(() => {
-            resolve();
-        })
-        .catch((error)=>{
-            console.log('order creation failed', error)
-            reject(error)
-        })
+            .then(() => {
+                resolve();
+            })
+            .catch((error) => {
+                //batch.rollback(); - sprawdzić czy coś takiego istnieje w firestore
+                console.log('order creation failed', error)
+                reject(error)
+            })
         //napisać transakcję( użyc batcha)
         //jak stworzyć kolejny dokument do kolekcji orders w którym bedzie tablica z referencjami do ticketów
     })

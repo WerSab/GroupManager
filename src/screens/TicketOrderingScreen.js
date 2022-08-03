@@ -12,7 +12,7 @@
 // 1. tickets-cleared-at istnieje to: analizuje czy czyszczenie jest wymagane w tym momencie
 // 2. tickets-cleared-at nie istnieje: od razu wykonuje czyszczenie biletow
 import { useNavigation } from '@react-navigation/core';
-import React, { useContext, useState, } from 'react';
+import React, { useContext, useMemo, useState, } from 'react';
 import { SCREEN } from '../navigation/screens';
 import {
     View,
@@ -33,8 +33,9 @@ import { UserContext } from '../context/UserContextProvider';
 import { TournamentContext } from '../context/TournamentContextProvider';
 import { getTournamentFromContext } from '../common/context-methods';
 import { getCollection } from '../fireBase/firestore-Helper';
-import { FIRESTORE_COLLECTION } from '../config';
+import { FIRESTORE_COLLECTION, TICKET_PAYMENT_STATUS } from '../config';
 import { setDateTicketClearedAt } from '../store/localStore';
+
 
 
 const TicketOrderingScreen = ({ route }) => {
@@ -46,12 +47,17 @@ const TicketOrderingScreen = ({ route }) => {
     const { user } = userContext;
     const [takenSlots, setTakenSlots] = useState(String(0));
     const [finalPrice, setFinalPrice] = useState(0);
-    const [status, setStatus] = useState();
+   
+    //const status = useState(getInitialStatus);
+    const status = useMemo(() => {
+        return ticketType.price>0? TICKET_PAYMENT_STATUS.UNPAID : TICKET_PAYMENT_STATUS.PAID;
+    }, [ticketType]);
     const [isButtonSafeDisabled, setIsButtonSafeDisabled] = useState(false);
+    
+    
     
     function getCalculatedOrderPrice() {
         const price = ticketType.price;
-        price!=0?setStatus('unpaid'): setStatus('paid');
         return Math.round(price * parseInt(takenSlots) * 100) / 100;//zaokrąglenie
     }
 
@@ -82,19 +88,19 @@ const TicketOrderingScreen = ({ route }) => {
             .doc(tournamentId)
             .collection(FIRESTORE_COLLECTION.SUB_COLLECTION.TICKET_TYPES)
             .doc(ticketType.id);
-        const tournamentReference = getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
-            .doc(tournamentId);
-
+       
         const userReference = getCollection(FIRESTORE_COLLECTION.USERS)
             .doc(user.uid)
 
 
         const data = {
-            tournament: tournamentReference,
             user: userReference,
-            ticketType: ticketTypeReference,
-            slots: parsedTakenSlots,
-            price: finalPrice,
+            tickets: [
+                {
+                    user: userReference,
+                    tournament: data.tournament,
+                }
+            ],
             status: status,
         };
         setIsButtonSafeDisabled(true);
@@ -103,7 +109,6 @@ const TicketOrderingScreen = ({ route }) => {
                 navigation.navigate(SCREEN.TICKET_PAYMENT_SUMMARY,
                     {
                         ticketOrderDocumentReference,
-                        
                     }
                 )
                 console.log('ticketOrderDocumentReference', ticketOrderDocumentReference);
@@ -116,7 +121,7 @@ const TicketOrderingScreen = ({ route }) => {
                 console.log("OrdersScreen error: ", err);
             });
 
-                    
+                   
     }
 
     return (
