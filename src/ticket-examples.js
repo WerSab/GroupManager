@@ -214,12 +214,29 @@ export function addNewTicketOrderToCollection(data) {
     // };
     return new Promise((resolve, reject) => {
         const batch = getFirestoreBatch();
-
         const ticketsCollectionReference = getCollection(FIRESTORE_COLLECTION.TICKETS);
         const ordersCollectionReference = getCollection(FIRESTORE_COLLECTION.ORDERS);//tworzymy referencję do kolekcji
         const orderReference = ordersCollectionReference.doc();//tworzymy referencję do dokumentu
         const ticketReferences = [];//deklarujemy tablicę referencji do tickets
-        data.tickets.forEach(ticket => {
+        //pobrać asynchronicznie wszystkie rodzaje biletów (za pomocą referencji)
+        //przechować je w tablicy
+
+        const ticketTypesPromises = data.tickets.map((element)=> element.ticketTypeRef.get());
+        Promise.all(ticketTypesPromises)
+        .then((ticketTypesSnapshots)=>{
+            ticketTypesSnapshots.map(snapshot =>{
+                return{
+                    id:snapshot.id,
+                    ...snapshot.data(),
+                }
+            });
+        })
+        .then((ticketTypesData)=>{ 
+          data.tickets.forEach(ticket => {
+            const ticketType = ticketTypesData.find(ticketType => ticketType.id ===ticket.ticketTypeRef.id)
+            if(ticketType.slotsTaken +ticket.amount>ticketType.slots){
+                reject('Niewystarczająca ilość miejsc');
+            }
             const ticketReference = ticketsCollectionReference.doc();
             ticketReferences.push(ticketReference);//wypełniamy tablicę referencjami do tickets
             // array[ticketReference]
@@ -257,6 +274,7 @@ export function addNewTicketOrderToCollection(data) {
         //napisać transakcję( użyc batcha)
         //jak stworzyć kolejny dokument do kolekcji orders w którym bedzie tablica z referencjami do ticketów
     })
+})
 }
 
 export function calculateAvailableSlots(ticket, tournament) {

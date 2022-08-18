@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Button,
+  SafeAreaView
 } from 'react-native';
 import {
   loginFireBaseUser,
@@ -58,7 +59,7 @@ const LoginScreen = ({ navigation }) => {
   return (
     <View style={styles.mainBody}>
        <Text style={styles.textStyle}>
-          Centrum Kultury i Sportu w Skawinie</Text>
+          CKiS w Skawinie</Text>
       <ScrollView
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={{
@@ -66,6 +67,7 @@ const LoginScreen = ({ navigation }) => {
           justifyContent: 'center',
           alignContent: 'center',
         }}>
+          <SafeAreaView>
         <View>
          
           <KeyboardAvoidingView enabled>
@@ -129,6 +131,7 @@ const LoginScreen = ({ navigation }) => {
             </Text>
           </KeyboardAvoidingView>
         </View>
+        </SafeAreaView>
       </ScrollView>
     </View>
   );
@@ -197,7 +200,7 @@ const styles = StyleSheet.create({
     color: '#3175ab',
     textAlign: 'center',
     fontWeight: 'bold',
-    fontSize: 23,
+    fontSize: 25,
     alignSelf: 'center',
     padding: 60,
   },

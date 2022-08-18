@@ -32,8 +32,6 @@ import { getDateFromTimestamp } from '../fireBase/firestore-Helper';
 import dayjs from 'dayjs';
 
 function parsedTicketTypesDataView(element) {
-    const navigation = useNavigation();
-    console.log('navigation', navigation)
     return <Text style={styles.listStyle} key={element.id}>
         {
             `${element.name}:   
@@ -46,11 +44,9 @@ function parsedTicketTypesDataView(element) {
 
 const TournamentDetails = ({ route }) => {
     //const { id } = route.params;- ten lub poniższy sposób
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const [bookings, setBookings] = useState(null);
-    const id = route.params.id;
     const tournamentContext = useContext(TournamentContext);
-    const tournament = getTournamentFromContext(tournamentContext, id);
+    const tournamentId = route.params.id;
+    const tournament = getTournamentFromContext(tournamentContext, tournamentId);
     const [ticketTypesData, loading, error] = useTournamentTicketTypes(tournament);
     const navigation = useNavigation();
     const parsedTicketTypesData = ticketTypesData?.map(parsedTicketTypesDataView);
@@ -64,7 +60,7 @@ const TournamentDetails = ({ route }) => {
             <ScrollView>
                 <Text>
                     <TouchableOpacity
-                        onPress={() => navigation.navigate(SCREEN.MODIFY_TOURNAMENT, { id: id })}>
+                        onPress={() => navigation.navigate(SCREEN.MODIFY_TOURNAMENT, { id: tournamentId })}>
                         <Text>Edit</Text>
                     </TouchableOpacity>
                 </Text>
