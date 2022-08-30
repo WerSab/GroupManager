@@ -1,5 +1,5 @@
 import { FIRESTORE_COLLECTION, TICKET_PAYMENT_STATUS } from './config';
-import { getCollection, getFirestoreBatch, getFirestoreTimestampFromDate, increment } from './fireBase/firestore-Helper';
+import { getCollection, getFirestoreBatch, getFirestoreTimestampFromDate, incrementBy } from './fireBase/firestore-Helper';
 import { getDocumentReferenceById } from './fireBase/firestore-Helper';
 import { setDateTicketClearedAt } from './store/localStore';
 ///tickets/1c3KBRLcK085IUOdhOfg
@@ -221,60 +221,77 @@ export function addNewTicketOrderToCollection(data) {
         //pobrać asynchronicznie wszystkie rodzaje biletów (za pomocą referencji)
         //przechować je w tablicy
 
-        const ticketTypesPromises = data.tickets.map((element)=> element.ticketTypeRef.get());
-        Promise.all(ticketTypesPromises)
-        .then((ticketTypesSnapshots)=>{
-            ticketTypesSnapshots.map(snapshot =>{
-                return{
-                    id:snapshot.id,
-                    ...snapshot.data(),
-                }
-            });
-        })
-        .then((ticketTypesData)=>{ 
-          data.tickets.forEach(ticket => {
-            const ticketType = ticketTypesData.find(ticketType => ticketType.id ===ticket.ticketTypeRef.id)
-            if(ticketType.slotsTaken +ticket.amount>ticketType.slots){
-                reject('Niewystarczająca ilość miejsc');
-            }
-            const ticketReference = ticketsCollectionReference.doc();
-            ticketReferences.push(ticketReference);//wypełniamy tablicę referencjami do tickets
-            // array[ticketReference]
-            // Object.assign();
-            batch.set(ticketReference,
-                {
-                    name: ticket.name,
-                    ticketType: ticket.ticketTypeRef,
-                    amount: ticket.amount,
-                    type: ticket.type,
-                });
-            batch.update(ticket.ticketTypeRef,
-                {
-                    slotsTaken: increment(ticket.amount),// slotsToken += ticket.amount
-                } // https://rnfirebase.io/reference/firestore/fieldvalue
+        const ticketTypesPromises = data.tickets.map((element) => element.ticketTypeRef.get()); // [promise1, promise2..., promisen]
+        // try {
+        //     const results = await Promise.all(ticketTypesPromises);
+        //     const mapped = results.map(snapshot =);
+        //     data.tickets.forEach(ticket => {
 
-            );
-        });
-        // to tworzy zamowienie (dokument)
-        batch.set(orderReference, {
-            user: data.user,
-            tickets: ticketReferences,
-            createdAt: createdAt,
-            status: data.status,
-        });
-        batch.commit()
-            .then(() => {
-                resolve();
+        //     });
+        // }catch(error) {
+        //     return reject(error);
+        // }
+
+        Promise.all(ticketTypesPromises)
+            .then((ticketTypesSnapshots) => {
+                const result = ticketTypesSnapshots.map(snapshot => {
+                    return {
+                        id: snapshot.id,
+                        ...snapshot.data(),
+                    }
+                });
+                return result;
             })
-            .catch((error) => {
-                //batch.rollback(); - sprawdzić czy coś takiego istnieje w firestore
-                console.log('order creation failed', error)
-                reject(error)
+            .then((ticketTypesData) => {
+                data.tickets.forEach(ticket => {
+                    const ticketType = ticketTypesData.find(ticketType => ticketType.id === ticket.ticketTypeRef.id)
+                    if (ticketType.slotsTaken + ticket.amount > ticketType.slots) {
+                        console.log('test0');
+                        throw new Error('Niewystarczająca ilość miejsc');//wyjątek lokalny
+                    }
+                    console.log('test1');
+                    const ticketReference = ticketsCollectionReference.doc();
+                    ticketReferences.push(ticketReference);//wypełniamy tablicę referencjami do tickets
+                    // array[ticketReference]
+                    // Object.assign();
+                    batch.set(ticketReference,
+                        {
+                            name: ticket.name,
+                            ticketType: ticket.ticketTypeRef,
+                            amount: ticket.amount,
+                            type: ticket.type,
+                        });
+                    batch.update(ticket.ticketTypeRef,
+                        {
+
+                            slotsTaken: incrementBy(ticket.amount),// slotsToken += ticket.amount
+                        }, // https://rnfirebase.io/reference/firestore/fieldvalue
+                    );
+                })
+                console.log('test2');
+                // to tworzy zamowienie (dokument)
+                batch.set(orderReference, {
+                    user: data.user,
+                    tickets: ticketReferences,
+                    createdAt: createdAt,
+                    status: data.status,
+                });
+                batch.commit()
+                    .then(() => {
+                        resolve();
+                    })
+                    .catch((error) => {
+                        console.log('order creation failed', error)
+                       throw error;
+                    })
+                //napisać transakcję( użyc batcha)
+                //jak stworzyć kolejny dokument do kolekcji orders w którym bedzie tablica z referencjami do ticketów
+
             })
-        //napisać transakcję( użyc batcha)
-        //jak stworzyć kolejny dokument do kolekcji orders w którym bedzie tablica z referencjami do ticketów
-    })
-})
+            .catch(error => {
+                reject(error);
+            });
+    });
 }
 
 export function calculateAvailableSlots(ticket, tournament) {

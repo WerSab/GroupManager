@@ -13,14 +13,11 @@ import {
     ScrollView,
 } from 'react-native';
 import addIcon from '../assets/icons/add.png';
-import addIconDark from '../assets/icons/add_dark.png';
 import deleteIcon from '../assets/icons/delete.png';
 import { Picker } from '@react-native-picker/picker';
-import { getFirestoreTimestampFromDate, removeFromArray } from '../fireBase/firestore-Helper';
 import { SCREEN } from '../navigation/screens';
 import { addNewTournamentToCollection, deleteTournament } from '../tournaments-examples';
 import { TournamentContext } from '../context/TournamentContextProvider';
-import { ticketTypePresets } from '../fireBase/ticket-types-presets';
 import { TicketTypeCreator } from './TicketTypeCreator';
 import { validateTournament, validateTournmanetFields } from '../fireBase/firestore-model-validators';
 import DatePicker from 'react-native-date-picker';
@@ -160,7 +157,8 @@ console.log('endDate', endDate);
             {/*<CustomHeader/>*/}
             <View style={styles.mainBody}>
                 <View style={styles.title}>
-                    <Text style={styles.text}>Wydarzenia </Text><TouchableOpacity onPress={() => setIsModalAddTournamentVisible(true)}>
+                    <Text style={styles.text}>Wydarzenia </Text>
+                    <TouchableOpacity onPress={() => navigation.navigate(SCREEN.TOURNAMENT_CREATOR)}>
                         <Image style={styles.icon_1} source={addIcon} />
                     </TouchableOpacity>
                 </View>

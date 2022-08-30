@@ -57,17 +57,17 @@ const MyTournamentDetails = ({ route }) => {
                 activeOpacity={0.5}
                 background='#005b98'
                 title="Zarezerwuj bilet"
-                onPress={() => setIsModalAddTicketVisible(true)
-                //     {
+                onPress={() => 
+                                        {
                     
-                //     // setOrderedTickets(prevState => [...prevState, {}])
-                //     // navigation.navigate(SCREEN.TICKET_ORDERING,
-                //     //     {
-                //     //         tournamentId: id,
-                //     //         ticketType: element,
+                    //setOrderedTickets(prevState => [...prevState, {}])
+                    navigation.navigate(SCREEN.TICKET_ORDERING,
+                        {
+                            tournamentId: id,
+                            ticketType: element,
 
-                //     //     });
-                // }
+                        });
+                }
             }
             />
         </Text>
@@ -109,23 +109,7 @@ const MyTournamentDetails = ({ route }) => {
                         )
                     )
                 }
-                  {isModalAddTicketVisible && (
-                    <Modal
-                        animationType="slide"
-                        transparent={true}
-                        onRequestClose={() => setIsModalAddTicketVisible(false)}
-                        onBackdropPress={() => setIsModalAddTicketVisible(false)}
-                        onBackButtonPress={() => setIsModalAddTicketVisible(false)}>
-                        <View style={styles.modalView}>
-                            <Text style={styles.textHeader}>Dodaj bilet</Text>
-                            <ScrollView>
-                                
-                            </ScrollView>
-                        </View>
-                    </Modal>
-                )
-                }
-
+                  
             </ScrollView>
         </View>
         //{JSON.stringify(tournament, null, 2)}

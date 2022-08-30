@@ -1,30 +1,85 @@
 import React, { useState } from "react";
 import { View, StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { SCREEN } from "../navigation/screens";
 
-export function TicketTypeCreator(props) {
-      const [ticketType, setTicketType] = useState({
-        seatType: "",
+export function TicketTypeCreator() {
+    const navigation = useNavigation();
+    const [ticketType, setTicketType] = useState({
+        name: "",
         price: null,
         slots: null,
-     
+        type: "",
     });
-       const handleStateChange = (field, text) => {
-        console.log("Nazwa i wartość", field, text);
+    const [error, setError] = useState({
+        price: null,
+        slots: null
+    });
+
+    const handleStateChange = (field, text) => {
+        switch (field) {
+            case 'price': {
+                if (isNaN(text)) {
+                    setError(prev => ({
+                        ...prev,
+                        price: 'Cena musi być wartością liczbową'
+                    }));
+                } else {
+                    setError(prev => ({
+                        ...prev,
+                        price: null
+                    }));
+                }
+                break;
+            }
+            case 'slots': {
+                if (isNaN(text)) {
+                    setError(prev => ({
+                        ...prev,
+                        slots: 'Ilośc miejsc musi być wartością liczbową'
+                    }));
+                } else {
+                    setError(prev => ({
+                        ...prev,
+                        slots: null
+                    }));
+                }
+                break;
+            }
+        }
         setTicketType((prev) => ({
             ...prev,
-            [field]: text
+            [field]: text,
         }));
-
     };
 
+
+
+    // const text = "3.14"
+    // isNaN(text) {
+    //     // ustawiamy blad
+    // } else {
+    //     const price = parseFloat(text); // 3.14, a nie "3.14"
+    // }
+
+//zrobić warunki do błedów proce i slot niezależnie, wyłączyć przycisk jak pole jest puste
     return (
         <View >
+            {error && <Text style={{ color: 'red' }}>{JSON.stringify(error)}</Text>}
+            
             <TextInput
                 style={styles.textDark}
-                onChangeText={(text) => handleStateChange("seatType", text)}
-                value={ticketType.seatType}
-                placeholder="Rodzaj miejsca..."
+                onChangeText={(text) => handleStateChange("name", text)}
+                value={ticketType.name}
+                placeholder="Nazwa biletu..."
             />
+            <TextInput
+                style={styles.textDark}
+                onChangeText={(text) => handleStateChange("type", text)}
+                value={ticketType.type}
+                placeholder="Normalny/ulgowy..."
+            />
+
             <TextInput
                 style={styles.textDark}
                 onChangeText={(text) => handleStateChange("price", text)}
@@ -37,28 +92,27 @@ export function TicketTypeCreator(props) {
                 value={ticketType.slots}
                 placeholder="Ilość miejsc..."
             />
-           
+
             <View style={styles.ticketStyle}>
-            <TouchableOpacity
-                style={styles.buttonTextStyle}
-
-                onPress={() => {
-                    props.onTicketTypeAdd(ticketType);
-                    // onSavePrice();
-                    // onSaveSlots();
-                }}
-            >
-                <Text style={styles.textButton}>Zapisz bilet</Text>
-
-            </TouchableOpacity>
-                             
                 <TouchableOpacity
-                    style={styles.button}
-                    onPress={() => { setIsDiscountCreatorVisible(true) }}>
-                    <Text style={styles.textButton}>Dodaj zniżkę  </Text>
+                    style={styles.buttonTextStyle}
+
+                    onPress={() => {
+                        navigation.navigate(SCREEN.TOURNAMENT_CREATOR, {
+                            ticketType: {
+                                name: ticketType.name,
+                                price: parseFloat(ticketType.price),
+                                slots: parseInt(ticketType.slots),
+                            }
+                        })
+                    }}
+                >
+                    <Text style={styles.textButton}>Dodaj bilet</Text>
+
                 </TouchableOpacity>
-                            </View>
-            
+
+            </View>
+
         </View>
     )
 }
