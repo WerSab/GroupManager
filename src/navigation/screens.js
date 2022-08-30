@@ -16,10 +16,14 @@ export const SCREEN = {
         BOOKINGS_LIST: 'Rezerwacje',
         MESSAGES_LIST: 'Wiadomości',
         PAID_TICKETS_LIST: 'Zapłacone bilety',
+       
         
         
     },
     
+    TICKET_BASKET: 'Twój koszyk',
+    TOURNAMENT_CREATOR: 'Nowy turniej',
+    TICKETTYPE_CREATOR: 'Utwórz bilet',
     TOURNAMENTDETAILS: 'Szczegóły turnieju',
     MY_TOURNAMENTDETAILS: 'Mój turniej',
     TICKET_ORDERING: 'Zamów bilet',

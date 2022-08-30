@@ -13,13 +13,19 @@ import { FIRESTORE_COLLECTION } from './src/config';
 import MessagesContextProvider from './src/context/MessageContextProvider';
 import { getCollection } from './src/fireBase/firestore-Helper';
 
+// getCollection(FIRESTORE_COLLECTION.TICKETS).get()
+// .then(snapshots => {
+//     snapshots.forEach(snapshot => {
+//       snapshot.ref.delete();
+//     })
+// })
 
 const App = () => {
 
   const testFn = () => {
     const tournamentReference = getCollection(FIRESTORE_COLLECTION.TOURNAMENTS).doc('1LFKSrf1f3T9tPNOLYIA');
     const data = {
-      user: getCollection(FIRESTORE_COLLECTION.USERS).doc('12'),
+      user: getCollection(FIRESTORE_COLLECTION.USERS).doc('12'), 
       tournament: tournamentReference,
       tickets: [
         {
@@ -37,10 +43,13 @@ const App = () => {
       ],
       status: 'unpaid',
     }
+
+ 
     addNewTicketOrderToCollection(data)
-      .then(result => {
-        console.log('zapisane dane:', result);
+      .then(() => {
+        console.log('zapisano zamowienie');
       })
+      .catch(error => console.log('test fn error:', error));
   }
 
   useEffect(function () {

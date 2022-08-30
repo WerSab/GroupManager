@@ -47,22 +47,24 @@ const TicketOrderingScreen = ({ route }) => {
     const { user } = userContext;
     const [takenSlots, setTakenSlots] = useState(String(0));
     const [finalPrice, setFinalPrice] = useState(0);
-   
+   console.log('ticketType_orderingscreen', ticketType)
     //const status = useState(getInitialStatus);
     const status = useMemo(() => {
-        return ticketType.price>0? TICKET_PAYMENT_STATUS.UNPAID : TICKET_PAYMENT_STATUS.PAID;
+        console.log('ticketType', ticketType.prices)
+        return ticketType.prices>0? TICKET_PAYMENT_STATUS.UNPAID : TICKET_PAYMENT_STATUS.PAID;
     }, [ticketType]);
     const [isButtonSafeDisabled, setIsButtonSafeDisabled] = useState(false);
     
     
     
     function getCalculatedOrderPrice() {
-        const price = ticketType.price;
+        const price = ticketType.prices;
         return Math.round(price * parseInt(takenSlots) * 100) / 100;//zaokrąglenie
     }
 
     const handleFinalPriceBlur = () => {
         const total = getCalculatedOrderPrice();
+        console.log('handle final price blur:', total);
         setFinalPrice(total);
 
     }
@@ -121,7 +123,13 @@ const TicketOrderingScreen = ({ route }) => {
                 console.log("OrdersScreen error: ", err);
             });
 
-                   
+            // tickets: [
+            //     {
+            //       name: 'Płyta',
+            //       ticketTypeRef: tournamentReference.collection(FIRESTORE_COLLECTION.SUB_COLLECTION.TICKET_TYPES).doc('Gu9hHfCLliRndDRyTkp5'),
+            //       amount: 100,
+            //       type: 'normalny',
+            //     },    
     }
 
     return (
@@ -130,7 +138,7 @@ const TicketOrderingScreen = ({ route }) => {
                 <SafeAreaView>
                     <ScrollView>
                         <Text style={styles.headline} > {tournament.name}</Text>
-                        <Text style={styles.buttonTextStyle} > Cena pojedyńczego biletu : {ticketType.price} zł. </Text>
+                        <Text style={styles.buttonTextStyle} > Cena pojedyńczego biletu : {ticketType.prices} zł. </Text>
                         <View style={styles.SectionStyle}>
 
                             <Text style={styles.buttonTextStyle} > Ilość biletów :  </Text>

@@ -14,7 +14,7 @@ export function removeFromArray(element) {
   return firestore.FieldValue.arrayRemove(element);
 }
 
-export function increment(number){
+export function incrementBy(number){
   return firestore.FieldValue.increment(number);
 }
 

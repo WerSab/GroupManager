@@ -31,6 +31,9 @@ import TicketOrderingScreen from '../screens/TicketOrderingScreen';
 import TicketPaymentSummaryScreen from '../screens/TicketPaymentSummaryScreen';
 import MyConfirmedTicketsScreen from '../screens/MyConfirmedTicketsScreen';
 import PaidTicketListScreen from '../screens/PaidTicketsListScreen';
+import TournamentCreator from '../screens/TournamentCreator';
+import { TicketTypeCreator } from '../screens/TicketTypeCreator';
+import { TicketBasket } from '../screens/TicketBasket';
 
 
 
@@ -165,6 +168,15 @@ function StackContainer() {
                     headerTitleAlign: 'center'
                   }}
                 />
+                <Stack.Screen
+                  name={SCREEN.TICKET_BASKET}
+                  component={TicketBasket}
+                  options={{
+                    headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
+                    headerStyle: { backgroundColor: 'white', flex: 1, alignSelf: 'center', height: 100 },
+                    headerTitleAlign: 'center'
+                  }}
+                />
               </>
             )
           }
@@ -253,7 +265,26 @@ function StackContainer() {
                     headerTitleAlign: 'center'
                   }}
                 />
+                <Stack.Screen
+                  name={SCREEN.TOURNAMENT_CREATOR}
+                  component={TournamentCreator}
+                  options={{
+                    headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
+                    headerStyle: { backgroundColor: 'white', flex: 1, alignSelf: 'center', height: 100 },
+                    headerTitleAlign: 'center'
+                  }}
+                />
+                 <Stack.Screen
+                  name={SCREEN.TICKETTYPE_CREATOR}
+                  component={TicketTypeCreator}
+                  options={{
+                    headerBackVisible: false, headerTitle: props => <LogoTitle {...props} />,
+                    headerStyle: { backgroundColor: 'white', flex: 1, alignSelf: 'center', height: 100 },
+                    headerTitleAlign: 'center'
+                  }}
+                />
               </>
+              
             )
           }
         }
