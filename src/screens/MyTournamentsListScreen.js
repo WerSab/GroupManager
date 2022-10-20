@@ -27,7 +27,7 @@ const MyTournamentsListScreen = () => {
                 <TouchableOpacity
                     onPress={() => {
                         navigation.navigate(SCREEN.MY_TOURNAMENTDETAILS, {
-                            id: item.id
+                            tournamentId: item.id
                         });
                     }}
                 >

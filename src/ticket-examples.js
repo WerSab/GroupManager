@@ -196,42 +196,18 @@ export function updateTicketPaymentStatusToUnPaid(ticketOrderID) {
 }  
 */
 export function addNewTicketOrderToCollection(data) {
-    //parametr data to tablica z obiektami gdzie obiekt to np. 3 bilety ulgowe lub dwa normalne
-    //tworzymy dokumenty biletowe, które zapisujemy najpierw w kolekcji tickets, 
-    //referencje do zapisanych biletów zapisuję w kolekcji orders
-    //wszystko co dodajemy to dodajemy na poziome transakcji
-
-    // plyta 10zl 50 - x
-    // cena ulgowa = podaj cene
-    // ilosc miejsc = podaj dostepna ilosc miejsc
-    // tworze obiekt y na podstawie x
-    // [x,y]
-
+    console.log('data:',data);
+    
     const createdAt = getFirestoreTimestampFromDate();
-    // const map = new Map();
-    // // const obj = {
-    //     key: 'v',
-    // };
+    
     return new Promise((resolve, reject) => {
         const batch = getFirestoreBatch();
         const ticketsCollectionReference = getCollection(FIRESTORE_COLLECTION.TICKETS);
         const ordersCollectionReference = getCollection(FIRESTORE_COLLECTION.ORDERS);//tworzymy referencję do kolekcji
         const orderReference = ordersCollectionReference.doc();//tworzymy referencję do dokumentu
-        const ticketReferences = [];//deklarujemy tablicę referencji do tickets
-        //pobrać asynchronicznie wszystkie rodzaje biletów (za pomocą referencji)
-        //przechować je w tablicy
-
-        const ticketTypesPromises = data.tickets.map((element) => element.ticketTypeRef.get()); // [promise1, promise2..., promisen]
-        // try {
-        //     const results = await Promise.all(ticketTypesPromises);
-        //     const mapped = results.map(snapshot =);
-        //     data.tickets.forEach(ticket => {
-
-        //     });
-        // }catch(error) {
-        //     return reject(error);
-        // }
-
+        const ticketReferences = [];
+        const ticketTypesPromises = data.tickets.map((element) => element.ticketTypeRef.get())
+       
         Promise.all(ticketTypesPromises)
             .then((ticketTypesSnapshots) => {
                 const result = ticketTypesSnapshots.map(snapshot => {
@@ -240,6 +216,7 @@ export function addNewTicketOrderToCollection(data) {
                         ...snapshot.data(),
                     }
                 });
+                console.log('result', result)
                 return result;
             })
             .then((ticketTypesData) => {
@@ -252,19 +229,22 @@ export function addNewTicketOrderToCollection(data) {
                     console.log('test1');
                     const ticketReference = ticketsCollectionReference.doc();
                     ticketReferences.push(ticketReference);//wypełniamy tablicę referencjami do tickets
+                                       
                     // array[ticketReference]
                     // Object.assign();
+                    // TODO: 15.09 Tutaj musze przypisac referencje na rodzaj biletu
+
+                    const ticketTypeRef = ticket.ticketType;
                     batch.set(ticketReference,
                         {
                             name: ticket.name,
-                            ticketType: ticket.ticketTypeRef,
+                            ticketType: ticketTypeRef,
                             amount: ticket.amount,
                             type: ticket.type,
                         });
-                    batch.update(ticket.ticketTypeRef,
+                        batch.update(ticket.ticketTypeRef,
                         {
-
-                            slotsTaken: incrementBy(ticket.amount),// slotsToken += ticket.amount
+                             slotsTaken: incrementBy(ticket.amount),// slotsToken += ticket.amount
                         }, // https://rnfirebase.io/reference/firestore/fieldvalue
                     );
                 })
