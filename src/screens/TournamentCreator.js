@@ -17,37 +17,27 @@ import { TicketTypeCreator } from './TicketTypeCreator';
 import { validateTournament } from '../fireBase/firestore-model-validators';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { SCREEN } from '../navigation/screens';
-import basket from '../assets/icons/basket.png';
+import { TournamentContext } from '../context/TournamentContextProvider';
+import useStoredTicketTypesFromRouteParams from '../hooks/useStoredTicketTypesFromRouteParams';
 
 const MIN_EVENT_DURATION_IN_MILLIS = 60 * 1000;
 
-const TournamentCreator = () => {
+const TournamentCreator = ({route}) => {
     const [nameInput, setNameInput] = useState();
     const [placeInput, setPlaceInput] = useState();
     const [linkInput, setLinkInput] = useState('');
     const [tournamentCategoryInput, setTournamentCategoryInput] = useState('Kategoria');
-    const [ticketTypes, setTicketTypes] = useState([]);
     const [date, setDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
-    const [isCreatorVisible, setIsCreatorVisible] = useState(false);
+    const [error, setError] = useState();
     const navigation = useNavigation();
-    const route = useRoute();
+    // const route = useRoute();
+    const tournamentActions = useContext(TournamentContext).actions;
 
-    useEffect(() => {
-        if(route.params && route.params.ticketType) { // route.params?.ticketType
-            // to wtedy dodac rodzaj biletu na stan 
-            // [ticketType1, ticketType2] - wszystko przekazac do funkcji zapisującej turniej
-        }
-console.log('route.params', route.params)
-    }, [route.params]);
-
+    const field = 'ticketType';
+    const { ticketTypes, clearTicketTypes } = useStoredTicketTypesFromRouteParams(route, 'ticketType');
+   
     const minimumEndDate = new Date(date.getTime() + MIN_EVENT_DURATION_IN_MILLIS);
-
-    const handleTicketTypeAdd = (ticketType) => {
-        setTicketTypes([...ticketTypes, ticketType]);
-        setIsCreatorVisible(false);
-
-    };
 
     const clearInputs = () => {
         setNameInput('');
@@ -55,13 +45,13 @@ console.log('route.params', route.params)
         setDate(date);
         setPlaceInput('');
         setTournamentCategoryInput('Kategoria');
-        setTicketTypes([]);
+        clearTicketTypes();
         setLinkInput('');
 
     };
 
     const onSavePress = () => {
-
+        // cdezaktywuje przycisk
         try {
 
             const tournament = {
@@ -82,14 +72,15 @@ console.log('route.params', route.params)
             )
                 .then(() => {
                     clearInputs();
-                    setIsCreatorVisible(true);
-                    actions.requeryTournaments;
+                    tournamentActions.requeryTournaments();
+                    //aktywuję przycisk onsavepress
                 })
 
                 .catch(function (err) {
                     console.log('catch error in promise.catch:', err);
                     Alert.alert('Wystąpił błąd', `Przepraszamy mamy problem z serwerem, prosze spróbować później`, [
                         { text: 'Ok' },
+                        //aktywuję przycisk onsavepress
                     ]);
 
                 });
@@ -99,6 +90,7 @@ console.log('route.params', route.params)
 
         } catch (error) {
             console.log('try/catch blad: ', error.message);//wyświetlić text błędu
+            setError(error.message);
         }
     }
 
@@ -150,8 +142,16 @@ console.log('route.params', route.params)
                     >
                         <Text style={styles.textDark}>Dodaj bilet  </Text>
                     </TouchableOpacity>
-                </View>
 
+                </View>
+                {/* warunek który sprawdza czy error istnieje i jeżeli istnieje to renderuje nam view z textem jsx */}
+                {
+                    error && (
+                        <View>
+                            <Text>{error}</Text>
+                        </View>
+                    )
+                }
                 <View
                     style={{
                         flexDirection: 'row',

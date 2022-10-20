@@ -138,7 +138,6 @@ console.log('endDate', endDate);
                 >
                     <Text style={styles.textDark}>
                         <Text>{item.name}</Text>
-                        <Text>{item.date}</Text>
                         <Text>{item.place}</Text>
                     </Text>
 
@@ -221,7 +220,7 @@ console.log('endDate', endDate);
                                     <TouchableOpacity
                                         style={styles.button}
                                         onPress={() => { setIsCreatorVisible(true) }}>
-                                        <Text style={styles.textButton}>Dodaj bilet  </Text>
+                                        <Text style={styles.textButton}>Dodaj bilet</Text>
                                     </TouchableOpacity>
                                 </View>
 

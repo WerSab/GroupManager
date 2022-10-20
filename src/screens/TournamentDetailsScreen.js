@@ -36,11 +36,11 @@ function parsedTicketTypesDataView(element) {
         {
             `${element.name}:   
         Cena: ${element.price}  
-        Ilość biletów: ${element.slots}`
+        Ilość biletów: ${element.slots}
+        Ilość zajętych miejsc: ${element.slotsTaken}`
         }
     </Text>
 }
-
 
 const TournamentDetails = ({ route }) => {
     //const { id } = route.params;- ten lub poniższy sposób

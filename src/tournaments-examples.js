@@ -1,86 +1,86 @@
-import { FIRESTORE_COLLECTION } from './config';
-import { FirestoreDataContext } from './context/FirestoreDataProvider';
-import { addToArray, getCollection, getFirestoreTimestampFromDate } from './fireBase/firestore-Helper';
+import {FIRESTORE_COLLECTION} from './config';
+import {FirestoreDataContext} from './context/FirestoreDataProvider';
+import {
+  addToArray,
+  getCollection,
+  getFirestoreTimestampFromDate,
+} from './fireBase/firestore-Helper';
 import firestore from '@react-native-firebase/firestore';
 
 //lista turniejów - tournaments FlatList
 export function getTournaments() {
-    return new Promise((resolve, reject) => {
-        getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
-            .get()//asynchronicznie pobieramy wszystkie dane o kolekcji
-            .then(querySnapshot => {
-                const allDocuments = querySnapshot.docs;
-                const tournamentsList = allDocuments.map(function (collectionElement)//metoda zwraca nam wyselekcjonowane dane bez zbędnych np metadanych
-                {
-                    return {
-                        id: collectionElement.id,
-                        ...collectionElement.data(),
-                    }
-                    // return collectionElement.data();
-                })
-                resolve(tournamentsList)
-
-            })
-            .catch((error) => reject(error))
-    });
+  return new Promise((resolve, reject) => {
+    getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
+      .get() //asynchronicznie pobieramy wszystkie dane o kolekcji
+      .then(querySnapshot => {
+        const allDocuments = querySnapshot.docs;
+        const tournamentsList = allDocuments.map(function (
+          collectionElement, //metoda zwraca nam wyselekcjonowane dane bez zbędnych np metadanych
+        ) {
+          return {
+            id: collectionElement.id,
+            ...collectionElement.data(),
+          };
+          // return collectionElement.data();
+        });
+        resolve(tournamentsList);
+      })
+      .catch(error => reject(error));
+  });
 }
 
-export function getTicketTypesFromTournament(tournament) {
-    return new Promise((resolve, reject) => {
-        getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
-            .doc(tournament.id)
-            .collection(FIRESTORE_COLLECTION.SUB_COLLECTION.TICKET_TYPES)
-            .get()
-            .then(querySnapshot => {
-                const ticketTypes = querySnapshot.docs;
-                const ticketTypesList = ticketTypes.map(function (document) {
-                    return {
-                        id: document.id,
-                        ...document.data(),
-                    }
-                }
-                )
-                resolve(ticketTypesList)
-
-            })
-            .catch((error) => reject(error))
-
-    })
+export function getTicketTypesForTournamentId(tournamentId) {
+  return new Promise((resolve, reject) => {
+    getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
+      .doc(tournamentId)
+      .collection(FIRESTORE_COLLECTION.SUB_COLLECTION.TICKET_TYPES)
+      .get()
+      .then(querySnapshot => {
+        const ticketTypes = querySnapshot.docs;
+        const ticketTypesList = ticketTypes.map(function (document) {
+          return {
+            id: document.id,
+            ...document.data(),
+          };
+        });
+        resolve(ticketTypesList);
+      })
+      .catch(error => reject(error));
+  });
 }
 
 export function addParticipantToTournament(tournamentId, userId) {
-    return new Promise((resolve, reject) => {
-        getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
-            .doc(tournamentId)
-            .update({
-                participants: addToArray(userId),
-            })
-            .then(() => {
-                resolve();
-            })
-            .catch((error) => reject(error));
-    })
-
+  return new Promise((resolve, reject) => {
+    getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
+      .doc(tournamentId)
+      .update({
+        participants: addToArray(userId),
+      })
+      .then(() => {
+        resolve();
+      })
+      .catch(error => reject(error));
+  });
 }
 
 export function deleteTournament(tournamentId) {
-    // deletedAt: timestamp firestore
-    return getCollection(FIRESTORE_COLLECTION.TOURNAMENTS).doc(tournamentId).delete();
+  // deletedAt: timestamp firestore
+  return getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
+    .doc(tournamentId)
+    .delete();
 }
 // dopisać funkcję zliczania rezerwacji
 export function updateTicketOrdersToTournament(tournamentId, orders) {
-    return getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
-        .doc(tournamentId)
-        .update({
-            numberOfOrders: orders
-        })
-
+  return getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
+    .doc(tournamentId)
+    .update({
+      numberOfOrders: orders,
+    });
 }
 export function modifyTournament(tournamentId, tournament) {
-     return getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
-            .doc(tournamentId)
-            .update(tournament)
-           
+  return getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
+    .doc(tournamentId)
+    .update(tournament);
 }
 
 /*
@@ -112,49 +112,56 @@ const x: ITicketType = {
 // })
 
 export function addNewTournamentToCollection(tournament, ticketTypes) {
-    return new Promise((resolve, reject) => {
-        const ticketTypesLength = ticketTypes.length;
+  return new Promise((resolve, reject) => {
+    const ticketTypesLength = ticketTypes.length;
 
-        const batch = firestore().batch()//pozwala na zapisywanie kolejnych dokumentów
-        const newTournamentReference = getCollection(FIRESTORE_COLLECTION.TOURNAMENTS).doc();
+    const batch = firestore().batch(); //pozwala na zapisywanie kolejnych dokumentów
+    const newTournamentReference = getCollection(
+      FIRESTORE_COLLECTION.TOURNAMENTS,
+    ).doc();
 
-        batch.set(newTournamentReference, tournament);
-        const ticketTypesCollectionReference = newTournamentReference.collection(FIRESTORE_COLLECTION.SUB_COLLECTION.TICKET_TYPES);
-        const ticketTypeResponse = [];
-        for (let i = 0; i < ticketTypesLength; i++) {
+    batch.set(newTournamentReference, tournament);
+    const ticketTypesCollectionReference = newTournamentReference.collection(
+      FIRESTORE_COLLECTION.SUB_COLLECTION.TICKET_TYPES,
+    );
+    const ticketTypeResponse = [];
+    for (let i = 0; i < ticketTypesLength; i++) {
+      const ticketTypeReference = ticketTypesCollectionReference.doc();
 
-            const ticketTypeReference=ticketTypesCollectionReference.doc()
+      batch.set(ticketTypeReference, ticketTypes[i]);
 
-            batch.set(ticketTypeReference, ticketTypes[i]);
+      const parsedTicketType = {
+        id: ticketTypeReference.id,
+        ...ticketTypes[i],
+      };
 
-            const parsedTicketType = {
-                id: ticketTypeReference.id,
-                ...ticketTypes[i],
+      ticketTypeResponse.push(parsedTicketType);
 
-            };
+      //dodawanie elementów do tablicy
+      // [].push(element);
+      // [...a, {}]
+    }
 
-            ticketTypeResponse.push(parsedTicketType);
-
-
-            //dodawanie elementów do tablicy                   
-            // [].push(element);
-            // [...a, {}]
-        }
-
-        batch.commit()
-            .then(() => {
-                resolve({
-                    id: newTournamentReference.id,
-                    ...tournament,
-                    ...ticketTypeResponse,
-                })
-                console.log(`Added document with id ${newTournamentReference.id} to tournaments collection`);
-            })
-            .catch((error) => {
-                console.log('Add new tournament with ticketTypes error occured:', error);
-                reject(error);
-            });
-        /*
+    batch
+      .commit()
+      .then(() => {
+        resolve({
+          id: newTournamentReference.id,
+          ...tournament,
+          ...ticketTypeResponse,
+        });
+        console.log(
+          `Added document with id ${newTournamentReference.id} to tournaments collection`,
+        );
+      })
+      .catch(error => {
+        console.log(
+          'Add new tournament with ticketTypes error occured:',
+          error,
+        );
+        reject(error);
+      });
+    /*
             {
                 id: id_nowo_dodanego_turnieju
                 // + pola turnieju
@@ -166,16 +173,16 @@ export function addNewTournamentToCollection(tournament, ticketTypes) {
                 ],
             }
         */
-        // .then((ticketTypeDocumentReferences)=>{
-        //     resolve({
-        //         tournament: addedTournamentReference,
-        //         ticketTypeReferences: ticketTypeDocumentReferences
-        //     });
-        // }
+    // .then((ticketTypeDocumentReferences)=>{
+    //     resolve({
+    //         tournament: addedTournamentReference,
+    //         ticketTypeReferences: ticketTypeDocumentReferences
+    //     });
+    // }
 
-        // )
-        // .catch((error) => reject(error));
-    })
+    // )
+    // .catch((error) => reject(error));
+  });
 }
 
 //do nowego pliku zdefiniowac dwie funkcje remove from array & add to array

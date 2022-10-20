@@ -18,6 +18,7 @@ import {
 
 } from 'react-native';
 import linkIcon from '../assets/icons/link.png';
+import basket from '../assets/icons/basket.png';
 import { TournamentContext } from '../context/TournamentContextProvider';
 import { useTournamentTicketTypes } from '../hooks/useTournamentTicketTypes';
 import { getTournamentFromContext } from '../common/context-methods';
@@ -28,63 +29,60 @@ import { getDateFromTimestamp } from '../fireBase/firestore-Helper';
 import dayjs from 'dayjs';
 import { getEventDuration } from './common/tournament-methods';
 import { Picker } from '@react-native-picker/picker';
+import useStoredTicketTypesFromRouteParams from '../hooks/useStoredTicketTypesFromRouteParams';
+//koszyk=ticketTypes
 
-
-const MyTournamentDetails = ({ route }) => {
+const MyTournamentDetails = ({ navigation, route }) => {
     //const { id } = route.params;- ten lub poniższy sposób
     const tournamentContext = useContext(TournamentContext);
-    const id = route.params.id;
-    const tournament = getTournamentFromContext(tournamentContext, id);
-    const [ticketTypesData, loading, error] = useTournamentTicketTypes(tournament);
-    const navigation = useNavigation();
-    const parsedTicketTypesData = ticketTypesData?.map(parsedTicketTypesDataView);
+    console.log('route.params', route.params);
+    const tournamentId = route.params.tournamentId;
+    const tournament = getTournamentFromContext(tournamentContext, tournamentId);
+    // const navigation = useNavigation();
+    //const parsedTicketTypesData = ticketTypesData?.map(parsedTicketTypesDataView);
     const startTime = getDateFromTimestamp(tournament.startDate);
     const startTimeFormated = dayjs(startTime).format('DD/MM/YYYY HH:mm');
     const eventDuration = parseEventDurationTime(tournament);
     const [orderedTickets, setOrderedTickets] = useState([]);
     const [isModalAddTicketVisible, setIsModalAddTicketVisible] = useState(false);
+    const { ticketsBasket, clearTicketTypes } = useStoredTicketTypesFromRouteParams(route, 'ticketType');
+    console.log('tournamentticketTypesContext', ticketsBasket);
+  
+    
+    // function parsedTicketTypesDataView(element) {
+    //     return <Text style={styles.listStyle} key={element.id}>
+    //         {
+    //             `${element.name}:   
+    //         Cena: ${element.price} zł.`
+    //         }
 
-    console.log('tournamentContext', tournamentContext)
-    console.log('getEventDuration', getEventDuration(tournament, EVENT_DURATION_FORMAT));
-    function parsedTicketTypesDataView(element) {
-        return <Text style={styles.listStyle} key={element.id}>
-            {
-                `${element.name}:   
-            Cena: ${element.price}  
-            Ilość biletów: ${element.slots}`
-            }
-            <Button
-                activeOpacity={0.5}
-                background='#005b98'
-                title="Zarezerwuj bilet"
-                onPress={() => 
-                                        {
-                    
-                    //setOrderedTickets(prevState => [...prevState, {}])
-                    navigation.navigate(SCREEN.TICKET_ORDERING,
-                        {
-                            tournamentId: id,
-                            ticketType: element,
+    //         <Button
+    //             activeOpacity={0.5}
+    //             background='#005b98'
+    //             title="Zarezerwuj bilet"
+    //             onPress={() => {
 
-                        });
-                }
-            }
-            />
-        </Text>
+    //                 //setOrderedTickets(prevState => [...prevState, {}])
+    //                 navigation.navigate(SCREEN.TICKET_ORDERING,
+    //                     {
+    //                         tournamentId: tournamentId,
+    //                         ticketType: element,
+
+    //                     });
+    //             }
+    //             }
+    //         />
+    //     </Text>
 
         //po kupieniu biletu ustawić button na anuluj zakup
-    }
+    
     return (
         <View style={styles.mainBody}>
             <ScrollView>
 
-                <Text style={styles.text}>{tournament.name}
-                </Text>
-
+                <Text style={styles.text}>{tournament.name}</Text>
                 <Text style={styles.listStyle}>
-
                     <View >
-
                         <Text style={styles.textDark}>Miejsce:  {tournament.place}</Text>
                         <Text style={styles.textDark}>Godzina rozpoczęcia: {startTimeFormated}</Text>
                         <Text style={styles.textDark}>Czas trwania: {eventDuration}</Text>
@@ -93,35 +91,36 @@ const MyTournamentDetails = ({ route }) => {
                         >
                             <Text style={styles.linkStyle}><Image source={linkIcon} style={styles.icon} />Link do wydarzenia</Text>
                         </TouchableOpacity>
-
                     </View>
                 </Text>
-
-                {
+                {/* {
                     loading ? <Text style={styles.text}>Ładuje się ...</Text> : (
                         error ? <Text>Blad pobierania biletów {!!error}</Text> : (
                             <View style={styles.listStyle}>
                                 <Text style={styles.textDark}> Bilety:</Text>
-
                                 <Text> {parsedTicketTypesData}</Text>
-
                             </View>
                         )
                     )
-                }
-                  
+                }*/}
+                <Button onPress={() => {
+                    navigation.navigate(SCREEN.TICKET_ORDERING, {
+                        tournamentId: tournamentId,
+                    });
+                }}
+                title="Rezerwacja biletów"
+                />
             </ScrollView>
         </View>
         //{JSON.stringify(tournament, null, 2)}
     )
-}
+            }
 export default MyTournamentDetails;
 const styles = StyleSheet.create({
     mainBody: {
         flex: 1,
-        //justifyContent: 'center',
+        justifyContent: 'center',
         backgroundColor: '#015a92',
-
     },
     text: {
         color: 'white',
@@ -138,6 +137,7 @@ const styles = StyleSheet.create({
     },
     listStyle: {
         padding: 20,
+        paddingVertical: 20,
         marginBottom: 5,
         color: '#005b98',
         backgroundColor: "white",

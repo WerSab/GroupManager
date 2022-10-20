@@ -9,11 +9,13 @@ export function TicketTypeCreator() {
         name: "",
         price: null,
         slots: null,
+        slotsTaken: null,
         type: "",
     });
     const [error, setError] = useState({
         price: null,
-        slots: null
+        slots: null,
+        slotsTaken: null,
     });
 
     const handleStateChange = (field, text) => {
@@ -46,6 +48,20 @@ export function TicketTypeCreator() {
                 }
                 break;
             }
+            case 'slotsTaken': {
+                if (isNaN(text)) {
+                    setError(prev => ({
+                        ...prev,
+                        slotsTaken: 'Ilośc rezerwacji musi być wartością liczbową'
+                    }));
+                } else {
+                    setError(prev => ({
+                        ...prev,
+                        slotsTaken: null
+                    }));
+                }
+                break;
+            }
         }
         setTicketType((prev) => ({
             ...prev,
@@ -62,7 +78,7 @@ export function TicketTypeCreator() {
     //     const price = parseFloat(text); // 3.14, a nie "3.14"
     // }
 
-//zrobić warunki do błedów proce i slot niezależnie, wyłączyć przycisk jak pole jest puste
+//zrobić warunki do błedów price i slot niezależnie, wyłączyć przycisk jak pole jest puste
     return (
         <View >
             {error && <Text style={{ color: 'red' }}>{JSON.stringify(error)}</Text>}
@@ -93,6 +109,13 @@ export function TicketTypeCreator() {
                 placeholder="Ilość miejsc..."
             />
 
+<TextInput
+                style={styles.textDark}
+                onChangeText={(text) => handleStateChange("slotsTaken", text)}
+                value={ticketType.slotsTaken}
+                placeholder="Ilość rezerwacji..."
+            />
+
             <View style={styles.ticketStyle}>
                 <TouchableOpacity
                     style={styles.buttonTextStyle}
@@ -101,8 +124,10 @@ export function TicketTypeCreator() {
                         navigation.navigate(SCREEN.TOURNAMENT_CREATOR, {
                             ticketType: {
                                 name: ticketType.name,
+                                type: ticketType.type,
                                 price: parseFloat(ticketType.price),
                                 slots: parseInt(ticketType.slots),
+                                slotsTaken: parseInt(ticketType.slotsTaken),
                             }
                         })
                     }}
