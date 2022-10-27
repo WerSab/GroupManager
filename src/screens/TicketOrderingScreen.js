@@ -69,12 +69,13 @@ const TicketOrderingScreen = ({route, props}) => {
     boughtTickets.current = {
       ...boughtTickets.current,
       [ticketName]: {
-        ...boughtTickets.current[ticketName],
-        [ticketName]: ticketTypeId,
-        [discountName]: amount,
+        ticketTypeId: ticketTypeId,
+        discounts: {
+          ...boughtTickets.current[ticketName]?.discounts,
+          [discountName]: amount,
+        },
       },
     };
-    //Zadanie 17.10.2022 - Zastanowić się jak przekazać do obiektu boughtTicket ticketTypeId
 
     //   const mapCopy = new Map(prices);
     //   mapCopy.set('ulgowy', 100);
@@ -105,7 +106,6 @@ const TicketOrderingScreen = ({route, props}) => {
     delete bought[ticketName][discountName];
   };
 
-  //
   // bought[ticketName][discountName] = amount;
   // przy parsowaniu sprawdzić czy obiekt posiada jakieś własności - jeżeli nie to go skasować ()
   // z obiektu bought, po naciśnięciu zamów wynikiem powinna byc nastepujaca tablica:
@@ -203,15 +203,16 @@ const TicketOrderingScreen = ({route, props}) => {
   const finishOrder = () => {
     const tickets = parseBoughtTicketsToArray(boughtTickets.current);
 
-    navigation.navigate(SCREEN.TICKET_PAYMENT_SUMMARY, {
-      tournamentId,
-      ticketType: {
-        name: ticketType.name,
-        ticketTypeId: ticketType.id,
-        amount: takenSlots,
-        type: ticketType.type,
-      },
+    addNewTicketOrderToCollection({
+      user: user,
+      tournamentId: tournamentId,
+      tickets,
+      status: 'unpaid',
     });
+    // navigation.navigate(SCREEN.TICKET_PAYMENT_SUMMARY, {
+    //   tournamentId,
+    //   tickets,
+    // });
   };
 
   // const onSaveTicketOrders = () => {

@@ -26,23 +26,33 @@
 //     ...boughtTickets.current[ticketName],
 //     [discountName]: amount,
 //   },
+// boughtTickets.current = {
+//   ...boughtTickets.current,
+//   [ticketName]: {
+//     ticketTypeId: ticketTypeId,
+//     discounts: {
+//       ...boughtTickets.current[ticketName]?.discounts,
+//       [discountName]: amount,
+//     },
+//   },
+// };
 
 export const parseBoughtTicketsToArray = boughtTickets => {
   const boughtTicketEntries = Object.entries(boughtTickets);
   const result = [];
 
   for (const boughtTicketEntry of boughtTicketEntries) {
-    const [ticketName, discounts] = boughtTicketEntry;
+    const [ticketName, ticketMetaData] = boughtTicketEntry;
+    const {ticketTypeId, discounts} = ticketMetaData;
     const discountEntries = Object.entries(discounts);
     for (const [discountName, amount] of discountEntries) {
       result.push({
         name: ticketName,
-        ticketTypeId: null,
+        ticketTypeId: ticketTypeId,
         amount: amount,
         type: discountName,
       });
     }
   }
-
   return result;
 };
