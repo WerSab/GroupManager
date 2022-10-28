@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {StyleSheet, Text, View, TextInput} from 'react-native';
 
 export default DiscountPrices = props => {
@@ -13,16 +13,23 @@ export default DiscountPrices = props => {
       setAmount(text);
     }
   };
+  const isMounted = useRef(false); //sprawdzamy czy komponent jest zamontowany
 
   useEffect(() => {
+    if (!isMounted.current) {
+      isMounted.current = true;
+      return;
+    }
     if (amount !== '') {
+      // "" -> false
       const parsedAmount = parseInt(amount);
       if (parsedAmount === 0) {
-        // props.removeDiscount();
+        props.removeDiscount();
+        return; //return przerywa działanie funkcji
       }
       props.onAmountChange(parsedAmount);
     } else {
-      // props.removeDiscount();
+      props.removeDiscount();
     }
   }, [amount]);
 

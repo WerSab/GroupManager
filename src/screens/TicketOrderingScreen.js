@@ -59,6 +59,20 @@ const TicketOrderingScreen = ({route, props}) => {
     const total = getCalculatedOrderPrice();
     setFinalPrice(total);
   };
+
+  const handleRemoveDiscount = (ticketName, discountName) => {
+    console.log('boughtTickets before delete', boughtTickets);
+    console.log('handleRemoveDiscount', ticketName, discountName);
+
+    console.log(
+      'boughtTicketsToDelete',
+      boughtTickets.current[ticketName].discounts[discountName],
+    );
+    //27.10.2022 - zadanie obsłuzyć funkcję handleRemoveDiscount - żeby faktycznie usuwała tickety)
+    delete boughtTickets.current[ticketName].discounts[discountName];
+    console.log('boughtTickets after delete', boughtTickets);
+  };
+
   const handleAmountChange = (
     ticketTypeId,
     ticketName,
@@ -76,7 +90,7 @@ const TicketOrderingScreen = ({route, props}) => {
         },
       },
     };
-
+    console.log('boughtTickets', boughtTickets);
     //   const mapCopy = new Map(prices);
     //   mapCopy.set('ulgowy', 100);
     //   setPrices(mapCopy);
@@ -93,7 +107,6 @@ const TicketOrderingScreen = ({route, props}) => {
       //   ulgowy: 1,
       // },
     }; //
-    console.log('boughtTickets', boughtTickets);
 
     //setTicketName(mapTicketName);
 
@@ -101,10 +114,6 @@ const TicketOrderingScreen = ({route, props}) => {
     // tutaj aktualizuje tablice na stanie o ten obiekt wynikowy zapisany wyzej
   };
   //console.log('boughtTicket', boughtTicket);
-  const handleRemove = (ticketName, discountName) => {
-    const bought = {};
-    delete bought[ticketName][discountName];
-  };
 
   // bought[ticketName][discountName] = amount;
   // przy parsowaniu sprawdzić czy obiekt posiada jakieś własności - jeżeli nie to go skasować ()
@@ -152,6 +161,9 @@ const TicketOrderingScreen = ({route, props}) => {
               discountName={discountName}
               ticketName={item.name}
               price={price}
+              removeDiscount={() =>
+                handleRemoveDiscount(item.name, discountName)
+              }
               onAmountChange={amount =>
                 handleAmountChange(
                   ticketTypeId,
@@ -160,6 +172,7 @@ const TicketOrderingScreen = ({route, props}) => {
                   amount,
                 )
               }
+              //https://jsfiddle.net/nhwz853s/
               // }
               //stan z rodzajem biletu i zakupionymi ulgami
             />
@@ -172,19 +185,6 @@ const TicketOrderingScreen = ({route, props}) => {
   const keyExtractor = (item, index) => {
     return index;
   };
-
-  // console.log('renderTicketItem', renderTicketItem())
-  // ;
-  // const renderTicketType = ({ item }) => {
-
-  //     return (
-  //         <View>
-
-  //             <FlatList data={ticketTypesData} renderItem={renderTicketItem} />
-  //         </View>
-  //     )
-
-  // }
 
   // function navigateWithParams(navigation, route, nextParams, screenName) {
   //     const prevParams = route.params;
@@ -272,10 +272,6 @@ const TicketOrderingScreen = ({route, props}) => {
     // wyrenderuj cos innego
     return <ActivityIndicator />;
   }
-
-  // <Text>ulgowy: 100</Text>
-  // <Text>normalny: 200</Text>
-  // <Text>seniorski: 60</Text>
 
   return (
     <View style={styles.mainBody}>
