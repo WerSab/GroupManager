@@ -33,10 +33,6 @@ export default DiscountPrices = props => {
     }
   }, [amount]);
 
-  // 1. Co jezeli uzytkownik wpisze cos w input, a pozniej wszystko skasuje?
-  // 2. Co jezeli uzytkownik dla pewnosci wpisze w pusty input wartosc 0?
-  // removeDiscount();
-
   return (
     <View style={styles.whiteBackgroundStyle}>
       <View>

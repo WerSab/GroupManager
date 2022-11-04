@@ -7,6 +7,7 @@ import {
 } from './fireBase/firestore-Helper';
 import {getDocumentReferenceById} from './fireBase/firestore-Helper';
 import {setDateTicketClearedAt} from './store/localStore';
+
 ///tickets/1c3KBRLcK085IUOdhOfg
 
 export function getTicketsOrdersList() {
@@ -59,12 +60,12 @@ export function getUserOrders(userId) {
       `${FIRESTORE_COLLECTION.USERS}/${userId}`,
     );
     console.log('userRef:', userRef);
-    getCollection(FIRESTORE_COLLECTION.TICKETS)
+    getCollection(FIRESTORE_COLLECTION.ORDERS)
       .where('user', '==', userRef)
       .where('status', '==', TICKET_PAYMENT_STATUS.UNPAID)
       .get()
       .then(querySnapshot => {
-        console.log('querysnapshot.docuemnts:', querySnapshot.docs);
+        console.log('querysnapshot.documents:', querySnapshot.docs);
         const allDocuments = querySnapshot.docs;
         const ticketList = allDocuments.map(function (collectionElement) {
           return {
