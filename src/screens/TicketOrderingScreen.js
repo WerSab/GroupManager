@@ -1,3 +1,6 @@
+//14.11 - cały order przekazac w route params, order details odczytać bilety (referencje normalnie, a rozpakowanie promisem, get(), rozpakowanie referencji)
+//final price
+//zrobić upgrade do wersji https://react-native-community.github.io/upgrade-helper/?from=0.65.3&to=0.69.7
 import {useNavigation} from '@react-navigation/core';
 import React, {useContext, useEffect, useMemo, useRef, useState} from 'react';
 import {SCREEN} from '../navigation/screens';
@@ -29,6 +32,7 @@ import {CustomTicketFlatList} from '../styles/CustomTicketFlatList';
 import {useTournamentTicketTypes} from '../hooks/useTournamentTicketTypes';
 import DiscountPrices from '../styles/DiscountPrices';
 import {parseBoughtTicketsToArray} from '../common/ticket-order-methods';
+import {calculateFinalPrice} from '../common/price-methods';
 
 const TicketOrderingScreen = ({route, props}) => {
   const userContext = useContext(UserContext);
@@ -48,42 +52,11 @@ const TicketOrderingScreen = ({route, props}) => {
 
   const handleRemoveDiscount = (ticketName, discountName) => {
     delete boughtTickets.current[ticketName].discounts[discountName];
-    recalculateFinalPrice(boughtTickets.current);
-  };
-
-  const recalculateFinalPrice = boughtTickets => {
-    const x = Object.entries(boughtTickets).reduce(
-      (acc, [, ticketMetaData]) => {
-        const ticketTypeId = ticketMetaData.ticketTypeId;
-        const {prices} = ticketTypesData.find(
-          ticketType => ticketType.id === ticketTypeId,
-        );
-        return (
-          acc +
-          Object.entries(ticketMetaData.discounts).reduce(
-            (acc, [discountName, amount]) => {
-              return acc + prices[discountName] * amount;
-            },
-            0,
-          )
-        );
-      },
-      0,
+    const calculatedPrice = calculateFinalPrice(
+      boughtTickets.current,
+      ticketTypesData,
     );
-
-    // let _finalPrice = 0;
-    // Object.entries(boughtTickets).forEach(([, ticketMetaData]) => {
-    //   const ticketTypeId = ticketMetaData.ticketTypeId;
-    //   const {prices} = ticketTypesData.find(
-    //     ticketType => ticketType.id === ticketTypeId,
-    //   );
-    //   Object.entries(ticketMetaData.discounts).forEach(
-    //     ([discountName, amount]) => {
-    //       _finalPrice += prices[discountName] * amount;
-    //     },
-    //   );
-    // });
-    setFinalPrice(x);
+    setFinalPrice(calculatedPrice);
   };
 
   const handleAmountChange = (
@@ -103,8 +76,12 @@ const TicketOrderingScreen = ({route, props}) => {
         },
       },
     };
-    console.log('TOS_boughtTickets', boughtTickets);
-    recalculateFinalPrice(boughtTickets.current);
+
+    const calculatedPrice = calculateFinalPrice(
+      boughtTickets.current,
+      ticketTypesData,
+    );
+    setFinalPrice(calculatedPrice);
   };
 
   function foo(x) {}
@@ -156,6 +133,7 @@ const TicketOrderingScreen = ({route, props}) => {
       tournamentId: tournamentId,
       tickets,
       status: 'unpaid',
+      price: finalPrice,
     })
       .then(Alert.alert('Bilety dodane do listy  Moje zamówienia'))
       .then(navigation.navigate(SCREEN.PLAYER))

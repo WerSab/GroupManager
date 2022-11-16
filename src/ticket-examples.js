@@ -225,7 +225,7 @@ export function addNewTicketOrderToCollection(data) {
           );
           if (ticketType.slotsTaken + ticket.amount > ticketType.slots) {
             console.log('test0');
-            throw new Error('Niewystarczająca ilość miejsc'); //wyjątek lokalny
+            throw new Error('Niewystarczająca ilość miejsc');
           }
           console.log('test1');
           const ticketReference = ticketsCollectionReference.doc();
@@ -267,6 +267,8 @@ export function addNewTicketOrderToCollection(data) {
         });
         console.log('save.user', data.user);
         batch.set(orderReference, {
+          //14.11. - dorzucić tutaj price do obiektu
+          price: data.price,
           user: getDocumentReferenceById(
             `${FIRESTORE_COLLECTION.USERS}/${data.user.uid}`,
           ),
