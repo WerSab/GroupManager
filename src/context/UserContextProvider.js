@@ -1,24 +1,22 @@
 import React from 'react';
-import { createContext, useEffect, useState } from 'react';
+import {createContext, useEffect, useState} from 'react';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-import { FIRESTORE_COLLECTION } from '../config';
+import {FIRESTORE_COLLECTION} from '../config';
 
 export const UserContext = createContext({
   user: null,
   initializing: true,
   data: null,
-})
+});
 
-const UserContextProvider = (props) => {
-
+const UserContextProvider = props => {
   const [userState, setUserState] = useState({
-
     user: null,
     initializing: true,
     data: null,
   });
-  
+
   useEffect(() => {
     const unsubscribe = auth().onAuthStateChanged(user => {
       if (user) {
@@ -27,48 +25,37 @@ const UserContextProvider = (props) => {
           .doc(user.uid)
           .get()
           .then(documentSnapshot => {
-            
             if (documentSnapshot.exists) {
-              
               setUserState({
                 user: user,
                 initializing: false,
-                data: documentSnapshot.data()
+                data: documentSnapshot.data(),
               });
-
-            }
-            else {
+            } else {
               console.log('Document doesnt exist');
             }
           })
-          .catch((error) => {
+          .catch(error => {
             console.log('Blad: ', error);
           });
-
-      }
-      else {
+      } else {
         setUserState({
           user: null,
           initializing: false,
           data: null,
-        })
+        });
       }
       console.log('state: ', userState);
-    })
+    });
     return () => {
       unsubscribe();
     };
   }, []);
 
   return (
-
     <UserContext.Provider value={userState}>
       {props.children}
     </UserContext.Provider>
-
-
-  )
-
-
-}
+  );
+};
 export default UserContextProvider;
