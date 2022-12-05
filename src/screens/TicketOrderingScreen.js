@@ -1,6 +1,15 @@
 //14.11 - cały order przekazac w route params, order details odczytać bilety (referencje normalnie, a rozpakowanie promisem, get(), rozpakowanie referencji)
 //final price
 //zrobić upgrade do wersji https://react-native-community.github.io/upgrade-helper/?from=0.65.3&to=0.69.7
+//
+
+// 17.11.
+// Feature branch per funkcjonalnosc
+// Tworze nowy branch featurowy na ktorym rozwijam funkcjoanlnosc
+// Commituje "kawalki" pracy
+// Pushuje do zdalnego repozytorium na featurowy branch
+// Nastepnie na zdalnym repozytorium (github) tworze pull request (feature/XYZ -> main)
+
 import {useNavigation} from '@react-navigation/core';
 import React, {useContext, useEffect, useMemo, useRef, useState} from 'react';
 import {SCREEN} from '../navigation/screens';

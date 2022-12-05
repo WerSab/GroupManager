@@ -31,14 +31,11 @@ import {
   getDayFromMillis,
   setNewCleanUpDate,
 } from '../store/localStore';
-import {
-  extractTicketsInfo,
-  getUserOrders,
-  getUserTickets,
-} from '../ticket-examples';
+import {extractTicketsInfo, getUserTickets} from '../ticket-examples';
 import ErrorScreen from './ErrorScreen';
 import {ScrollView} from 'react-native-gesture-handler';
 import TicketOrderDetails from '../styles/TicketOrderDetails';
+import {getUserOrders} from '../fireBase/firestore-orders-methods';
 
 const MyTicketsScreen = ({route}) => {
   const [myOrders, setMyOrders] = useState();
@@ -122,9 +119,6 @@ const MyTicketsScreen = ({route}) => {
             {'\n'}
             <Text style={styles.textBold}>Razem do zapłaty:</Text>{' '}
             <Text>{item.price}</Text> <Text>zł.</Text>
-            {'\n'}
-            <Text style={styles.textBold}>Bilety:</Text>
-            <Text> {item.slots} </Text>
             {'\n'}
             <Text style={styles.textBold}>Zamówienie wygaśnie za:</Text>
             <Text>

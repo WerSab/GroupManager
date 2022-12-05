@@ -22,6 +22,7 @@ import {extractTicketsInfo} from './src/ticket-examples';
 import {FIRESTORE_COLLECTION} from './src/config';
 import MessagesContextProvider from './src/context/MessageContextProvider';
 import {getCollection} from './src/fireBase/firestore-Helper';
+import OrderContextProvider from './src/context/OrderContextProvider';
 
 // getCollection(FIRESTORE_COLLECTION.TICKETS).get()
 // .then(snapshots => {
@@ -65,7 +66,7 @@ const App = () => {
   };
 
   useEffect(function () {
-    testFn();
+    //testFn();
   }, []);
   //kolejne kroki:
   //1. Rozpoczynanie transakcji - tournaments-examples

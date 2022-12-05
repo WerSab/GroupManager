@@ -5,7 +5,7 @@ export const useTournamentTicketTypes = tournamentId => {
   const [ticketTypesLoading, setTicketTypesLoading] = useState(true);
   const [ticketTypesError, setTicketTypesError] = useState();
   const [ticketTypesData, setTicketTypesData] = useState();
-
+  console.log('Test_ticketTypesData', tournamentId);
   //odczytać promisa, użyc than i catch
   //użyć useEffecta
   const requeryTicketTypes = () => {

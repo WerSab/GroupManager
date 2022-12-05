@@ -30,6 +30,7 @@ export function getTournaments() {
 }
 
 export function getTicketTypesForTournamentId(tournamentId) {
+  console.log('test2');
   return new Promise((resolve, reject) => {
     getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
       .doc(tournamentId)
@@ -37,6 +38,7 @@ export function getTicketTypesForTournamentId(tournamentId) {
       .get()
       .then(querySnapshot => {
         const ticketTypes = querySnapshot.docs;
+        console.log('getTicketTypesForTournamentId_ticketTypes', ticketTypes);
         const ticketTypesList = ticketTypes.map(function (document) {
           return {
             id: document.id,
@@ -110,11 +112,11 @@ const x: ITicketType = {
 // setState({
 //     xxx: 10,
 // })
-
+//05.12.2022 - mozliwość niewpisania adresu do strony- przesyłanie pustej wartości zamiast pustego stringa (zabezpieczyć ifami)
 export function addNewTournamentToCollection(tournament, ticketTypes) {
+  console.log('Test_addNewTournamentToCollection', ticketTypes);
   return new Promise((resolve, reject) => {
     const ticketTypesLength = ticketTypes.length;
-
     const batch = firestore().batch(); //pozwala na zapisywanie kolejnych dokumentów
     const newTournamentReference = getCollection(
       FIRESTORE_COLLECTION.TOURNAMENTS,
@@ -125,17 +127,24 @@ export function addNewTournamentToCollection(tournament, ticketTypes) {
       FIRESTORE_COLLECTION.SUB_COLLECTION.TICKET_TYPES,
     );
     const ticketTypeResponse = [];
+
     for (let i = 0; i < ticketTypesLength; i++) {
       const ticketTypeReference = ticketTypesCollectionReference.doc();
+      const ticketType = {
+        ...ticketTypes[i],
+        slotsTaken: 0,
+      };
 
-      batch.set(ticketTypeReference, ticketTypes[i]);
+      batch.set(ticketTypeReference, ticketType);
 
       const parsedTicketType = {
         id: ticketTypeReference.id,
-        ...ticketTypes[i],
+        ...ticketType,
       };
 
       ticketTypeResponse.push(parsedTicketType);
+
+      //2 opcja - ticketTypeResponse = [...ticketTypeResponse, parsedTicketType];
 
       //dodawanie elementów do tablicy
       // [].push(element);
