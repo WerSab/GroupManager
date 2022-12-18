@@ -1,4 +1,4 @@
-export function validateTournament(tournament, ticketTypes) {
+export function validateTournament(tournament) {
   const regex = new RegExp(
     '^(https?:\\/\\/)?' + // protocol
       '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name

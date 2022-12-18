@@ -29,15 +29,32 @@ import {NavigationContainer, useNavigation} from '@react-navigation/core';
 import {SCREEN} from '../navigation/screens';
 import {CustomButton} from '../styles/CustomButton';
 import TicketOrderingScreen from './TicketOrderingScreen';
-import {parseEventDurationTime} from '../common/time-methods';
+import {parseEventDurationTime} from '../common/date-time-methods';
 import {getDateFromTimestamp} from '../fireBase/firestore-Helper';
 import dayjs from 'dayjs';
 
+const PriceDisplayable = () => {
+  const priceEntries = Object.entries(element.prices);
+  return (
+    <View>
+      {/* Tutaj korzystajac z priceEntries mozemy wyswietlic ceny biletow -> normalny, ulgowy itd */}
+    </View>
+  );
+};
+
 function parsedTicketTypesDataView(element) {
+  // [['ulgowy', 10]]- zmapować i wyświetlić tekst-
+  console.log('priceEntries', priceEntries);
+  // na przyklad mozna to zrobic tak:
+  <View>
+    <Text>{element.name}</Text>
+    <Text>{element.slots}</Text>
+    <PriceDisplayable prices={element.prices} />
+  </View>;
   return (
     <Text style={styles.listStyle} key={element.id}>
       {`${element.name}:   
-        Cena: ${element.price}  
+        Cena: ${priceEntries.toString()}  
         Ilość biletów: ${element.slots}
         Ilość zajętych miejsc: ${element.slotsTaken}`}
     </Text>
@@ -57,7 +74,7 @@ const TournamentDetails = ({route}) => {
   const startTime = getDateFromTimestamp(tournament.startDate);
   const startTimeFormated = dayjs(startTime).format('DD/MM/YYYY HH:mm');
   const eventDuration = parseEventDurationTime(tournament);
-
+  console.log('ticketTypesData', ticketTypesData);
   return (
     <View style={styles.mainBody}>
       <ScrollView>
