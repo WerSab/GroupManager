@@ -5,8 +5,8 @@ import {FIRESTORE_COLLECTION} from '../config';
 import {
   getCollection,
   getFirestoreTimestampFromDate,
-} from '../fireBase/firestore-Helper';
-import {deleteTicket} from '../ticket-examples';
+} from '../firebase/firestore-helpers';
+import {deleteTicket} from '../firebase/firestore-ticket-methods';
 import {SCREEN} from '../navigation/screens';
 import {useNavigation} from '@react-navigation/core';
 

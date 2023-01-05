@@ -26,13 +26,13 @@ import {
   Button,
   ActivityIndicator,
 } from 'react-native';
-import {updateTicketOrdersToTournament} from '../tournaments-examples';
-import {addNewTicketOrderToCollection} from '../ticket-examples';
-import {updateTicketOrdersToUser} from '../users-examples';
+import {updateTicketOrdersToTournament} from '../firebase/firestore-tournament-methods';
+import {addNewTicketOrderToCollection} from '../firebase/firestore-ticket-methods';
+import {updateTicketOrdersToUser} from '../firebase/firestore-user-methods';
 import {UserContext} from '../context/UserContextProvider';
 import {TournamentContext} from '../context/TournamentContextProvider';
 import {getTournamentFromContext} from '../common/context-methods';
-import {getCollection} from '../fireBase/firestore-Helper';
+import {getCollection} from '../firebase/firestore-helpers';
 import {FIRESTORE_COLLECTION, TICKET_PAYMENT_STATUS} from '../config';
 import {setDateTicketClearedAt} from '../store/localStore';
 import useStoredTicketTypesFromRouteParams from '../hooks/useStoredTicketTypesFromRouteParams';

@@ -1,5 +1,5 @@
 import {FIRESTORE_COLLECTION, TICKET_PAYMENT_STATUS} from '../config';
-import {getCollection, getDocumentReferenceById} from './firestore-Helper';
+import {getCollection, getDocumentReferenceById} from './firestore-helpers';
 
 export function getUserOrders(userId) {
   return new Promise((resolve, reject) => {

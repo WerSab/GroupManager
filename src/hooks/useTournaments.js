@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {getTournaments} from '../tournaments-examples';
+import {getTournaments} from '../firebase/firestore-tournament-methods';
 
 export function useTournaments() {
   const [tournamentList, setTournamentList] = useState();

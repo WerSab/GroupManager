@@ -31,11 +31,14 @@ import {
   getDayFromMillis,
   setNewCleanUpDate,
 } from '../store/localStore';
-import {extractTicketsInfo, getUserTickets} from '../ticket-examples';
+import {
+  extractTicketsInfo,
+  getUserTickets,
+} from '../firebase/firestore-ticket-methods';
 import ErrorScreen from './ErrorScreen';
 import {ScrollView} from 'react-native-gesture-handler';
 import TicketOrderDetails from '../styles/TicketOrderDetails';
-import {getUserOrders} from '../fireBase/firestore-orders-methods';
+import {getUserOrders} from '../firebase/firestore-order-methods';
 
 const MyTicketsScreen = ({route}) => {
   const [myOrders, setMyOrders] = useState();

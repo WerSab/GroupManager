@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {getTicketTypesForTournamentId} from '../tournaments-examples';
+import {getTicketTypesForTournamentId} from '../firebase/firestore-tournament-methods';
 
 export const useTournamentTicketTypes = tournamentId => {
   const [ticketTypesLoading, setTicketTypesLoading] = useState(true);
