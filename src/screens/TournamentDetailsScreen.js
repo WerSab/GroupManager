@@ -23,41 +23,36 @@ import {
   updateBookingsToTournament,
   getTournaments,
   bookingsCounter,
-} from '../tournaments-examples';
+} from '../firebase/firestore-tournament-methods';
 import {getTournamentFromContext} from '../common/context-methods';
 import {NavigationContainer, useNavigation} from '@react-navigation/core';
 import {SCREEN} from '../navigation/screens';
 import {CustomButton} from '../styles/CustomButton';
 import TicketOrderingScreen from './TicketOrderingScreen';
 import {parseEventDurationTime} from '../common/date-time-methods';
-import {getDateFromTimestamp} from '../fireBase/firestore-Helper';
+import {getDateFromTimestamp} from '../firebase/firestore-helpers';
 import dayjs from 'dayjs';
 
-const PriceDisplayable = () => {
-  const priceEntries = Object.entries(element.prices);
+const PriceDisplayable = props => {
+  const priceEntries = Object.entries(props.prices);
+  console.log('priceEntries', priceEntries);
   return (
     <View>
-      {/* Tutaj korzystajac z priceEntries mozemy wyswietlic ceny biletow -> normalny, ulgowy itd */}
+      <Text>przykładowe ceny</Text>
     </View>
   );
 };
 
 function parsedTicketTypesDataView(element) {
   // [['ulgowy', 10]]- zmapować i wyświetlić tekst-
-  console.log('priceEntries', priceEntries);
+
   // na przyklad mozna to zrobic tak:
-  <View>
-    <Text>{element.name}</Text>
-    <Text>{element.slots}</Text>
-    <PriceDisplayable prices={element.prices} />
-  </View>;
   return (
-    <Text style={styles.listStyle} key={element.id}>
-      {`${element.name}:   
-        Cena: ${priceEntries.toString()}  
-        Ilość biletów: ${element.slots}
-        Ilość zajętych miejsc: ${element.slotsTaken}`}
-    </Text>
+    <View style={{backgroundColor: 'grey', margin: 5}} key={element.id}>
+      <Text>{element.name}</Text>
+      <Text>{element.slots}</Text>
+      <PriceDisplayable prices={element.prices} />
+    </View>
   );
 }
 
@@ -71,8 +66,9 @@ const TournamentDetails = ({route}) => {
   console.log('Test_useTournamentTicketTypes_ticketTypesData', ticketTypesData);
   const navigation = useNavigation();
   const parsedTicketTypesData = ticketTypesData?.map(parsedTicketTypesDataView);
-  const startTime = getDateFromTimestamp(tournament.startDate);
-  const startTimeFormated = dayjs(startTime).format('DD/MM/YYYY HH:mm');
+  const startTimeFormated = dayjs(tournament.startDate).format(
+    'DD/MM/YYYY HH:mm',
+  );
   const eventDuration = parseEventDurationTime(tournament);
   console.log('ticketTypesData', ticketTypesData);
   return (
@@ -121,7 +117,7 @@ const TournamentDetails = ({route}) => {
         ) : (
           <View style={styles.listStyle}>
             <Text style={styles.textDark}> Bilety:</Text>
-            <Text> {parsedTicketTypesData}</Text>
+            {parsedTicketTypesData}
           </View>
         )}
       </ScrollView>

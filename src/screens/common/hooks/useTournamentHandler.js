@@ -1,3 +1,6 @@
+import {useState} from 'react';
+import {validateTournament} from '../../../firebase/firestore-model-validators';
+
 export const useTournamentHandler = tournament => {
   const [nameInput, setNameInput] = useState(tournament?.name ?? '');
   const [placeInput, setPlaceInput] = useState(tournament?.place ?? '');
@@ -5,34 +8,55 @@ export const useTournamentHandler = tournament => {
   const [tournamentCategoryInput, setTournamentCategoryInput] = useState(
     tournament?.category ?? '',
   );
-  const [startDateInput, setStartDate] = useState(
+  const [startDateInput, setStartDateInput] = useState(
     tournament?.startDate ?? new Date(),
   );
-  const [endDateInput, setEndDate] = useState(
+  const [endDateInput, setEndDateInput] = useState(
     tournament?.endDate ?? new Date(),
   );
+  const [validationError, setValidationError] = useState();
   const [error, setError] = useState();
 
   const inputs = {
     name: [nameInput, setNameInput],
-    place: [placeInput],
-    link: [linkInput],
-    category: [tournamentCategoryInput],
+    place: [placeInput, setPlaceInput],
+    link: [linkInput, setLinkInput],
+    category: [tournamentCategoryInput, setTournamentCategoryInput],
+    startDate: [startDateInput, setStartDateInput],
+    endDate: [endDateInput, setEndDateInput],
+    validationError,
   };
 
   const onConfirm = () => {
     const tournament = {
-      name: nameInput, //itd.
+      name: nameInput,
+      place: placeInput,
+      link: linkInput,
+      category: tournamentCategoryInput,
+      startDate: startDateInput,
+      endDate: endDateInput,
     };
-    //parsowanie wartości z tournament
+    try {
+      validateTournament(tournament);
+    } catch (error) {
+      console.log('catch.validate:', error, typeof error);
+      const {field, message} = error;
+      setValidationError({field, message});
+    }
 
-    validateTournament();
-
-    // walidowac inputy
-    //
+    return tournament;
   };
 
-  const clearInputs = () => {};
+  const clearInputs = () => {
+    setNameInput('');
+    setPlaceInput('');
+    setLinkInput('');
+    setTournamentCategoryInput('');
+    setStartDate(new Date());
+    setEndDate(new Date());
+    // do zastanowienia sie
+    setValidationError(undefined);
+  };
 
   return {inputs, onConfirm, clearInputs};
 };

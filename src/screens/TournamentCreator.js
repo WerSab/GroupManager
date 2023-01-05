@@ -12,20 +12,21 @@ import {
 } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import DatePicker from 'react-native-date-picker';
-import {addNewTournamentToCollection} from '../tournaments-examples';
+import {addNewTournamentToCollection} from '../firebase/firestore-tournament-methods';
 import {TicketTypeCreator} from './TicketTypeCreator';
-import {validateTournament} from '../fireBase/firestore-model-validators';
+import {validateTournament} from '../firebase/firestore-model-validators';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {SCREEN} from '../navigation/screens';
 import {TournamentContext} from '../context/TournamentContextProvider';
 import useStoredTicketTypesFromRouteParams from '../hooks/useStoredTicketTypesFromRouteParams';
+import {useTournamentHandler} from './common/hooks/useTournamentHandler';
 
 const MIN_EVENT_DURATION_IN_MILLIS = 60 * 1000;
 
 const TournamentCreator = ({route}) => {
-  const [nameInput, setNameInput] = useState();
+  //const [nameInput, setNameInput] = useState();
   const [placeInput, setPlaceInput] = useState();
-  const [linkInput, setLinkInput] = useState('');
+  //const [linkInput, setLinkInput] = useState('');
   const [tournamentCategoryInput, setTournamentCategoryInput] =
     useState('Kategoria');
   const [date, setDate] = useState(new Date());
@@ -48,56 +49,45 @@ const TournamentCreator = ({route}) => {
   const minimumEndDate = new Date(
     date.getTime() + MIN_EVENT_DURATION_IN_MILLIS,
   );
+  const {inputs, onConfirm, clearInputs} = useTournamentHandler();
+  const [nameInput, setNameInput] = inputs.name;
+  const [linkInput, setLinkInput] = inputs.link;
+  //19.12.2022 - dorobić resztę inputów
 
-  const clearInputs = () => {
-    setNameInput('');
-    setDate(new Date());
-    setDate(date);
-    setPlaceInput('');
-    setTournamentCategoryInput('Kategoria');
-    clearTicketTypes();
-    setLinkInput('');
+  useEffect(() => {
+    console.log('inputs.val:', inputs.validationError);
+  }, [inputs.validationError]);
+
+  const handleTournamentSavePress = () => {
+    try {
+      const tournament = onConfirm();
+      onSavePress(tournament, ticketsBasket);
+    } catch (error) {
+      console.log('handleTournamentSavePress error:', error);
+    }
   };
 
-  const onSavePress = () => {
+  const onSavePress = tournament => {
     // cdezaktywuje przycisk
-    try {
-      const tournament = {
-        name: nameInput,
-        startDate: date,
-        endDate: endDate,
-        place: placeInput,
-        tournamentCategory: tournamentCategoryInput,
-        link: linkInput,
-      };
-
-      validateTournament(tournament, ticketsBasket);
-      console.log(ticketsBasket);
-      addNewTournamentToCollection(tournament, ticketsBasket)
-        .then(() => {
-          clearInputs();
-          tournamentActions.requeryTournaments();
-          //aktywuję przycisk onsavepress
-        })
-
-        .catch(function (err) {
-          console.log('catch error in promise.catch:', err);
-          Alert.alert(
-            'Wystąpił błąd',
-            `Przepraszamy mamy problem z serwerem, prosze spróbować później`,
-            [
-              {text: 'Ok'},
-              //aktywuję przycisk onsavepress
-            ],
-          );
-        });
-
-      // const promiseResult = await addNewTournamentToCollection({},[]); // async/await sugar syntax for promise
-      // console.log(promiseResult);
-    } catch (error) {
-      console.log('try/catch blad: ', error.message); //wyświetlić text błędu
-      setError(error.message);
-    }
+    addNewTournamentToCollection(tournament, ticketsBasket)
+      .then(() => {
+        clearInputs();
+        tournamentActions.requeryTournaments();
+        //aktywuję przycisk onsavepress
+      })
+      .catch(function (err) {
+        console.log('catch error in promise.catch:', err);
+        Alert.alert(
+          'Wystąpił błąd',
+          `Przepraszamy mamy problem z serwerem, prosze spróbować później`,
+          [
+            {text: 'Ok'},
+            //aktywuję przycisk onsavepress
+          ],
+        );
+      });
+    // const promiseResult = await addNewTournamentToCollection({},[]); // async/await sugar syntax for promise
+    // console.log(promiseResult);
   };
 
   return (
@@ -175,9 +165,7 @@ const TournamentCreator = ({route}) => {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => {
-              onSavePress();
-            }}>
+            onPress={handleTournamentSavePress}>
             <Text style={styles.textDark}>Zapisz wydarzenie</Text>
           </TouchableOpacity>
         </View>

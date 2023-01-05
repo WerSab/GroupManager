@@ -5,7 +5,7 @@ import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import {UserContext} from '../context/UserContextProvider';
 import {FlatGrid, SectionGrid} from 'react-native-super-grid';
 import signedOut from '../assets/icons/signedOut.png';
-import {signOutFirebaseUser} from '../fireBase/authentication-methods';
+import {signOutFirebaseUser} from '../firebase/authentication-methods';
 import {SCREEN} from '../navigation/screens';
 
 const SCREEN_TAB = Object.values(SCREEN.PLAYER_TAB).map(element => {

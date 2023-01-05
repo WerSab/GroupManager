@@ -28,7 +28,7 @@ import {
   formatDate,
   parseEventDurationTime,
 } from '../common/date-time-methods';
-import {getDateFromTimestamp} from '../fireBase/firestore-Helper';
+import {getDateFromTimestamp} from '../firebase/firestore-helpers';
 import {getEventDuration} from './common/tournament-methods';
 import {Picker} from '@react-native-picker/picker';
 import useStoredTicketTypesFromRouteParams from '../hooks/useStoredTicketTypesFromRouteParams';
@@ -42,8 +42,10 @@ const MyTournamentDetails = ({navigation, route}) => {
   const tournament = getTournamentFromContext(tournamentContext, tournamentId);
   // const navigation = useNavigation();
   //const parsedTicketTypesData = ticketTypesData?.map(parsedTicketTypesDataView);
-  const startTime = getDateFromTimestamp(tournament.startDate);
-  const startTimeFormated = formatDate(startTime, 'DD/MM/YYYY HH:mm');
+  const startTimeFormated = formatDate(
+    tournament.startDate,
+    'DD/MM/YYYY HH:mm',
+  );
   const eventDuration = parseEventDurationTime(tournament);
   const [orderedTickets, setOrderedTickets] = useState([]);
   const [isModalAddTicketVisible, setIsModalAddTicketVisible] = useState(false);

@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useMemo} from 'react';
 import {createContext} from 'react';
-import {getUserOrders} from '../fireBase/firestore-orders-methods';
+import {getUserOrders} from '../firebase/firestore-order-methods';
 import {UserContext} from './UserContextProvider';
 
 export const OrderContext = createContext({

@@ -1,12 +1,12 @@
-import {FIRESTORE_COLLECTION, TICKET_PAYMENT_STATUS} from './config';
+import {FIRESTORE_COLLECTION, TICKET_PAYMENT_STATUS} from '../config';
 import {
   getCollection,
   getFirestoreBatch,
   getFirestoreTimestampFromDate,
   incrementBy,
-} from './fireBase/firestore-Helper';
-import {getDocumentReferenceById} from './fireBase/firestore-Helper';
-import {setDateTicketClearedAt} from './store/localStore';
+} from './firestore-helpers';
+import {getDocumentReferenceById} from './firestore-helpers';
+import {setDateTicketClearedAt} from '../store/localStore';
 
 ///tickets/1c3KBRLcK085IUOdhOfg
 

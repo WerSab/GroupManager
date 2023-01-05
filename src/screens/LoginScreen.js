@@ -1,4 +1,4 @@
-import React, { useContext, useState, createRef } from 'react';
+import React, {useContext, useState, createRef} from 'react';
 import {
   StyleSheet,
   TextInput,
@@ -9,16 +9,15 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Button,
-  SafeAreaView
+  SafeAreaView,
 } from 'react-native';
 import {
   loginFireBaseUser,
   signOutFirebaseUser,
-} from '../fireBase/authentication-methods';
-import { UserContext } from '../context/UserContextProvider';
+} from '../firebase/authentication-methods';
+import {UserContext} from '../context/UserContextProvider';
 
-const LoginScreen = ({ navigation }) => {
-
+const LoginScreen = ({navigation}) => {
   const authContext = useContext(UserContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -32,7 +31,6 @@ const LoginScreen = ({ navigation }) => {
     setIsLogging(true);
     loginFireBaseUser(email, password)
       .then(() => {
-
         setError(null);
       })
       .catch(setError)
@@ -58,8 +56,7 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <View style={styles.mainBody}>
-       <Text style={styles.textStyle}>
-          CKiS w Skawinie</Text>
+      <Text style={styles.textStyle}>CKiS w Skawinie</Text>
       <ScrollView
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={{
@@ -67,70 +64,68 @@ const LoginScreen = ({ navigation }) => {
           justifyContent: 'center',
           alignContent: 'center',
         }}>
-          <SafeAreaView>
-        <View>
-         
-          <KeyboardAvoidingView enabled>
-            <View style={styles.SectionStyle}>
-              <TextInput
-                style={styles.inputStyle}
-                onChange={event => setEmail(event.nativeEvent.text)}
-                placeholder="Enter Email" //dummy@abc.com
-                placeholderTextColor="#8b9cb5"
-                autoCapitalize="none"
-                keyboardType="email-address"
-                returnKeyType="next"
-                onSubmitEditing={() =>
-                  passwordInputRef.current &&
-                  passwordInputRef.current.focus()
-                }
-                underlineColorAndroid="#f000"
-                blurOnSubmit={false}
-              />
-            </View>
-            <View style={styles.SectionStyle}>
-              <TextInput
-                style={styles.inputStyle}
-                onChange={event => setPassword(event.nativeEvent.text)}
-                placeholder="Enter Password" //12345
-                placeholderTextColor="#8b9cb5"
-                keyboardType="default"
-                ref={passwordInputRef}
-                onSubmitEditing={Keyboard.dismiss}
-                blurOnSubmit={false}
-                secureTextEntry={true}
-                underlineColorAndroid="#f000"
-                returnKeyType="next"
-              />
-            </View>
+        <SafeAreaView>
+          <View>
+            <KeyboardAvoidingView enabled>
+              <View style={styles.SectionStyle}>
+                <TextInput
+                  style={styles.inputStyle}
+                  onChange={event => setEmail(event.nativeEvent.text)}
+                  placeholder="Enter Email" //dummy@abc.com
+                  placeholderTextColor="#8b9cb5"
+                  autoCapitalize="none"
+                  keyboardType="email-address"
+                  returnKeyType="next"
+                  onSubmitEditing={() =>
+                    passwordInputRef.current && passwordInputRef.current.focus()
+                  }
+                  underlineColorAndroid="#f000"
+                  blurOnSubmit={false}
+                />
+              </View>
+              <View style={styles.SectionStyle}>
+                <TextInput
+                  style={styles.inputStyle}
+                  onChange={event => setPassword(event.nativeEvent.text)}
+                  placeholder="Enter Password" //12345
+                  placeholderTextColor="#8b9cb5"
+                  keyboardType="default"
+                  ref={passwordInputRef}
+                  onSubmitEditing={Keyboard.dismiss}
+                  blurOnSubmit={false}
+                  secureTextEntry={true}
+                  underlineColorAndroid="#f000"
+                  returnKeyType="next"
+                />
+              </View>
 
-            <TouchableOpacity
-              style={styles.buttonStyle}
-              activeOpacity={0.5}
-              disabled={isLogging}
-              title="Log in"
-              onPress={() => {
-                loginUser();
-                console.log(loginUser)
-              }}>
-              <Text style={styles.buttonTextStyle}>LOGIN</Text>
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.buttonStyle}
+                activeOpacity={0.5}
+                disabled={isLogging}
+                title="Log in"
+                onPress={() => {
+                  loginUser();
+                  console.log(loginUser);
+                }}>
+                <Text style={styles.buttonTextStyle}>LOGIN</Text>
+              </TouchableOpacity>
 
-            <View style={{ marginTop: 10, alignItems: 'center' }}>
-              <Text style={{ color: 'red' }}>{error}</Text>
-            </View>
-            <Text
-              style={styles.registerTextStyle}
-              onPress={() => navigation.navigate('RegisterScreen')}>
-              New Here ? Register
-            </Text>
-            <Text
-              style={styles.registerTextStyle}
-              onPress={() => navigation.navigate('PasswordRecoveryScreen')}>
-              Forgot password?
-            </Text>
-          </KeyboardAvoidingView>
-        </View>
+              <View style={{marginTop: 10, alignItems: 'center'}}>
+                <Text style={{color: 'red'}}>{error}</Text>
+              </View>
+              <Text
+                style={styles.registerTextStyle}
+                onPress={() => navigation.navigate('RegisterScreen')}>
+                New Here ? Register
+              </Text>
+              <Text
+                style={styles.registerTextStyle}
+                onPress={() => navigation.navigate('PasswordRecoveryScreen')}>
+                Forgot password?
+              </Text>
+            </KeyboardAvoidingView>
+          </View>
         </SafeAreaView>
       </ScrollView>
     </View>

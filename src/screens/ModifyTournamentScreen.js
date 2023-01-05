@@ -1,5 +1,9 @@
 //05.12.2022 / sprawdzić jak daty wyświetlają się gdzie indziej i zrobić tak samo.
 //12/12/2022/zmienić inputy dat na kalendarz i czas.
+
+// 21.12.2022
+// 2. fixnac wywolania dat na obiekcie tournament w calej aplikacji (wskazowka: useContext(TournamentContext))
+
 import React, {useContext, useState} from 'react';
 import {
   View,
@@ -16,21 +20,18 @@ import {TournamentContext} from '../context/TournamentContextProvider';
 import {Picker} from '@react-native-picker/picker';
 import DatePicker from 'react-native-date-picker';
 //import { useTournamentTicketTypes } from '../hooks/useTournamentTicketTypes';
-import {modifyTournament} from '../tournaments-examples';
-import {validateTournament} from '../fireBase/firestore-model-validators';
-import {getDateFromTimestamp} from '../fireBase/firestore-Helper';
+import {modifyTournament} from '../firebase/firestore-tournament-methods';
+import {validateTournament} from '../firebase/firestore-model-validators';
+import {getDateFromTimestamp} from '../firebase/firestore-helpers';
 import {getEventDuration} from './common/tournament-methods';
 import {formatDate, parseEventDurationTime} from '../common/date-time-methods';
+import {useTournamentHandler} from './common/hooks/useTournamentHandler';
 
 const parseTournamentToDisplayable = tournament => {
-  console.log(tournament);
-  const endDate = getDateFromTimestamp(tournament.endDate);
-  const startDate = getDateFromTimestamp(tournament.startDate);
-
   return {
     ...tournament,
-    endDate: formatDate(endDate, 'DD/MM/YYYY HH:mm'),
-    startDate: formatDate(startDate, 'DD/MM/YYYY HH:mm'),
+    endDate: formatDate(tournament.endDate, 'DD/MM/YYYY HH:mm'),
+    startDate: formatDate(tournament.startDate, 'DD/MM/YYYY HH:mm'),
     eventDuration: parseEventDurationTime(tournament),
   };
 };
@@ -43,29 +44,30 @@ const ModifyTournamentScreen = ({route}) => {
   );
   const tournament = parseTournamentToDisplayable(contextTournament);
   const id = tournament.id;
+  const {inputs, onConfirm, clearInputs} =
+    useTournamentHandler(contextTournament);
+  console.log('inputs:', inputs.endDate[0]);
+  const [nameInput, setNameInput] = inputs.name;
+  const [placeInput, setPlaceInput] = inputs.place;
+  const [linkInput, setLinkInput] = inputs.link;
+  const [tournamentCategoryInput, setTournamentCategoryInput] = inputs.category;
+  const [startDateInput, setStartDateInput] = inputs.startDate;
+  const [endDateInput, setEndDateInput] = inputs.endDate;
   console.log('tournament input', tournament);
-  const [nameInput, setNameInput] = useState(tournament.name);
-  const [dateInput, setDateInput] = useState(tournament.endDate);
-  const [startTimeInput, setStartTimeInput] = useState(tournament.startDate);
-  const [intervalInput, setIntervalInput] = useState(tournament.eventDuration);
-  const [placeInput, setPlaceInput] = useState(tournament.place);
-  const [linkInput, setLinkInput] = useState(tournament.link);
-  const [tournamentCategoryInput, setTournamentCategoryInput] = useState(
-    tournament.tournamentCategory,
-  );
+  // const [nameInput, setNameInput] = useState(tournament.name);
+  // const [endDateInput, setEndDateInput] = useState(tournament.endDate);
+  // const [startTimeInput, setStartTimeInput] = useState(tournament.startDate);
+  // const [intervalInput, setIntervalInput] = useState(tournament.eventDuration);
+  // const [placeInput, setPlaceInput] = useState(tournament.place);
+  // const [linkInput, setLinkInput] = useState(tournament.link);
+  // const [tournamentCategoryInput, setTournamentCategoryInput] = useState(
+  //   tournament.tournamentCategory,
+  // );
   // const [ticketTypesData, setTicketTypesData] = useTournamentTicketTypes(tournament);
   /* onUpdate(){
         modifyTournament(tournament) // zdefiniowana w tournament-examples.js
     }*/
   console.log('tournament', tournament);
-  const clearInputs = () => {
-    setNameInput('');
-    setDate(new Date());
-    setPlaceInput('');
-    setTournamentCategoryInput('Kategoria');
-    clearTicketTypes();
-    setLinkInput('');
-  };
 
   const onUpdate = () => {
     //parsowanie ze stringów na int - do zrobienia_12.04.2022
@@ -75,31 +77,28 @@ const ModifyTournamentScreen = ({route}) => {
       return undefined;
     }
     try {
-      const tournamentInput = {
-        name: nameInput,
-        date: dateInput,
-        startTime: startTimeInput,
-        interval: intervalInput,
-        place: placeInput,
-        tournamentCategory: tournamentCategoryInput,
-        link: linkInput,
-      };
-
-      validateTournament(tournamentInput);
-      modifyTournament(id, tournamentInput)
-        .then(() => {
-          clearInputs();
-        })
-
-        .catch(function (err) {
-          console.log('catch error in promise.catch:', err);
-          Alert.alert(
-            'Wystąpił błąd',
-            `Przepraszamy mamy problem z serwerem, prosze spróbować później`,
-            [{text: 'Ok'}],
-          );
-        });
-
+      // const tournamentInput = {
+      //   name: nameInput,
+      //   date: dateInput,
+      //   startTime: startTimeInput,
+      //   interval: intervalInput,
+      //   place: placeInput,
+      //   tournamentCategory: tournamentCategoryInput,
+      //   link: linkInput,
+      // };
+      // validateTournament(tournamentInput);
+      // modifyTournament(id, tournamentInput)
+      //   .then(() => {
+      //     clearInputs();
+      // })
+      // .catch(function (err) {
+      //   console.log('catch error in promise.catch:', err);
+      //   Alert.alert(
+      //     'Wystąpił błąd',
+      //     `Przepraszamy mamy problem z serwerem, prosze spróbować później`,
+      //     [{text: 'Ok'}],
+      //   );
+      // });
       // const promiseResult = await addNewTournamentToCollection({},[]); // async/await sugar syntax for promise
       // console.log(promiseResult);
     } catch (error) {
@@ -120,10 +119,6 @@ const ModifyTournamentScreen = ({route}) => {
           selectedValue={tournamentCategoryInput}
           style={{height: 50, width: 150, color: '#005b98'}}
           onValueChange={itemValue => setTournamentCategoryInput(itemValue)}>
-          <Picker.Item
-            label={tournamentCategoryInput}
-            value={tournamentCategoryInput}
-          />
           <Picker.Item label="Kultura" value="kultura" />
           <Picker.Item label="Sport" value="sport" />
         </Picker>
@@ -142,24 +137,27 @@ const ModifyTournamentScreen = ({route}) => {
           placeholder="Miejsce..."
         />
         <DatePicker
-          date={date}
-          onDateChange={setDate}
+          date={startDateInput}
+          onDateChange={date => {
+            console.log(
+              'Aktuializacja daty:',
+              date,
+              date instanceof Date,
+              typeof Date,
+            );
+            setStartDateInput(date);
+          }}
           minimumDate={new Date()}
         />
 
         <Text style={styles.text}>Data zakończenia</Text>
 
         <DatePicker
-          date={minimumEndDate}
-          onDateChange={setEndDate}
-          minimumDate={minimumEndDate}
+          date={endDateInput}
+          onDateChange={setEndDateInput}
+          minimumDate={startDateInput}
         />
-        <TextInput
-          style={styles.textDark}
-          onChangeText={setIntervalInput}
-          value={intervalInput}
-          placeholder="Czas trwania..."
-        />
+
         <TextInput
           style={styles.input}
           onChangeText={setLinkInput}

@@ -19,13 +19,13 @@ import {SCREEN} from '../navigation/screens';
 import {
   addNewTournamentToCollection,
   deleteTournament,
-} from '../tournaments-examples';
+} from '../firebase/firestore-tournament-methods';
 import {TournamentContext} from '../context/TournamentContextProvider';
 import {TicketTypeCreator} from './TicketTypeCreator';
 import {
   validateTournament,
   validateTournmanetFields,
-} from '../fireBase/firestore-model-validators';
+} from '../firebase/firestore-model-validators';
 import DatePicker from 'react-native-date-picker';
 
 const MIN_EVENT_DURATION_IN_MILLIS = 60 * 1000;

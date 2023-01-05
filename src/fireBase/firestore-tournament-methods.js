@@ -1,13 +1,14 @@
-import {FIRESTORE_COLLECTION} from './config';
+import {FIRESTORE_COLLECTION} from '../config';
 import {FirestoreDataContext} from './context/FirestoreDataProvider';
 import {
   addToArray,
   getCollection,
+  getDateFromTimestamp,
   getFirestoreTimestampFromDate,
-} from './fireBase/firestore-Helper';
+} from '../firebase/firestore-helpers';
 import firestore from '@react-native-firebase/firestore';
+import {mapFirestoreTournament} from './firestore-mappers';
 
-//lista turniejów - tournaments FlatList
 export function getTournaments() {
   return new Promise((resolve, reject) => {
     getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
@@ -17,9 +18,12 @@ export function getTournaments() {
         const tournamentsList = allDocuments.map(function (
           collectionElement, //metoda zwraca nam wyselekcjonowane dane bez zbędnych np metadanych
         ) {
+          const mappedTournament = mapFirestoreTournament(
+            collectionElement.data(),
+          );
           return {
             id: collectionElement.id,
-            ...collectionElement.data(),
+            ...mappedTournament,
           };
           // return collectionElement.data();
         });
