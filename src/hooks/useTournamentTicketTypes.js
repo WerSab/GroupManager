@@ -12,19 +12,22 @@ export const useTournamentTicketTypes = tournamentId => {
     getTicketTypesForTournamentId(tournamentId)
       .then(result => {
         // TODO: settimeout should be removed in the future for release
-        setTimeout(() => {
-          setTicketTypesData(result);
-          setTicketTypesLoading(false);
-        }, 1000);
+
+        setTicketTypesData(result);
+        setTicketTypesLoading(false);
       })
       .catch(ticketTypesError => {
         setTicketTypesError(ticketTypesError);
         setTicketTypesLoading(false);
       });
   };
+
+  const actions = {
+    requeryTicketTypes,
+  };
   useEffect(() => {
     requeryTicketTypes();
   }, []);
   //console.log('ticketTypesData', ticketTypesData)
-  return [ticketTypesData, ticketTypesLoading, ticketTypesError];
+  return [ticketTypesData, ticketTypesLoading, ticketTypesError, actions];
 };

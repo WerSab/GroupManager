@@ -75,6 +75,54 @@ export function deleteTournament(tournamentId) {
     .doc(tournamentId)
     .delete();
 }
+
+class Logger {
+  log(message) {
+    if (__DEV__) {
+      console.log(message);
+      return;
+    }
+    crashlytics().log(message);
+  }
+}
+
+// crashlytics().recordError();
+
+function getTournamentTicketTypesCollection(tournamentId) {
+  const tournamentCollection = getCollection(FIRESTORE_COLLECTION.TOURNAMENTS);
+  const tournament = tournamentCollection.doc(tournamentId);
+  const tournamentTicketTypes = tournament.collection(
+    FIRESTORE_COLLECTION.SUB_COLLECTION.TICKET_TYPES,
+  );
+  return tournamentTicketTypes;
+}
+
+export async function addTicketType(tournamentId, ticketType) {
+  const tournamentTicketTypes =
+    getTournamentTicketTypesCollection(tournamentId);
+  try {
+    return await tournamentTicketTypes.add(ticketType);
+  } catch (error) {
+    console.log('addTicketType error:', error);
+  }
+}
+
+export function deleteTicketType(tournamentId, ticketTypeId) {
+  // deletedAt: timestamp firestore
+  const tournamentTicketTypes =
+    getTournamentTicketTypesCollection(tournamentId);
+  const foundTicketType = tournamentTicketTypes.doc(ticketTypeId);
+  const promise = foundTicketType.delete().catch(error => {
+    console.log('deleteTicketType error:', error);
+  });
+  return promise;
+
+  // return getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
+  //   .doc(tournamentId)
+  //   .collection(FIRESTORE_COLLECTION.SUB_COLLECTION.TICKET_TYPES)
+  //   .doc(ticketTypeId)
+  //   .delete();
+}
 // dopisać funkcję zliczania rezerwacji
 export function updateTicketOrdersToTournament(tournamentId, orders) {
   return getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)

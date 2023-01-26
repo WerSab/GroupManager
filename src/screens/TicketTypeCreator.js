@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+//19.01.2023 - zrobić wlaściwe przekierowanie na inny ekran (jak przekazać parametry na podstawie których bedzie się wracać do różnych ekranów - ticketTypeCreator, TournamentDetails)
+import React, {useCallback, useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -8,9 +9,11 @@ import {
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {SCREEN} from '../navigation/screens';
+import {useNavigateWithParams} from '../hooks/useNavigateWithParams';
 
-export function TicketTypeCreator() {
+export function TicketTypeCreator({route}) {
   const navigation = useNavigation();
+  const {navigateWithPrevParams} = useNavigateWithParams(route);
   const [ticketType, setTicketType] = useState({
     name: '',
     price: null,
@@ -23,6 +26,27 @@ export function TicketTypeCreator() {
     slots: null,
     slotsTaken: null,
   });
+
+  const handleAddTicketType = () => {
+    const result = {
+      name: ticketType.name,
+      type: ticketType.type,
+      price: parseFloat(ticketType.price),
+      slots: parseInt(ticketType.slots),
+    };
+
+    navigateWithPrevParams(
+      route.params.fromScreenName,
+      {
+        ticketType: result,
+      },
+      ['fromScreenName'],
+    );
+    // navigation.navigate(route.params.fromScreenName, {
+    //   id: route.params.tournamentId,
+    //   ticketType: result,
+    // });
+  };
 
   const handleStateChange = (field, text) => {
     switch (field) {
@@ -69,10 +93,12 @@ export function TicketTypeCreator() {
         break;
       }
     }
+    console.log('ticketTypeCh:', ticketType);
     setTicketType(prev => ({
       ...prev,
       [field]: text,
     }));
+    console.log('ticketTypeChAfter:', ticketType);
   };
 
   // const text = "3.14"
@@ -84,8 +110,8 @@ export function TicketTypeCreator() {
 
   //zrobić warunki do błedów price i slot niezależnie, wyłączyć przycisk jak pole jest puste
   return (
-    <View>
-      {error && <Text style={{color: 'red'}}>{JSON.stringify(error)}</Text>}
+    <View style={styles.mainBody}>
+      {error && <Text style={styles.textHeader}>Nowy bilet</Text>}
 
       <TextInput
         style={styles.textDark}
@@ -123,16 +149,7 @@ export function TicketTypeCreator() {
       <View style={styles.ticketStyle}>
         <TouchableOpacity
           style={styles.buttonTextStyle}
-          onPress={() => {
-            navigation.navigate(SCREEN.TOURNAMENT_CREATOR, {
-              ticketType: {
-                name: ticketType.name,
-                type: ticketType.type,
-                price: parseFloat(ticketType.price),
-                slots: parseInt(ticketType.slots),
-              },
-            });
-          }}>
+          onPress={handleAddTicketType}>
           <Text style={styles.textButton}>Dodaj bilet</Text>
         </TouchableOpacity>
       </View>
@@ -142,9 +159,9 @@ export function TicketTypeCreator() {
 const styles = StyleSheet.create({
   mainBody: {
     flex: 1,
-    //justifyContent: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#C5EEFF',
     alignItems: 'center',
-    backgroundColor: '#015a92',
   },
   text: {
     color: 'white',
@@ -154,6 +171,11 @@ const styles = StyleSheet.create({
   textDark: {
     color: '#005b98',
     fontSize: 18,
+    padding: 10,
+  },
+  textHeader: {
+    color: '#005b98',
+    fontSize: 20,
     padding: 10,
   },
   container: {
