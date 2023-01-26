@@ -7,7 +7,6 @@ export function useTournaments() {
   const [error, setError] = useState();
 
   const requeryTournaments = () => {
-    setisLoaded(false);
     getTournaments()
       .then(result => {
         setTournamentList(result);
@@ -17,6 +16,19 @@ export function useTournaments() {
         setError(error);
       });
   };
+
+  // w przypadku usuniecia biletu, wiemy dla jakiego turnieju zostal usuniety wiec nie musimy uderzac do firestore (sieci)
+  // mozemy po prostu modyfikowac dane w pamieci (czyli context - TournamentContext)
+  // const bhjhghjh = () => {
+  //   getTournaments()
+  //     .then(result => {
+  //       setTournamentList(result);
+  //       setisLoaded(true);
+  //     })
+  //     .catch(error => {
+  //       setError(error);
+  //     });
+  // };
 
   useEffect(() => {
     requeryTournaments();

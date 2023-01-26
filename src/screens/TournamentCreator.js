@@ -1,3 +1,5 @@
+//19.01.23 - validacja turnieju przy dodawaniu nowego turnieju
+//wyświetlić listę istniejących biletów
 import React, {useContext, useEffect, useState} from 'react';
 import {
   View,
@@ -93,10 +95,10 @@ const TournamentCreator = ({route}) => {
   return (
     <View style={styles.mainBody}>
       <ScrollView>
-        <Text style={styles.text}>Nowy Turniej</Text>
+        <Text style={styles.textHeader}>Nowy Turniej</Text>
         <Picker
           selectedValue={tournamentCategoryInput}
-          style={{height: 60, width: 150, color: 'white'}}
+          style={{height: 60, width: 150, color: '#005b98'}}
           onValueChange={itemValue => setTournamentCategoryInput(itemValue)}>
           <Picker.Item label="Kategoria" value="  " />
           <Picker.Item label="Kultura" value="kultura" />
@@ -139,7 +141,11 @@ const TournamentCreator = ({route}) => {
         <View style={styles.ticketStyle}>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => navigation.navigate(SCREEN.TICKETTYPE_CREATOR, {})}>
+            onPress={() =>
+              navigation.navigate(SCREEN.TICKETTYPE_CREATOR, {
+                fromScreeName: SCREEN.TOURNAMENT_CREATOR,
+              })
+            }>
             <Text style={styles.textDark}>Dodaj bilet </Text>
           </TouchableOpacity>
         </View>
@@ -180,7 +186,7 @@ const styles = StyleSheet.create({
   mainBody: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#005b98',
+    backgroundColor: '#C5EEFF',
     alignItems: 'center',
   },
   image: {height: 70, width: 110, flexBasis: '20%'},
@@ -200,8 +206,8 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   text: {
-    color: 'white',
-    fontSize: 20,
+    color: '#005b98',
+    fontSize: 16,
     padding: 10,
   },
   textDark: {

@@ -2,7 +2,7 @@
 //     selectedStartDate: null,
 // }; -> odpowiednik funkcyjny -> const [selectedStartDate, setSelectedStartDate] = useState(null);
 
-import React, {useContext, useState} from 'react';
+import React, {useCallback, useContext, useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -13,9 +13,9 @@ import {
   Alert,
   ScrollView,
   Button,
+  useColorScheme,
 } from 'react-native';
 import linkIcon from '../assets/icons/link.png';
-import {useEffect} from 'react/cjs/react.production.min';
 import {TournamentContext} from '../context/TournamentContextProvider';
 import {UserContext} from '../context/UserContextProvider';
 import {useTournamentTicketTypes} from '../hooks/useTournamentTicketTypes';
@@ -23,6 +23,8 @@ import {
   updateBookingsToTournament,
   getTournaments,
   bookingsCounter,
+  deleteTicketType,
+  addTicketType,
 } from '../firebase/firestore-tournament-methods';
 import {getTournamentFromContext} from '../common/context-methods';
 import {NavigationContainer, useNavigation} from '@react-navigation/core';
@@ -32,63 +34,113 @@ import TicketOrderingScreen from './TicketOrderingScreen';
 import {parseEventDurationTime} from '../common/date-time-methods';
 import {getDateFromTimestamp} from '../firebase/firestore-helpers';
 import dayjs from 'dayjs';
+import {ThemeContext} from '../../App';
+import addIcon from '../assets/icons/add.png';
 
-const PriceDisplayable = props => {
-  const priceEntries = Object.entries(props.prices);
-  console.log('priceEntries', priceEntries);
-  return (
-    <View>
-      <Text>przykładowe ceny</Text>
-    </View>
-  );
+import editIcon from '../assets/icons/edit.png';
+import {TournamentTicketType} from '../components/TournamentTicketType';
+import {useNavigateWithParams} from '../hooks/useNavigateWithParams';
+
+// enum SupportedTicketTypeAction = {
+//   ADD = "ADD",
+// DELETE = "DELETE"
+// }
+const SUPPORTED_TICKET_TYPE_ACTION = {
+  ADD: 'ADD',
+  DELETE: 'DELETE',
 };
 
-function parsedTicketTypesDataView(element) {
-  // [['ulgowy', 10]]- zmapować i wyświetlić tekst-
-
-  // na przyklad mozna to zrobic tak:
-  return (
-    <View style={{backgroundColor: 'grey', margin: 5}} key={element.id}>
-      <Text>{element.name}</Text>
-      <Text>{element.slots}</Text>
-      <PriceDisplayable prices={element.prices} />
-    </View>
-  );
-}
+const TICKET_TYPE_ACTION = {
+  [SUPPORTED_TICKET_TYPE_ACTION.ADD]: addTicketType,
+  [SUPPORTED_TICKET_TYPE_ACTION.DELETE]: deleteTicketType,
+};
 
 const TournamentDetails = ({route}) => {
-  //const { id } = route.params;- ten lub poniższy sposób
+  const theme = useContext(ThemeContext);
+  console.log('theme:', theme);
+  const {navigateWithPrevParams} = useNavigateWithParams(route);
   const tournamentContext = useContext(TournamentContext);
   const tournamentId = route.params.id;
+
   const tournament = getTournamentFromContext(tournamentContext, tournamentId);
-  const [ticketTypesData, loading, error] =
+  const [ticketTypesData, loading, error, actions] =
     useTournamentTicketTypes(tournamentId);
   console.log('Test_useTournamentTicketTypes_ticketTypesData', ticketTypesData);
   const navigation = useNavigation();
-  const parsedTicketTypesData = ticketTypesData?.map(parsedTicketTypesDataView);
+
+  useEffect(() => {
+    console.log('route.params.ticketType:', route.params.ticketType);
+    if (!route.params.ticketType) {
+      return;
+    }
+    handleTicketTypeAction(
+      SUPPORTED_TICKET_TYPE_ACTION.ADD,
+      route.params.ticketType,
+    );
+  }, [route.params.ticketType]);
+
+  const displaySuccessAlert = action => {
+    action == SUPPORTED_TICKET_TYPE_ACTION.ADD
+      ? Alert.alert('Bilet został pomyślnie dodany')
+      : Alert.alert('Bilet został pomyślnie usunięty');
+  };
+
+  const handleTicketTypeAction = async (action, arg) => {
+    const actionFn = TICKET_TYPE_ACTION[action];
+    console.log('actionFn:', actionFn);
+    if (!actionFn) {
+      throw new Error('Unsupported action');
+    }
+    try {
+      await actionFn(tournamentId, arg);
+      actions.requeryTicketTypes();
+      displaySuccessAlert(action);
+    } catch (error) {
+      Alert.alert('Spróbuj ponownie później');
+    }
+  };
+
+  const parsedTicketTypesData = ticketTypesData?.map(ticketType => (
+    <TournamentTicketType
+      ticketType={ticketType}
+      tournamentId={tournamentId}
+      onTicketTypeDelete={() =>
+        handleTicketTypeAction(
+          SUPPORTED_TICKET_TYPE_ACTION.DELETE,
+          ticketType.id,
+        )
+      }
+    />
+  ));
   const startTimeFormated = dayjs(tournament.startDate).format(
     'DD/MM/YYYY HH:mm',
   );
+  const endTimeFormated = dayjs(tournament.endDate).format('DD/MM/YYYY HH:mm');
   const eventDuration = parseEventDurationTime(tournament);
   console.log('ticketTypesData', ticketTypesData);
   return (
-    <View style={styles.mainBody}>
-      <ScrollView>
-        <Text>
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate(SCREEN.MODIFY_TOURNAMENT, {id: tournamentId})
-            }>
-            <Text>Edit</Text>
-          </TouchableOpacity>
-        </Text>
-
-        <Text style={styles.text}>{tournament.name}</Text>
-
-        <Text style={styles.listStyle}>
-          <View>
+    <>
+      <View style={styles.mainBody}>
+        <ScrollView>
+          <View style={styles.itemStyle}>
+            <View style={styles.title}>
+              <Text style={styles.text}>{tournament.name}</Text>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate(SCREEN.MODIFY_TOURNAMENT, {
+                    id: tournamentId,
+                  })
+                }>
+                <Image style={styles.icon_1} source={editIcon} />
+              </TouchableOpacity>
+            </View>
             <Text style={styles.textDark}>Miejsce: {tournament.place}</Text>
-            <Text style={styles.textDark}>Termin: {startTimeFormated}</Text>
+            <Text style={styles.textDark}>
+              Termin rozpoczęcia: {startTimeFormated}
+            </Text>
+            <Text style={styles.textDark}>
+              Termin zakończenia: {endTimeFormated}
+            </Text>
             <Text style={styles.textDark}>Czas trwania: {eventDuration}</Text>
             <Text style={styles.textDark}>
               Sprzedane bilety: {tournament.interval}
@@ -108,20 +160,32 @@ const TournamentDetails = ({route}) => {
               </Text>
             </TouchableOpacity>
           </View>
-        </Text>
 
-        {loading ? (
-          <Text style={styles.text}>Ładuje się ...</Text>
-        ) : error ? (
-          <Text>Blad pobierania biletów {!!error}</Text>
-        ) : (
-          <View style={styles.listStyle}>
-            <Text style={styles.textDark}> Bilety:</Text>
-            {parsedTicketTypesData}
-          </View>
-        )}
-      </ScrollView>
-    </View>
+          {loading ? (
+            <Text style={styles.text}>Ładuje się ...</Text>
+          ) : error ? (
+            <Text>Blad pobierania biletów {!!error}</Text>
+          ) : (
+            <View>
+              <View style={styles.itemStyle}>
+                <View style={styles.title}>
+                  <Text style={styles.text}> Bilety:</Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigateWithPrevParams(SCREEN.TICKETTYPE_CREATOR, {
+                        fromScreenName: SCREEN.TOURNAMENTDETAILS,
+                      }); //zmienić przekierowanie na takie z parametrem
+                    }}>
+                    <Image style={styles.icon_1} source={addIcon} />
+                  </TouchableOpacity>
+                </View>
+                {parsedTicketTypesData}
+              </View>
+            </View>
+          )}
+        </ScrollView>
+      </View>
+    </>
     //{JSON.stringify(tournament, null, 2)}
   );
 };
@@ -130,37 +194,106 @@ const styles = StyleSheet.create({
   mainBody: {
     flex: 1,
     //justifyContent: 'center',
-    backgroundColor: '#015a92',
+    backgroundColor: '#C5EEFF',
+    //alignItems: 'center',
+  },
+  image: {height: 70, width: 110, flexBasis: '20%'},
+  textContainer: {
+    textAlign: 'center',
+    flexBasis: '70%',
+  },
+  title: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: 'white',
+    width: '100%',
+    alignItems: 'center',
+  },
+  textHeader: {
+    color: '#005b98',
+    fontSize: 20,
+    padding: 10,
   },
   text: {
-    color: 'white',
+    color: '#005b98',
     fontSize: 20,
     padding: 10,
   },
   textDark: {
     color: '#005b98',
     fontSize: 16,
+    padding: 10,
+    flexDirection: 'column',
+  },
+  textButton: {
+    color: 'white',
+    fontSize: 15,
+    padding: 10,
   },
   container: {
-    flex: 1,
+    flex: 2,
   },
   listStyle: {
-    padding: 20,
-    marginBottom: 5,
+    flexDirection: 'row',
+    borderRadius: 5,
+    textAlign: 'left',
+    fontSize: 16,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  itemStyle: {
+    flexDirection: 'column',
+    padding: 15,
+    marginStart: 20,
+    marginEnd: 20,
+    marginTop: 20,
     color: '#005b98',
     backgroundColor: 'white',
     marginRight: 20,
     marginLeft: 20,
-
-    textAlign: 'left',
+    borderRadius: 5,
     fontSize: 16,
   },
-  linkStyle: {
-    color: '#fbb713',
+  icon_1: {
     height: 40,
+    width: 40,
+    justifyContent: 'flex-end',
+    padding: 15,
+    height: 30,
+    width: 30,
+    marginTop: 20,
+    marginLeft: 35,
+    marginRight: 15,
+    margin: 10,
   },
-  buttonStyle: {
+  icon: {
+    height: 25,
+    width: 25,
+    justifyContent: 'flex-end',
+  },
+  deleteButton: {
+    flexDirection: 'row',
+    borderRadius: 10,
+    paddingVertical: -5,
+    paddingHorizontal: -5,
+    elevation: 1,
+    width: '100%',
+    backgroundColor: '#eeedef',
+    justifyContent: 'space-between',
+  },
+  modalView: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: 'white',
+    borderRadius: 20,
+    alignItems: 'center',
+    // elevation: 5,
+    margin: '2%',
+  },
+  button: {
+    backgroundColor: '#005b98',
     borderWidth: 0,
     borderColor: '#3175ab',
     height: 40,
@@ -171,27 +304,21 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 25,
     margin: 10,
-  },
-  buttonTextStyle: {
-    paddingVertical: 10,
-    color: '#005b98',
-    fontSize: 16,
-  },
-  modalView: {
-    flex: 1,
-    flexDirection: 'column',
     justifyContent: 'center',
+  },
+  ticketStyle: {
+    backgroundColor: '#e3ecf2',
     alignItems: 'center',
-    backgroundColor: 'white',
+    borderRadius: 15,
+    marginLeft: 35,
+    marginRight: 35,
+    marginTop: 20,
+    marginBottom: 25,
+    margin: 10,
+    justifyContent: 'center',
     borderRadius: 20,
-    alignItems: 'center',
-    elevation: 5,
-    margin: '10%',
   },
-  twoButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  datePicker: {
+    paddingVertical: 40,
   },
-  image: {height: 70, width: 70, flexBasis: '20%'},
-  icon: {height: 30, width: 30, flexBasis: '20%'},
 });

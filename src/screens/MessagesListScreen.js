@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
   mainBody: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#005b98',
+    backgroundColor: '#C5EEFF',
     alignItems: 'center',
   },
   image: {height: 70, width: 110, flexBasis: '20%'},
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
   title: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: '#005b98',
+    backgroundColor: '#C5EEFF',
     width: '100%',
   },
   textHeader: {
@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   text: {
-    color: 'white',
+    color: '#005b98',
     fontSize: 20,
     padding: 10,
   },

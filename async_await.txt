@@ -1,0 +1,113 @@
+class Promisee {
+  then() {
+    console.log('im called');
+  }
+}
+
+const i1 = new Promisee();
+const i2 = new Promisee();
+
+/* i1.then();
+i2.then(); */
+
+
+
+function x() {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      console.log('hello');
+      resolve();
+    }, 3000);
+  });
+}
+
+async function y() {
+	return Promise.resolve("y");
+}
+
+async function z() {
+	throw new Error();
+	return Promise.resolve("z");
+}
+
+// alkdfjlsdjfksdjf
+
+// metode .then mozna wywolywac na instancjach klasy Promise
+
+const RejectedTickets = () => {
+	const [rejected, setRejected] = useState([]);
+  
+  const setRejectedTickets = (newRejectedTickets) => {
+  	setRejected([...rejected, ...newRejectedTickets]);
+  }
+  
+  const trySendRejectedTicketsAgain = async () => {
+  	const values = await Promise.allSettled(rejected);
+    const rejectedValues = values.filter(element => element.reason);
+    setRejected(rejectedValues);
+  }
+
+	useEffect(() => {
+  	setInterval(() => {
+    	trySendRejectedTicketsAgain();
+    }, 50000);
+  }, []);
+}
+
+const fn = async () => {
+	/* const value = await x();
+	  const value1 = await y();
+	  const value2 = await z();
+	    console.log(value, value1, value2); */
+  /*  const values = await Promise.all([x(),y(),z()]);
+     console.log(values); */ 
+     const rejectedTickets = useContext(RejcetedTickets);
+ 
+ 
+ const values = await Promise.allSettled([x(), y(), z()]);
+ const rejectedValues = values.filter(element => element.reason); 
+ rejectedTickets.setRejectedTickets(rejectedTickets);
+ 
+ 
+ 
+ 
+  
+/* 	const xInstance = x(); // wywolanie tej funkcji zwroci promisa
+	const resolvedPromiseValue = await xInstance; */
+ /*  console.log(value);
+  console.log('world'); */
+
+  /* const xInstace = x();
+  
+  xInstace
+    .then(() => {
+      console.log('world');
+    }); */
+}
+
+fn();
+
+// IIFE - https://developer.mozilla.org/en-US/docs/Glossary/IIFE
+
+09.01.2023:
+const x = async () => Promise.resolve("x");
+const y = async (arg) => Promise.resolve(`${arg}+y`);
+const z = async (arg) => Promise.resolve(`${arg}+z`);
+
+//Jedno po drugim
+const main = async () => {
+	const xx = await x();
+  console.log(xx);
+  const yy = await y(xx);
+  console.log(yy);
+  const zz = await z(yy);
+  console.log(zz);
+}
+
+//Wszystko na raz
+const mainAll = async () => {
+	const values = await Promise.all([x(), y(), z()]);
+  console.log(values);
+}
+
+mainAll();
