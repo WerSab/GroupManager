@@ -27,7 +27,6 @@ const PaidTicketListScreen = () => {
   const [isButtonConfirmedDisabled, setIsButtonConfirmedDisabled] =
     useState(false);
   const [isButtonUndoDisabled, setIsButtonUndoDisabled] = useState(false);
-
   useEffect(() => {
     getPaidTickets()
       .then(result => {
@@ -73,13 +72,10 @@ const PaidTicketListScreen = () => {
   };
 
   const myTicketList = myTickets.map(ticket => renderItem(ticket));
-
   return (
     <View style={styles.mainBody}>
-      <View style={styles.buttonContainer}>
-        <Text style={styles.text}>Zapłacone bilety:</Text>
-        <ScrollView>{myTicketList}</ScrollView>
-      </View>
+      <Text style={styles.textDark}>Zapłacone bilety</Text>
+      <ScrollView>{myTicketList}</ScrollView>
     </View>
   );
 };
@@ -90,14 +86,8 @@ const styles = StyleSheet.create({
   mainBody: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#005b98',
-    alignItems: 'center',
-  },
-  title: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    backgroundColor: '#005b98',
-    width: '100%',
+    backgroundColor: '#C5EEFF',
+    alignItems: 'flex-start',
   },
 
   itemView: {
@@ -112,7 +102,7 @@ const styles = StyleSheet.create({
   },
   textBold: {
     color: '#005b98',
-    fontSize: 16,
+    fontSize: 20,
     padding: 10,
     fontWeight: 'bold',
   },

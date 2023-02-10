@@ -35,6 +35,7 @@ const TournamentsScreen = () => {
   // ctrl+z -> cofnij
   const {tournamentList, isLoaded, error, actions} =
     useContext(TournamentContext);
+  console.log('tournamentList_FromTournamentListScreen', tournamentList);
 
   const deleteAlert = (id, name) => {
     Alert.alert('Delete alert', `Do You want to delete ${name}?`, [
@@ -135,15 +136,11 @@ const styles = StyleSheet.create({
   },
   textDark: {
     color: '#005b98',
-    fontSize: 16,
+    fontSize: 18,
     padding: 10,
     flexDirection: 'column',
   },
-  textButton: {
-    color: 'white',
-    fontSize: 15,
-    padding: 10,
-  },
+
   container: {
     flex: 2,
   },
@@ -162,9 +159,6 @@ const styles = StyleSheet.create({
   },
 
   icon_1: {
-    height: 40,
-    width: 40,
-    justifyContent: 'flex-end',
     padding: 15,
     height: 30,
     width: 30,
@@ -176,7 +170,6 @@ const styles = StyleSheet.create({
   icon: {
     height: 25,
     width: 25,
-    justifyContent: 'flex-end',
   },
 
   modalView: {

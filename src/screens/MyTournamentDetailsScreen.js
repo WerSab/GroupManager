@@ -85,7 +85,7 @@ const MyTournamentDetails = ({navigation, route}) => {
   return (
     <View style={styles.mainBody}>
       <ScrollView>
-        <Text style={styles.text}>{tournament.name}</Text>
+        <Text style={styles.title}>{tournament.name}</Text>
         <Text style={styles.listStyle}>
           <View>
             <Text style={styles.textDark}>Miejsce: {tournament.place}</Text>
@@ -114,6 +114,7 @@ const MyTournamentDetails = ({navigation, route}) => {
                     )
                 }*/}
         <Button
+          color="#005b98"
           onPress={() => {
             navigation.navigate(SCREEN.TICKET_ORDERING, {
               tournamentId: tournamentId,
@@ -131,10 +132,10 @@ const styles = StyleSheet.create({
   mainBody: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#015a92',
+    backgroundColor: '#C5EEFF',
   },
-  text: {
-    color: 'white',
+  title: {
+    color: '#005b98',
     fontSize: 20,
     padding: 10,
   },

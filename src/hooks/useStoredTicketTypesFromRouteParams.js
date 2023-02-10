@@ -1,5 +1,7 @@
 import {useEffect, useState} from 'react';
 
+// [].find(el => el.name === 'nowa-nazwa')?.prices['type'] = cena;
+
 const useStoredTicketTypesFromRouteParams = (route, paramName) => {
   const [ticketTypes, setTicketTypes] = useState([]);
   console.log('Test_useStoredTicketTypesFromRouteParams', ticketTypes);

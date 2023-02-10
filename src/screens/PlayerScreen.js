@@ -28,7 +28,7 @@ const PlayerScreen = () => {
 
   const renderItem = item => {
     return (
-      <View style={[styles.itemContainer, {backgroundColor: '#015a92'}]}>
+      <View style={[styles.itemContainer, {backgroundColor: 'white'}]}>
         <TouchableOpacity
           onPress={() => {
             navigation.navigate(item.name);
@@ -78,13 +78,13 @@ const styles = StyleSheet.create({
   mainBody: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: 'white',
+    backgroundColor: '#C5EEFF',
     alignItems: 'center',
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: 'white',
+    backgroundColor: '#C5EEFF',
     width: '100%',
   },
   text: {
@@ -111,11 +111,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     height: 150,
-    backgroundColor: '#015a92',
+    backgroundColor: '#008DD2',
   },
   itemName: {
-    fontSize: 16,
-    color: 'white',
+    fontSize: 17,
+    color: '#015a92',
     fontWeight: '600',
   },
 });
