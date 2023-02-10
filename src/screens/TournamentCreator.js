@@ -26,20 +26,9 @@ import {useTournamentHandler} from './common/hooks/useTournamentHandler';
 const MIN_EVENT_DURATION_IN_MILLIS = 60 * 1000;
 
 const TournamentCreator = ({route}) => {
-  //const [nameInput, setNameInput] = useState();
-  const [placeInput, setPlaceInput] = useState();
-  //const [linkInput, setLinkInput] = useState('');
-  const [tournamentCategoryInput, setTournamentCategoryInput] =
-    useState('Kategoria');
-  const [date, setDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-  const [error, setError] = useState();
   const navigation = useNavigation();
-  //  const route = useRoute();
   const tournamentActions = useContext(TournamentContext).actions;
 
-  const field = 'ticketType';
-  // TODO: 28.11.22:  [TypeError: undefined is not an object (evaluating 'ticketTypes.length')]
   const {ticketsBasket, clearTicketTypes} = useStoredTicketTypesFromRouteParams(
     route,
     'ticketType',
@@ -48,14 +37,24 @@ const TournamentCreator = ({route}) => {
     'Test_useStoredTicketTypesFromRouteParams_ticketTypes',
     ticketsBasket,
   );
-  const minimumEndDate = new Date(
-    date.getTime() + MIN_EVENT_DURATION_IN_MILLIS,
+
+  const startDateInitialValue = new Date();
+  // endDateInitialValue = minEndDate
+  const endDateInitialValue = new Date(
+    startDateInitialValue.getTime() + MIN_EVENT_DURATION_IN_MILLIS,
   );
-  const {inputs, onConfirm, clearInputs} = useTournamentHandler();
+  const {inputs, onConfirm, clearInputs} = useTournamentHandler({
+    startDate: startDateInitialValue,
+    endDate: endDateInitialValue,
+  });
   const [nameInput, setNameInput] = inputs.name;
   const [linkInput, setLinkInput] = inputs.link;
-  //19.12.2022 - dorobić resztę inputów
-
+  const [startDate, setStartDate] = inputs.startDate;
+  const [endDate, setEndDate] = inputs.endDate;
+  console.log('endDate:', endDate);
+  const [category, setCategory] = inputs.category;
+  const [place, setPlace] = inputs.place;
+  const validationError = inputs.validationError;
   useEffect(() => {
     console.log('inputs.val:', inputs.validationError);
   }, [inputs.validationError]);
@@ -69,6 +68,15 @@ const TournamentCreator = ({route}) => {
     }
   };
 
+  // prices; {
+  //   ulgowy: cena,
+  //   normalny: cena,
+
+  // }
+
+  useEffect(() => {
+    console.log('end date:', endDate);
+  }, [endDate]);
   const onSavePress = tournament => {
     // cdezaktywuje przycisk
     addNewTournamentToCollection(tournament, ticketsBasket)
@@ -97,9 +105,9 @@ const TournamentCreator = ({route}) => {
       <ScrollView>
         <Text style={styles.textHeader}>Nowy Turniej</Text>
         <Picker
-          selectedValue={tournamentCategoryInput}
+          selectedValue={category}
           style={{height: 60, width: 150, color: '#005b98'}}
-          onValueChange={itemValue => setTournamentCategoryInput(itemValue)}>
+          onValueChange={setCategory}>
           <Picker.Item label="Kategoria" value="  " />
           <Picker.Item label="Kultura" value="kultura" />
           <Picker.Item label="Sport" value="sport" />
@@ -112,24 +120,24 @@ const TournamentCreator = ({route}) => {
         />
         <TextInput
           style={styles.text}
-          onChangeText={setPlaceInput}
-          value={placeInput}
+          onChangeText={setPlace}
+          value={place}
           placeholder="Miejsce..."
         />
         <Text style={styles.text}>Data rozpoczęcia</Text>
 
         <DatePicker
-          date={date}
-          onDateChange={setDate}
+          date={startDate}
+          onDateChange={setStartDate}
           minimumDate={new Date()}
         />
 
         <Text style={styles.text}>Data zakończenia</Text>
 
         <DatePicker
-          date={minimumEndDate}
+          date={endDate}
           onDateChange={setEndDate}
-          minimumDate={minimumEndDate}
+          minimumDate={endDateInitialValue}
         />
 
         <TextInput
@@ -143,16 +151,16 @@ const TournamentCreator = ({route}) => {
             style={styles.button}
             onPress={() =>
               navigation.navigate(SCREEN.TICKETTYPE_CREATOR, {
-                fromScreeName: SCREEN.TOURNAMENT_CREATOR,
+                fromScreenName: SCREEN.TOURNAMENT_CREATOR,
               })
             }>
             <Text style={styles.textDark}>Dodaj bilet </Text>
           </TouchableOpacity>
         </View>
         {/* warunek który sprawdza czy error istnieje i jeżeli istnieje to renderuje nam view z textem jsx */}
-        {error && (
+        {validationError && (
           <View>
-            <Text>{error}</Text>
+            <Text>{validationError}</Text>
           </View>
         )}
         <View
@@ -231,7 +239,7 @@ const styles = StyleSheet.create({
     borderColor: '#3175ab',
     height: 40,
     alignItems: 'center',
-    borderRadius: 15,
+    borderRadius: 5,
     marginLeft: 35,
     marginRight: 35,
     marginTop: 20,

@@ -94,18 +94,17 @@ const MyConfirmedTicketsScreen = ({route}) => {
   return (
     <View style={styles.mainBody}>
       <View style={styles.buttonContainer}>
-        <Text style={styles.text}>Moje Bilety:</Text>
-        <ScrollView>{myTicketList}</ScrollView>
+        <Text style={styles.title}>Moje Bilety:</Text>
+        {myTicketList}
         {/* // TODO: zadanie
                 //zadanie!!!!- pomapowac bilety - zamiana struktur java scriptowych na komponenty Reactowe (żeby je mozna było wyswuetlić w komponnetach View, text itd.) */}
-
-        {/* <FlatList
-                    data={myTicketList}
-                    renderItem={({ item }) => renderItem(item)} 
-                    keyExtractor={(item, index) => index.toString()}
-                    style={styles.container}
-                    withSearchbar={false}
-                /> */}
+        <FlatList
+          data={myTicketList}
+          renderItem={({item}) => renderItem(item)}
+          keyExtractor={(item, index) => index.toString()}
+          style={styles.container}
+          withSearchbar={false}
+        />
       </View>
     </View>
   );
@@ -117,14 +116,12 @@ const styles = StyleSheet.create({
   mainBody: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#005b98',
-    alignItems: 'center',
+    backgroundColor: '#C5EEFF',
   },
   title: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    backgroundColor: '#005b98',
-    width: '100%',
+    color: '#005b98',
+    fontSize: 20,
+    padding: 10,
   },
   singleButtonView: {
     flexDirection: 'row',

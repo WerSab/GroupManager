@@ -85,8 +85,9 @@ const MyTicketsScreen = ({route}) => {
   }
 
   if (!myOrders && myOrders.length === 0) {
+    console.log('nie posiadasz biletów');
     return (
-      <View style={styles.buttonContainer}>
+      <View>
         <Text style={styles.text}>Nie posiadasz żadnych biletów.</Text>
       </View>
     );
@@ -140,7 +141,7 @@ const MyTicketsScreen = ({route}) => {
   return (
     <View style={styles.mainBody}>
       <View style={styles.buttonContainer}>
-        <Text style={styles.text}>Moje Zamówienia:</Text>
+        <Text style={styles.title}>Moje Zamówienia:</Text>
         <FlatList
           data={myOrders}
           renderItem={({item}) => renderItem(item)}
@@ -159,14 +160,12 @@ const styles = StyleSheet.create({
   mainBody: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#005b98',
-    alignItems: 'center',
+    backgroundColor: '#C5EEFF',
   },
   title: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    backgroundColor: '#005b98',
-    width: '100%',
+    color: '#005b98',
+    fontSize: 20,
+    padding: 10,
   },
   singleButtonView: {
     flexDirection: 'row',

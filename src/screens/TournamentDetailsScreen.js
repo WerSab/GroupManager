@@ -85,6 +85,11 @@ const TournamentDetails = ({route}) => {
       : Alert.alert('Bilet został pomyślnie usunięty');
   };
 
+  // TODO: 26.01.2023
+  // 1. Obsluzyc alert po zapisaniu/usunieciu biletu ze wzgledu na wykonywana akcje
+  // 2. Poczytac i ew. sprobowac zrobic upgrade react-native (0.70.x)
+  // 3. Obsluga wyjatkow w aplikacji (globalnie i storowanie ich) - crashlytics (firebase) / sanity
+
   const handleTicketTypeAction = async (action, arg) => {
     const actionFn = TICKET_TYPE_ACTION[action];
     console.log('actionFn:', actionFn);
@@ -102,6 +107,7 @@ const TournamentDetails = ({route}) => {
 
   const parsedTicketTypesData = ticketTypesData?.map(ticketType => (
     <TournamentTicketType
+      key={ticketType.id.toString()}
       ticketType={ticketType}
       tournamentId={tournamentId}
       onTicketTypeDelete={() =>
@@ -121,69 +127,65 @@ const TournamentDetails = ({route}) => {
   return (
     <>
       <View style={styles.mainBody}>
-        <ScrollView>
-          <View style={styles.itemStyle}>
-            <View style={styles.title}>
-              <Text style={styles.text}>{tournament.name}</Text>
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate(SCREEN.MODIFY_TOURNAMENT, {
-                    id: tournamentId,
-                  })
-                }>
-                <Image style={styles.icon_1} source={editIcon} />
-              </TouchableOpacity>
-            </View>
-            <Text style={styles.textDark}>Miejsce: {tournament.place}</Text>
-            <Text style={styles.textDark}>
-              Termin rozpoczęcia: {startTimeFormated}
-            </Text>
-            <Text style={styles.textDark}>
-              Termin zakończenia: {endTimeFormated}
-            </Text>
-            <Text style={styles.textDark}>Czas trwania: {eventDuration}</Text>
-            <Text style={styles.textDark}>
-              Sprzedane bilety: {tournament.interval}
-            </Text>
-            <Text style={styles.textDark}>
-              Rezerwacje: {tournament.interval}
-            </Text>
-            <Text style={styles.textDark}>
-              Ilość wolnych miejsc: {tournament.interval}
-            </Text>
+        <View style={styles.itemStyle}>
+          <View style={styles.title}>
+            <Text style={styles.text}>{tournament.name}</Text>
             <TouchableOpacity
-              onPress={() => Linking.openURL(tournament.link)} //(then i catch/ obsłużyć w promisie/sprawdzić Regex/https://regex101.com/https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url#:~:text=javascript%3Avoid%20%280%29%20is%20valid%20URL%2C%20although%20not%20an,DNS%29%20https%3A%2F%2Fexample..com%20is%20valid%20URL%2C%20same%20as%20above
-            >
-              <Text style={styles.linkStyle}>
-                <Image source={linkIcon} style={styles.icon} />
-                Link do wydarzenia
-              </Text>
+              onPress={() =>
+                navigation.navigate(SCREEN.MODIFY_TOURNAMENT, {
+                  id: tournamentId,
+                })
+              }>
+              <Image style={styles.icon_1} source={editIcon} />
             </TouchableOpacity>
           </View>
+          <Text style={styles.textDark}>Miejsce: {tournament.place}</Text>
+          <Text style={styles.textDark}>
+            Termin rozpoczęcia: {startTimeFormated}
+          </Text>
+          <Text style={styles.textDark}>
+            Termin zakończenia: {endTimeFormated}
+          </Text>
+          <Text style={styles.textDark}>Czas trwania: {eventDuration}</Text>
+          <Text style={styles.textDark}>
+            Ilość sprzedanych biletów: {tournament.interval}
+          </Text>
+          <Text style={styles.textDark}>Rezerwacje: {tournament.interval}</Text>
+          <Text style={styles.textDark}>
+            Ilość wolnych miejsc: {tournament.interval}
+          </Text>
+          <TouchableOpacity
+            onPress={() => Linking.openURL(tournament.link)} //(then i catch/ obsłużyć w promisie/sprawdzić Regex/https://regex101.com/https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url#:~:text=javascript%3Avoid%20%280%29%20is%20valid%20URL%2C%20although%20not%20an,DNS%29%20https%3A%2F%2Fexample..com%20is%20valid%20URL%2C%20same%20as%20above
+          >
+            <Text style={styles.linkStyle}>
+              <Image source={linkIcon} style={styles.icon} />
+              Link do wydarzenia
+            </Text>
+          </TouchableOpacity>
+        </View>
 
-          {loading ? (
-            <Text style={styles.text}>Ładuje się ...</Text>
-          ) : error ? (
-            <Text>Blad pobierania biletów {!!error}</Text>
-          ) : (
-            <View>
-              <View style={styles.itemStyle}>
-                <View style={styles.title}>
-                  <Text style={styles.text}> Bilety:</Text>
-                  <TouchableOpacity
-                    onPress={() => {
-                      navigateWithPrevParams(SCREEN.TICKETTYPE_CREATOR, {
-                        fromScreenName: SCREEN.TOURNAMENTDETAILS,
-                      }); //zmienić przekierowanie na takie z parametrem
-                    }}>
-                    <Image style={styles.icon_1} source={addIcon} />
-                  </TouchableOpacity>
-                </View>
-                {parsedTicketTypesData}
+        {loading ? (
+          <Text style={styles.text}>Ładuje się ...</Text>
+        ) : error ? (
+          <Text>Blad pobierania biletów {!!error}</Text>
+        ) : (
+          <View>
+            <View style={styles.itemStyle}>
+              <View style={styles.title}>
+                <Text style={styles.text}> Bilety:</Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigateWithPrevParams(SCREEN.TICKETTYPE_CREATOR, {
+                      fromScreenName: SCREEN.TOURNAMENTDETAILS,
+                    }); //zmienić przekierowanie na takie z parametrem
+                  }}>
+                  <Image style={styles.icon_1} source={addIcon} />
+                </TouchableOpacity>
               </View>
+              {parsedTicketTypesData}
             </View>
-          )}
-        </ScrollView>
+          </View>
+        )}
       </View>
     </>
     //{JSON.stringify(tournament, null, 2)}

@@ -101,6 +101,7 @@ const TicketOrderingScreen = ({route, props}) => {
 
   const renderTicketItem = ({item}) => {
     const ticketTypeId = item.id;
+    console.log(item);
     const prices = item.prices; // ?? {};
     return (
       <View>

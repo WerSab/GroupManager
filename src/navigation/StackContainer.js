@@ -305,7 +305,7 @@ function StackContainer() {
                     }}
                   />
                   <Stack.Screen
-                    name="Lista rezerwacji"
+                    name={SCREEN.MANAGER_TAB.BOOKINGS_LIST}
                     component={BookingsListScreen}
                     options={{
                       headerBackVisible: false,

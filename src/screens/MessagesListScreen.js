@@ -160,21 +160,21 @@ const MessagesListScreen = () => {
                     onPress={() => {
                       setIsModalAddMessageVisible(!isModalAddMessageVisible);
                     }}>
-                    <Text style={styles.textButton}>Zamknij</Text>
+                    <Text style={styles.textDark}>Zamknij</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={styles.button}
                     onPress={() => {
                       clearInputs();
                     }}>
-                    <Text style={styles.textButton}>Wyczyść</Text>
+                    <Text style={styles.textDark}>Wyczyść</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={styles.button}
                     onPress={() => {
                       onSavePress();
                     }}>
-                    <Text style={styles.textButton}>Zapisz wydarzenie</Text>
+                    <Text style={styles.textDark}>Zapisz wydarzenie</Text>
                   </TouchableOpacity>
                 </View>
               </ScrollView>
@@ -230,11 +230,6 @@ const styles = StyleSheet.create({
     padding: 10,
     flexDirection: 'column',
   },
-  textButton: {
-    color: 'white',
-    fontSize: 15,
-    padding: 10,
-  },
   container: {
     flex: 2,
   },
@@ -277,51 +272,30 @@ const styles = StyleSheet.create({
     width: 25,
     justifyContent: 'flex-end',
   },
-  deleteButton: {
-    flexDirection: 'row',
-    borderRadius: 10,
-    paddingVertical: -5,
-    paddingHorizontal: -5,
-    elevation: 1,
-    width: '100%',
-    backgroundColor: '#eeedef',
-    justifyContent: 'space-between',
-  },
+
   modalView: {
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: '#C5EEFF',
     borderRadius: 20,
     alignItems: 'center',
     // elevation: 5,
     margin: '2%',
   },
   button: {
-    backgroundColor: '#005b98',
+    backgroundColor: 'white',
     borderWidth: 0,
     borderColor: '#3175ab',
     height: 40,
     alignItems: 'center',
-    borderRadius: 15,
+    borderRadius: 5,
     marginLeft: 35,
     marginRight: 35,
     marginTop: 20,
     marginBottom: 25,
     margin: 10,
     justifyContent: 'center',
-  },
-  ticketStyle: {
-    backgroundColor: '#e3ecf2',
-    alignItems: 'center',
-    borderRadius: 15,
-    marginLeft: 35,
-    marginRight: 35,
-    marginTop: 20,
-    marginBottom: 25,
-    margin: 10,
-    justifyContent: 'center',
-    borderRadius: 20,
   },
 });

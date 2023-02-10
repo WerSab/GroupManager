@@ -10,6 +10,7 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import {SCREEN} from '../navigation/screens';
 import {useNavigateWithParams} from '../hooks/useNavigateWithParams';
+import {Picker} from '@react-native-picker/picker';
 
 export function TicketTypeCreator({route}) {
   const navigation = useNavigation();
@@ -112,46 +113,48 @@ export function TicketTypeCreator({route}) {
   return (
     <View style={styles.mainBody}>
       {error && <Text style={styles.textHeader}>Nowy bilet</Text>}
+      <View style={styles.listStyle}>
+        <TextInput
+          style={styles.textDark}
+          onChangeText={text => handleStateChange('name', text)}
+          value={ticketType.name}
+          placeholder="Nazwa biletu..."
+        />
+        <Text style={{height: 70, width: 'auto', color: 'grey', fontSize: 18}}>
+          Wybierz typ biletu:
+          <Picker
+            selectedValue={'type'}
+            style={{height: 50, width: 150, color: '#005b98'}}
+            onValueChange={text => handleStateChange('type', text)}>
+            <Picker.Item label="Normalny" value="normalny" />
+            <Picker.Item label="Ulgowy" value="ulgowy" />
+          </Picker>
+        </Text>
+        <TextInput
+          style={styles.textDark}
+          onChangeText={text => handleStateChange('price', text)}
+          value={ticketType.price}
+          placeholder="Cena biletu..."
+        />
+        <TextInput
+          style={styles.textDark}
+          onChangeText={text => handleStateChange('slots', text)}
+          value={ticketType.slots}
+          placeholder="Ilość miejsc..."
+        />
 
-      <TextInput
-        style={styles.textDark}
-        onChangeText={text => handleStateChange('name', text)}
-        value={ticketType.name}
-        placeholder="Nazwa biletu..."
-      />
-      <TextInput
-        style={styles.textDark}
-        onChangeText={text => handleStateChange('type', text)}
-        value={ticketType.type}
-        placeholder="Normalny/ulgowy..."
-      />
+        <TextInput
+          style={styles.textDark}
+          onChangeText={text => handleStateChange('slotsTaken', text)}
+          value={ticketType.slotsTaken}
+          placeholder="Ilość rezerwacji..."
+        />
 
-      <TextInput
-        style={styles.textDark}
-        onChangeText={text => handleStateChange('price', text)}
-        value={ticketType.price}
-        placeholder="Cena biletu..."
-      />
-      <TextInput
-        style={styles.textDark}
-        onChangeText={text => handleStateChange('slots', text)}
-        value={ticketType.slots}
-        placeholder="Ilość miejsc..."
-      />
-
-      <TextInput
-        style={styles.textDark}
-        onChangeText={text => handleStateChange('slotsTaken', text)}
-        value={ticketType.slotsTaken}
-        placeholder="Ilość rezerwacji..."
-      />
-
-      <View style={styles.ticketStyle}>
-        <TouchableOpacity
-          style={styles.buttonTextStyle}
-          onPress={handleAddTicketType}>
-          <Text style={styles.textButton}>Dodaj bilet</Text>
-        </TouchableOpacity>
+        <View>
+          <TouchableOpacity style={styles.button} onPress={handleAddTicketType}>
+            <Text style={styles.textButton}>Dodaj bilet</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -163,11 +166,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#C5EEFF',
     alignItems: 'center',
   },
-  text: {
-    color: 'white',
-    fontSize: 20,
-    padding: 40,
-  },
   textDark: {
     color: '#005b98',
     fontSize: 18,
@@ -178,54 +176,21 @@ const styles = StyleSheet.create({
     fontSize: 20,
     padding: 10,
   },
-  container: {
-    flex: 1,
-  },
+
   listStyle: {
-    padding: 40,
+    padding: 30,
     marginBottom: 5,
     color: '#27046d',
-    backgroundColor: 'white',
     marginRight: 20,
     marginLeft: 20,
-    borderRadius: 5,
-    borderWidth: 1,
-    textAlign: 'left',
-    fontSize: 20,
   },
-  buttonStyle: {
-    backgroundColor: 'white',
-    borderWidth: 0,
-    borderColor: '#3175ab',
-    height: 40,
-    alignItems: 'center',
-    borderRadius: 15,
-    marginLeft: 35,
-    marginRight: 35,
-    marginTop: 20,
-    marginBottom: 25,
-    margin: 10,
-  },
+
   textButton: {
-    color: 'white',
+    color: '#005b98',
     fontSize: 15,
     padding: 10,
   },
-  buttonTextStyle: {
-    backgroundColor: '#005b98',
-    borderWidth: 0,
-    borderColor: '#3175ab',
-    height: 40,
-    alignItems: 'center',
-    borderRadius: 15,
-    marginLeft: 35,
-    marginRight: 35,
-    marginTop: 20,
-    marginBottom: 25,
-    margin: 10,
-    justifyContent: 'center',
-    color: 'white',
-  },
+
   modalView: {
     flex: 1,
     flexDirection: 'column',
@@ -238,12 +203,12 @@ const styles = StyleSheet.create({
     margin: '2%',
   },
   button: {
-    backgroundColor: '#005b98',
+    backgroundColor: 'white',
     borderWidth: 0,
     borderColor: '#3175ab',
     height: 40,
     alignItems: 'center',
-    borderRadius: 15,
+    borderRadius: 5,
     marginLeft: 35,
     marginRight: 35,
     marginTop: 20,
