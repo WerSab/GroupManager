@@ -73,6 +73,7 @@ const TournamentDetails = ({route}) => {
     if (!route.params.ticketType) {
       return;
     }
+    console.log('handleTicketTypeAddAction:', route.params.ticketType);
     handleTicketTypeAction(
       SUPPORTED_TICKET_TYPE_ACTION.ADD,
       route.params.ticketType,
@@ -135,7 +136,8 @@ const TournamentDetails = ({route}) => {
                 navigation.navigate(SCREEN.MODIFY_TOURNAMENT, {
                   id: tournamentId,
                 })
-              }>
+              }
+            >
               <Image style={styles.icon_1} source={editIcon} />
             </TouchableOpacity>
           </View>
@@ -178,7 +180,8 @@ const TournamentDetails = ({route}) => {
                     navigateWithPrevParams(SCREEN.TICKETTYPE_CREATOR, {
                       fromScreenName: SCREEN.TOURNAMENTDETAILS,
                     }); //zmienić przekierowanie na takie z parametrem
-                  }}>
+                  }}
+                >
                   <Image style={styles.icon_1} source={addIcon} />
                 </TouchableOpacity>
               </View>

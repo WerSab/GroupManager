@@ -101,7 +101,10 @@ export async function addTicketType(tournamentId, ticketType) {
   const tournamentTicketTypes =
     getTournamentTicketTypesCollection(tournamentId);
   try {
-    return await tournamentTicketTypes.add(ticketType);
+    return await tournamentTicketTypes.add({
+      ...ticketType,
+      slotsTaken: 0,
+    });
   } catch (error) {
     console.log('addTicketType error:', error);
   }
