@@ -10,6 +10,7 @@ const useStoredTicketTypesFromRouteParams = (route, paramName) => {
       // route.params?.ticketType
       // to wtedy dodac rodzaj biletu na stan
       // [ticketType1, ticketType2] - wszystko przekazac do funkcji zapisującej turniej
+      console.log('route.params[paramName]:', route.params[paramName]);
       setTicketTypes([...ticketTypes, route.params[paramName]]);
     }
   }, [route.params]);

@@ -22,6 +22,7 @@ import {SCREEN} from '../navigation/screens';
 import {TournamentContext} from '../context/TournamentContextProvider';
 import useStoredTicketTypesFromRouteParams from '../hooks/useStoredTicketTypesFromRouteParams';
 import {useTournamentHandler} from './common/hooks/useTournamentHandler';
+import FrameOnBlurTicketOrder from '../styles/FrameOnBlurTicketOrder';
 
 const MIN_EVENT_DURATION_IN_MILLIS = 60 * 1000;
 
@@ -77,7 +78,7 @@ const TournamentCreator = ({route}) => {
   useEffect(() => {
     console.log('end date:', endDate);
   }, [endDate]);
-  const onSavePress = tournament => {
+  const onSavePress = (tournament, ticketsBasket) => {
     // cdezaktywuje przycisk
     addNewTournamentToCollection(tournament, ticketsBasket)
       .then(() => {
@@ -107,7 +108,8 @@ const TournamentCreator = ({route}) => {
         <Picker
           selectedValue={category}
           style={{height: 60, width: 150, color: '#005b98'}}
-          onValueChange={setCategory}>
+          onValueChange={setCategory}
+        >
           <Picker.Item label="Kategoria" value="  " />
           <Picker.Item label="Kultura" value="kultura" />
           <Picker.Item label="Sport" value="sport" />
@@ -147,13 +149,15 @@ const TournamentCreator = ({route}) => {
           placeholder="Link do strony..."
         />
         <View style={styles.ticketStyle}>
+          <FrameOnBlurTicketOrder />
           <TouchableOpacity
             style={styles.button}
             onPress={() =>
               navigation.navigate(SCREEN.TICKETTYPE_CREATOR, {
                 fromScreenName: SCREEN.TOURNAMENT_CREATOR,
               })
-            }>
+            }
+          >
             <Text style={styles.textDark}>Dodaj bilet </Text>
           </TouchableOpacity>
         </View>
@@ -169,17 +173,20 @@ const TournamentCreator = ({route}) => {
             justifyContent: 'space-around',
             width: '100%',
             padding: 10,
-          }}>
+          }}
+        >
           <TouchableOpacity
             style={styles.button}
             onPress={() => {
               clearInputs();
-            }}>
+            }}
+          >
             <Text style={styles.textDark}>Wyczyść</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.button}
-            onPress={handleTournamentSavePress}>
+            onPress={handleTournamentSavePress}
+          >
             <Text style={styles.textDark}>Zapisz wydarzenie</Text>
           </TouchableOpacity>
         </View>
