@@ -52,7 +52,7 @@ const TournamentCreator = ({route}) => {
   const [linkInput, setLinkInput] = inputs.link;
   const [startDate, setStartDate] = inputs.startDate;
   const [endDate, setEndDate] = inputs.endDate;
-  console.log('endDate:', endDate);
+
   const [category, setCategory] = inputs.category;
   const [place, setPlace] = inputs.place;
   const validationError = inputs.validationError;
@@ -68,12 +68,6 @@ const TournamentCreator = ({route}) => {
       console.log('handleTournamentSavePress error:', error);
     }
   };
-
-  // prices; {
-  //   ulgowy: cena,
-  //   normalny: cena,
-
-  // }
 
   useEffect(() => {
     console.log('end date:', endDate);

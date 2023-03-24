@@ -27,29 +27,22 @@ export function TicketTypeCreator({route}) {
     price: null,
     slots: null,
   });
+  //23.03 - napisać funkcję do parsowania prices i wywołac ją przy dodawaniu biletu i przy modify/edit
+  // 1. FOR LOOP
+  const parseDiscountsToPrices = discounts => {
+    const prices = {};
+    for (let i = 0; i < discounts.length; i++) {
+      const element = discounts[i];
+      prices[element.type] = element.price;
+    }
 
-  // TODO: 16.03.2023
-  // podac result w roucie (nawigacja), w ktorym prices bedzie sparsowane
-  // odpowiednio jak zalozylismy w TODO.md (mapa string,number)
-
-  const parseDiscountsToPrices = () => {
-    // discounts
-    // [
-    //   {
-    //     name: 'xyz',
-    //     price: 10,
-    //   },
-    // ];
-    // // ->
-    // {
-    //   xyz: 10,
-    // }
+    return prices;
   };
 
   const handleAddTicketType = () => {
     const result = {
       name: ticketType.name,
-      prices: parseDiscountsToPrices(),
+      prices: parseDiscountsToPrices(discounts),
       slots: parseInt(ticketType.slots),
     };
 
@@ -93,12 +86,11 @@ export function TicketTypeCreator({route}) {
         break;
       }
     }
-    console.log('ticketTypeCh:', ticketType);
+
     setTicketType(prev => ({
       ...prev,
       [field]: text,
     }));
-    console.log('ticketTypeChAfter:', ticketType);
   };
 
   useEffect(() => {
@@ -132,7 +124,6 @@ export function TicketTypeCreator({route}) {
 
   const isBlurredElementChanged = (blurredElementIndex, type, price) => {
     const blurredDiscount = discounts[blurredElementIndex];
-    console.log('blurred:', blurredDiscount, blurredElementIndex);
     if (blurredElementIndex === index) {
       if (blurredDiscount)
         return {
@@ -142,37 +133,10 @@ export function TicketTypeCreator({route}) {
     }
   };
 
-  //1. Jezeli użytkownik zatwierdzi cenę to tworzy sie nowa pusta ramka+ poprzednie ramki nie zmieniają się
-  //2. jeżeli użytkownik zmieni i zatwierdzi nową cenę, to chcemy zaktualizować właściwy element bez dodawania nowej ramki
-  //3. zmiana typu biletu, bez dodawania nowej ramki
   const handleDiscountAdd = (type, price) => {
     setDiscounts(prevArray => {
       return [...prevArray, {type, price}];
     });
-    console.log('discounts', discounts);
-
-    // setDiscounts(prevArray => {
-    //   const lastElementIndex = prevArray.length - 1;
-    //   const fullfilledArray = prevArray.map(() => {
-    //     if (isBlurredElementChanged(blurredFrameIndex, type, price)) {
-    //     }
-    //   });
-    //   //09.03.2023- Przypadki do obsłużenia:
-    //
-    //   const newArray = prevArray.map((discount, index) => {
-    //     if (index !== lastElementIndex) {
-    //       return discount;
-    //     }
-    //     return {
-    //       type,
-    //       price,
-    //     };
-    //   });
-    //   if (blurredFrameIndex !== lastElementIndex) {
-    //     return newArray;
-    //   }
-    //   return [...newArray, {type: null, price: null}];
-    // });
   };
 
   const frameOnBlurTicketOrderRef = useRef();
@@ -202,7 +166,7 @@ export function TicketTypeCreator({route}) {
             shouldClearInputsAfterBlur={true}
           />
         </View>
-        {/* <FrameOnBlurTicketOrder onDiscountAdd={handleDiscountAdd} /> */}
+
         <TextInput
           style={styles.textDark}
           onChangeText={text => handleStateChange('slots', text)}

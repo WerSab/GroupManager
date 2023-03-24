@@ -101,7 +101,7 @@ const BookingsListScreen = () => {
   return (
     <View style={styles.mainBody}>
       <View style={styles.buttonContainer}>
-        <Text style={styles.text}>Zamówienia:</Text>
+        <Text style={styles.textDark}>Rezerwacje biletów:</Text>
         <ScrollView>{myTicketList}</ScrollView>
       </View>
     </View>
@@ -114,13 +114,19 @@ const styles = StyleSheet.create({
   mainBody: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#005b98',
+    backgroundColor: '#C5EEFF',
     alignItems: 'center',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: '#C5EEFF',
+    width: '100%',
   },
   title: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: '#005b98',
+    backgroundColor: '#C5EEFF',
     width: '100%',
   },
   singleButtonView: {

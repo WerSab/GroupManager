@@ -35,7 +35,6 @@ const TournamentsScreen = () => {
   // ctrl+z -> cofnij
   const {tournamentList, isLoaded, error, actions} =
     useContext(TournamentContext);
-  console.log('tournamentList_FromTournamentListScreen', tournamentList);
 
   const deleteAlert = (id, name) => {
     Alert.alert('Delete alert', `Do You want to delete ${name}?`, [
@@ -66,7 +65,8 @@ const TournamentsScreen = () => {
             navigation.navigate(SCREEN.TOURNAMENTDETAILS, {
               id: item.id,
             });
-          }}>
+          }}
+        >
           <Text style={styles.textDark}>
             <Text>{item.name}</Text>
           </Text>
@@ -81,12 +81,12 @@ const TournamentsScreen = () => {
 
   return (
     <>
-      {/*<CustomHeader/>*/}
       <View style={styles.mainBody}>
         <View style={styles.title}>
           <Text style={styles.text}>Wydarzenia </Text>
           <TouchableOpacity
-            onPress={() => navigation.navigate(SCREEN.TOURNAMENT_CREATOR)}>
+            onPress={() => navigation.navigate(SCREEN.TOURNAMENT_CREATOR)}
+          >
             <Image style={styles.icon_1} source={addIcon} />
           </TouchableOpacity>
         </View>
