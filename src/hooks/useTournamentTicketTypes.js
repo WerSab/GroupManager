@@ -11,8 +11,6 @@ export const useTournamentTicketTypes = tournamentId => {
   const requeryTicketTypes = () => {
     getTicketTypesForTournamentId(tournamentId)
       .then(result => {
-        // TODO: settimeout should be removed in the future for release
-
         setTicketTypesData(result);
         setTicketTypesLoading(false);
       })

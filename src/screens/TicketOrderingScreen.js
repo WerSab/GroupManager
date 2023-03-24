@@ -74,7 +74,6 @@ const TicketOrderingScreen = ({route, props}) => {
     discountName,
     amount,
   ) => {
-    console.log(ticketTypeId, ticketName, discountName, amount);
     boughtTickets.current = {
       ...boughtTickets.current,
       [ticketName]: {
@@ -101,8 +100,8 @@ const TicketOrderingScreen = ({route, props}) => {
 
   const renderTicketItem = ({item}) => {
     const ticketTypeId = item.id;
-    console.log(item);
-    const prices = item.prices; // ?? {};
+
+    const prices = item.prices ?? {};
     return (
       <View>
         <Text style={styles.buttonTextStyle}>Nazwa biletu: {item.name}</Text>
@@ -137,7 +136,7 @@ const TicketOrderingScreen = ({route, props}) => {
 
   const finishOrder = () => {
     const tickets = parseBoughtTicketsToArray(boughtTickets.current);
-    console.log('TOS_tickets', tickets);
+
     addNewTicketOrderToCollection({
       user: user,
       tournamentId: tournamentId,
@@ -160,7 +159,8 @@ const TicketOrderingScreen = ({route, props}) => {
   if (error) {
     // wyrenderuj cos tam
     return <Text>wystapil blad</Text>;
-  } else if (loading) {
+  }
+  if (loading) {
     // wyrenderuj cos innego
     return <ActivityIndicator />;
   }
@@ -266,140 +266,3 @@ const styles = StyleSheet.create({
     padding: 5,
   },
 });
-
-//wrzucamy info o biletach (cena, ilość, rodzaj)
-//inputy - ilość biletów
-//koszyk z info o zakupionych biletach
-//const tournament = getTournamentFromContext(tournamentContext, tournamentId);
-// const status = useMemo(() => {
-//     return ticketType.prices > 0 ? TICKET_PAYMENT_STATUS.UNPAID : TICKET_PAYMENT_STATUS.PAID;
-// }, [ticketType]);
-// function getCalculatedOrderPrice(discountTicketPrice, discountAmount) {
-//   const price = parseInt(discountTicketPrice);
-//   const amount = parseInt(discountAmount);
-//   return Math.round(price * amount * 100) / 100; //zaokrąglenie
-// }
-
-// const handleFinalPriceBlur = () => {
-//   const total = getCalculatedOrderPrice() + finalPrice;
-//   console.log('totalPrice', total);
-//   setFinalPrice(total);
-// };
-//   const mapCopy = new Map(prices);
-//   mapCopy.set('ulgowy', 100);
-//   setPrices(mapCopy);
-// const bought = {
-//   // plyta: {
-//   // ticketTypeId: null,
-//   // discounts: {
-//   //   ulgowy: amount,
-//   //   normalny: 1,
-//   //}
-//   // },
-//   // sektorC: {
-//   //   ulgowy: 1,
-//   // },
-// }; //
-
-//setTicketName(mapTicketName);
-
-//setBoughtTicket(bought);
-// tutaj aktualizuje tablice na stanie o ten obiekt wynikowy zapisany wyzej
-//console.log('boughtTicket', boughtTicket);
-
-// bought[ticketName][discountName] = amount;
-// przy parsowaniu sprawdzić czy obiekt posiada jakieś własności - jeżeli nie to go skasować ()
-// z obiektu bought, po naciśnięciu zamów wynikiem powinna byc nastepujaca tablica:
-// [
-//     {
-//         name: 'plyta',
-//         amount: 1,
-//         type: 'normalny'
-//     },
-
-// ]
-//https://jsfiddle.net/nhwz853s/
-// }
-//stan z rodzajem biletu i zakupionymi ulgami
-// function navigateWithParams(navigation, route, nextParams, screenName) {
-//     const prevParams = route.params;
-//     navigation.navigate(screenName, {
-//         ...prevParams,
-//         ...nextParams
-//     });
-// }
-
-// navigateWithParams(navigation, route, {
-//     ticketType: {
-
-//     }
-// }, 'nazwaEkranu');
-// const onSaveTicketOrders = () => {
-//     const parsedTakenSlots = parseInt(takenSlots)
-//     if (isNaN(parsedTakenSlots) || parsedTakenSlots <= 0) {
-//         Alert.alert('Wystąpił błąd', `Prosze wprowadzić liczbę`, [
-//             { text: 'Ok' },
-//         ])
-//         return;
-//     }
-//     const tournamentRef = getCollection(FIRESTORE_COLLECTION.TOURNAMENTS).doc(tournamentId);
-//     const ticketTypeReference = tournamentRef
-//         .collection(FIRESTORE_COLLECTION.SUB_COLLECTION.TICKET_TYPES)
-//         .doc(ticketType.id);
-//     const userReference = getCollection(FIRESTORE_COLLECTION.USERS)
-//         .doc(user.uid)
-
-//     const data = {
-//         user: userReference,
-//         tournament: tournamentRef,
-//         //tickets: ticketsState,
-//         tickets: [
-//             {
-//                 name: ticketType.name,
-//                 ticketTypeRef: ticketTypeReference,
-//                 amount: takenSlots,
-//                 type: ticketType.type,
-//             }
-//         ],
-//         status: status,
-
-//     };
-
-//     setIsButtonSafeDisabled(true);
-//     addNewTicketOrderToCollection(data)
-//         .then((ticketOrderDocumentReference) => {
-//             // navigation.navigate(SCREEN.TICKET_PAYMENT_SUMMARY,
-//             //     {
-//             //         ticketOrderDocumentReference,
-//             //     }
-//             // )
-//             console.log('zapisano zamowienie');
-//             setIsButtonSafeDisabled(false);
-//         })
-//         .catch(function (err) {
-//             Alert.alert('Wystąpił błąd', `Przepraszamy mamy problem z serwerem, prosze spróbować później`, [
-//                 { text: 'Ok' },
-//             ]);
-//             console.log("OrdersScreen error: ", err);
-//         });
-// }
-//  {/* <FlatList
-//                     data={ticketTypesData}
-//                     renderItem={renderTicketType}
-//                 /> */}
-//   {/* <Text style={styles.headline} > {tournament.name}</Text>
-//                 <Text style={styles.buttonTextStyle} > Cena pojedyńczego biletu : {ticketType.price} zł. </Text> */}
-//   {/* <View style={styles.SectionStyle}>
-//                     <Text style={styles.buttonTextStyle} > Ilość biletów :  </Text>
-//                     <TextInput
-//                         onBlur={handleFinalPriceBlur}
-//                         style={styles.inputStyle}
-//                         onChangeText={(text) =>
-//                             setTakenSlots(text)
-//                         }
-//                         value={takenSlots}
-//                         underlineColorAndroid="#f000"
-//                         placeholder="Wpisz ilość biletów..."
-//                         placeholderTextColor="#8b9cb5"
-//                     />
-//                 </View> */}

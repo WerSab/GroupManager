@@ -57,7 +57,6 @@ const TICKET_TYPE_ACTION = {
 
 const TournamentDetails = ({route}) => {
   const theme = useContext(ThemeContext);
-  console.log('theme:', theme);
   const {navigateWithPrevParams} = useNavigateWithParams(route);
   const tournamentContext = useContext(TournamentContext);
   const tournamentId = route.params.id;
@@ -65,15 +64,14 @@ const TournamentDetails = ({route}) => {
   const tournament = getTournamentFromContext(tournamentContext, tournamentId);
   const [ticketTypesData, loading, error, actions] =
     useTournamentTicketTypes(tournamentId);
-  console.log('Test_useTournamentTicketTypes_ticketTypesData', ticketTypesData);
+
   const navigation = useNavigation();
 
   useEffect(() => {
-    console.log('route.params.ticketType:', route.params.ticketType);
     if (!route.params.ticketType) {
       return;
     }
-    console.log('handleTicketTypeAddAction:', route.params.ticketType);
+
     handleTicketTypeAction(
       SUPPORTED_TICKET_TYPE_ACTION.ADD,
       route.params.ticketType,
@@ -93,7 +91,6 @@ const TournamentDetails = ({route}) => {
 
   const handleTicketTypeAction = async (action, arg) => {
     const actionFn = TICKET_TYPE_ACTION[action];
-    console.log('actionFn:', actionFn);
     if (!actionFn) {
       throw new Error('Unsupported action');
     }

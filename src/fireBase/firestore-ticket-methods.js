@@ -8,8 +8,6 @@ import {
 import {getDocumentReferenceById} from './firestore-helpers';
 import {setDateTicketClearedAt} from '../store/localStore';
 
-///tickets/1c3KBRLcK085IUOdhOfg
-
 export function getTicketsOrdersList() {
   return new Promise((resolve, reject) => {
     getCollection(FIRESTORE_COLLECTION.TICKETS)

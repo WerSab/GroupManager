@@ -16,23 +16,6 @@ const TicketPaymentSummaryScreen = ({route}) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isDisabled, setIsDisabled] = useState(false);
   const {tickets} = route.params;
-  console.log('TicketPaymentSummaryScreen_tickets', tickets);
-  // const ticketOrderDocumentId = ticketOrderDocumentReference.id;
-  // const ticketID = ticketOrderDocumentId.toString();
-  // const presentDate = getFirestoreTimestampFromDate().seconds;
-  // const unpackTicketOrderDocumentReference = useCallback(
-  //   function () {
-  //     return ticketOrderDocumentReference.get().then(documentData => {
-  //       setTicketOrder(documentData.data());
-  //       setIsLoading(false);
-  //     });
-  //   },
-  //   [ticketOrderDocumentReference],
-  // );
-
-  // useEffect(() => {
-  //   unpackTicketOrderDocumentReference();
-  // }, []);
 
   return (
     <>
@@ -49,7 +32,7 @@ const TicketPaymentSummaryScreen = ({route}) => {
             </Text>
           </>
         )}
-        {/* <Text style={styles.text}>Kod zamówienia: {ticketOrderDocumentId}</Text> */}
+
         <View style={styles.buttonContainer}>
           <View style={styles.singleButtonView}>
             <Button
