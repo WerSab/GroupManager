@@ -64,7 +64,7 @@ const TournamentDetails = ({route}) => {
   const tournament = getTournamentFromContext(tournamentContext, tournamentId);
   const [ticketTypesData, loading, error, actions] =
     useTournamentTicketTypes(tournamentId);
-
+  console.log('aaaaaaaaa', ticketTypesData);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -125,67 +125,71 @@ const TournamentDetails = ({route}) => {
   return (
     <>
       <View style={styles.mainBody}>
-        <View style={styles.itemStyle}>
-          <View style={styles.title}>
-            <Text style={styles.text}>{tournament.name}</Text>
+        <ScrollView>
+          <View style={styles.itemStyle}>
+            <View style={styles.title}>
+              <Text style={styles.text}>{tournament.name}</Text>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate(SCREEN.MODIFY_TOURNAMENT, {
+                    id: tournamentId,
+                  })
+                }
+              >
+                <Image style={styles.icon_1} source={editIcon} />
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.textDark}>Miejsce: {tournament.place}</Text>
+            <Text style={styles.textDark}>
+              Termin rozpoczęcia: {startTimeFormated}
+            </Text>
+            <Text style={styles.textDark}>
+              Termin zakończenia: {endTimeFormated}
+            </Text>
+            <Text style={styles.textDark}>Czas trwania: {eventDuration}</Text>
+            <Text style={styles.textDark}>
+              Ilość sprzedanych biletów: {tournament.interval}
+            </Text>
+            <Text style={styles.textDark}>
+              Rezerwacje: {tournament.interval}
+            </Text>
+            <Text style={styles.textDark}>
+              Ilość wolnych miejsc: {tournament.interval}
+            </Text>
             <TouchableOpacity
-              onPress={() =>
-                navigation.navigate(SCREEN.MODIFY_TOURNAMENT, {
-                  id: tournamentId,
-                })
-              }
+              onPress={() => Linking.openURL(tournament.link)} //(then i catch/ obsłużyć w promisie/sprawdzić Regex/https://regex101.com/https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url#:~:text=javascript%3Avoid%20%280%29%20is%20valid%20URL%2C%20although%20not%20an,DNS%29%20https%3A%2F%2Fexample..com%20is%20valid%20URL%2C%20same%20as%20above
             >
-              <Image style={styles.icon_1} source={editIcon} />
+              <Text style={styles.linkStyle}>
+                <Image source={linkIcon} style={styles.icon} />
+                Link do wydarzenia
+              </Text>
             </TouchableOpacity>
           </View>
-          <Text style={styles.textDark}>Miejsce: {tournament.place}</Text>
-          <Text style={styles.textDark}>
-            Termin rozpoczęcia: {startTimeFormated}
-          </Text>
-          <Text style={styles.textDark}>
-            Termin zakończenia: {endTimeFormated}
-          </Text>
-          <Text style={styles.textDark}>Czas trwania: {eventDuration}</Text>
-          <Text style={styles.textDark}>
-            Ilość sprzedanych biletów: {tournament.interval}
-          </Text>
-          <Text style={styles.textDark}>Rezerwacje: {tournament.interval}</Text>
-          <Text style={styles.textDark}>
-            Ilość wolnych miejsc: {tournament.interval}
-          </Text>
-          <TouchableOpacity
-            onPress={() => Linking.openURL(tournament.link)} //(then i catch/ obsłużyć w promisie/sprawdzić Regex/https://regex101.com/https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url#:~:text=javascript%3Avoid%20%280%29%20is%20valid%20URL%2C%20although%20not%20an,DNS%29%20https%3A%2F%2Fexample..com%20is%20valid%20URL%2C%20same%20as%20above
-          >
-            <Text style={styles.linkStyle}>
-              <Image source={linkIcon} style={styles.icon} />
-              Link do wydarzenia
-            </Text>
-          </TouchableOpacity>
-        </View>
 
-        {loading ? (
-          <Text style={styles.text}>Ładuje się ...</Text>
-        ) : error ? (
-          <Text>Blad pobierania biletów {!!error}</Text>
-        ) : (
-          <View>
-            <View style={styles.itemStyle}>
-              <View style={styles.title}>
-                <Text style={styles.text}> Bilety:</Text>
-                <TouchableOpacity
-                  onPress={() => {
-                    navigateWithPrevParams(SCREEN.TICKETTYPE_CREATOR, {
-                      fromScreenName: SCREEN.TOURNAMENTDETAILS,
-                    }); //zmienić przekierowanie na takie z parametrem
-                  }}
-                >
-                  <Image style={styles.icon_1} source={addIcon} />
-                </TouchableOpacity>
+          {loading ? (
+            <Text style={styles.text}>Ładuje się ...</Text>
+          ) : error ? (
+            <Text>Blad pobierania biletów {!!error}</Text>
+          ) : (
+            <View>
+              <View style={styles.itemStyle}>
+                <View style={styles.title}>
+                  <Text style={styles.text}> Bilety:</Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigateWithPrevParams(SCREEN.TICKETTYPE_CREATOR, {
+                        fromScreenName: SCREEN.TOURNAMENTDETAILS,
+                      }); //zmienić przekierowanie na takie z parametrem
+                    }}
+                  >
+                    <Image style={styles.icon_1} source={addIcon} />
+                  </TouchableOpacity>
+                </View>
+                {parsedTicketTypesData}
               </View>
-              {parsedTicketTypesData}
             </View>
-          </View>
-        )}
+          )}
+        </ScrollView>
       </View>
     </>
     //{JSON.stringify(tournament, null, 2)}
