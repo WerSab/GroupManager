@@ -28,14 +28,15 @@ const PlayerScreen = () => {
 
   const renderItem = item => {
     return (
-      <View style={[styles.itemContainer, {backgroundColor: 'white'}]}>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate(item.name);
-          }}>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate(item.name);
+        }}
+      >
+        <View style={[styles.itemContainer, {backgroundColor: 'white'}]}>
           <Text style={styles.itemName}>{item.name}</Text>
-        </TouchableOpacity>
-      </View>
+        </View>
+      </TouchableOpacity>
     );
   };
   return (
@@ -54,7 +55,8 @@ const PlayerScreen = () => {
                     setIsSigningOut(true);
                     signOutFirebaseUser();
                   }
-            }>
+            }
+          >
             <Image style={styles.icon} source={signedOut} />
           </TouchableOpacity>
         </View>

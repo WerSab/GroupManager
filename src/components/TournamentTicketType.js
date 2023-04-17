@@ -2,15 +2,21 @@ import React from 'react';
 import {useCallback} from 'react';
 import {Alert} from 'react-native';
 import {View, Text, TouchableOpacity, StyleSheet, Image} from 'react-native';
-import {ScrollView} from 'react-native-gesture-handler';
 import deleteIcon from '../assets/icons/delete.png';
 
-const PriceDisplayable = props => {
-  //const priceEntries = Object.entries(props.prices);
+//27
+
+const PriceDisplayable = () => {};
+
+const PricesDisplayable = props => {
+  // petla i w petli:
+  // <PriceDisplayable {...params} />;
+
+  const priceValues = Object.values(props.prices);
   console.log('props.prices', props.prices);
   return (
     <>
-      <Text>{props.prices}</Text>
+      <Text>{priceValues}</Text>
     </>
   );
 };
@@ -32,19 +38,17 @@ export const TournamentTicketType = props => {
   }, []);
 
   return (
-    <View>
-      <ScrollView>
-        <View style={styles.listStyle} key={ticketType.id}>
-          <Text style={styles.textDark}>
-            <TouchableOpacity onPress={deleteAlert}>
-              <Image source={deleteIcon} style={styles.icon} />
-            </TouchableOpacity>{' '}
-            Nazwa: {ticketType.name}, Typ: {ticketType.type}, Ilość:
-            {ticketType.slots}, Cena:
-            <PriceDisplayable prices={ticketType.price} />,
-          </Text>
-        </View>
-      </ScrollView>
+    <View style={styles.listStyle}>
+      <View style={styles.listStyle}>
+        <Text style={styles.textDark}>Nazwa: {ticketType.name}</Text>
+        <Text style={styles.textDark}>Ilość: {ticketType.slots}</Text>
+        <PricesDisplayable prices={ticketType.prices} />
+      </View>
+      <View style={{backgroundColor: 'pink'}}>
+        <TouchableOpacity onPress={deleteAlert}>
+          <Image source={deleteIcon} style={styles.icon} />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };

@@ -18,19 +18,20 @@ import {
 } from '../firebase/firestore-ticket-methods';
 import {Button} from 'react-native-elements';
 import {ScrollView} from 'react-native-gesture-handler';
+import {getPaidOrders} from '../firebase/firestore-order-methods';
 
-const PaidTicketListScreen = () => {
+const PaidOrdersListScreen = () => {
   //const navigation = useNavigation();
-  const [myTickets, setMyTickets] = useState();
+  const [orders, setOrders] = useState();
   const [error, setError] = useState();
   const [loading, setLoading] = useState(true);
   const [isButtonConfirmedDisabled, setIsButtonConfirmedDisabled] =
     useState(false);
   const [isButtonUndoDisabled, setIsButtonUndoDisabled] = useState(false);
   useEffect(() => {
-    getPaidTickets()
+    getPaidOrders()
       .then(result => {
-        setMyTickets(result);
+        setOrders(result);
         setLoading(false);
       })
       .catch(error => {
@@ -48,7 +49,7 @@ const PaidTicketListScreen = () => {
   if (error) {
     return <ErrorScreen errorMessage={error.message} />;
   }
-  if (!myTickets && myTickets.length === 0) {
+  if (!orders && orders.length === 0) {
     return (
       <View style={styles.buttonContainer}>
         <Text style={styles.text}>Nie posiadasz żadnych biletów.</Text>
@@ -71,16 +72,16 @@ const PaidTicketListScreen = () => {
     );
   };
 
-  const myTicketList = myTickets.map(ticket => renderItem(ticket));
+  const ordersList = orders.map(ticket => renderItem(ticket));
   return (
     <View style={styles.mainBody}>
       <Text style={styles.textDark}>Zapłacone bilety</Text>
-      <ScrollView>{myTicketList}</ScrollView>
+      <ScrollView>{ordersList}</ScrollView>
     </View>
   );
 };
 
-export default PaidTicketListScreen;
+export default PaidOrdersListScreen;
 
 const styles = StyleSheet.create({
   mainBody: {

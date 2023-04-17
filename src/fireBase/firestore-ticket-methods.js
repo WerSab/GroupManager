@@ -8,24 +8,6 @@ import {
 import {getDocumentReferenceById} from './firestore-helpers';
 import {setDateTicketClearedAt} from '../store/localStore';
 
-export function getTicketsOrdersList() {
-  return new Promise((resolve, reject) => {
-    getCollection(FIRESTORE_COLLECTION.TICKETS)
-      .where('status', '==', TICKET_PAYMENT_STATUS.UNPAID)
-      .get()
-      .then(querySnapshot => {
-        const allDocuments = querySnapshot.docs;
-        const ticketOrdersList = allDocuments.map(function (collectionElement) {
-          return {
-            id: collectionElement.id,
-            ...collectionElement.data(),
-          };
-        });
-        resolve(ticketOrdersList);
-      })
-      .catch(error => reject(error));
-  });
-}
 export function getUserTickets(userId) {
   return new Promise((resolve, reject) => {
     console.log(`${FIRESTORE_COLLECTION.USERS}/${userId}`);
@@ -90,42 +72,11 @@ export function extractTicketsInfo(tickets) {
   return Promise.all(ticketPromises);
 }
 
-export function getPaidTickets() {
-  return new Promise((resolve, reject) => {
-    getCollection(FIRESTORE_COLLECTION.TICKETS)
-      .where('status', '==', TICKET_PAYMENT_STATUS.PAID)
-      .get()
-      .then(querySnapshot => {
-        const allDocuments = querySnapshot.docs;
-        const ticketList = allDocuments.map(function (collectionElement) {
-          return {
-            id: collectionElement.id,
-            ...collectionElement.data(),
-          };
-        });
-
-        resolve(ticketList);
-      })
-      .catch(error => reject(error));
-  });
-}
-
 export function deleteTicket(ticketId) {
   // tworzysz batcha
   // batch.delete(ref)
   // batch.commit();
   return getCollection(FIRESTORE_COLLECTION.TICKETS).doc(ticketId).delete();
-}
-export function updateTicketPaymentStatusToPaid(ticketOrderID) {
-  return getCollection(FIRESTORE_COLLECTION.TICKETS).doc(ticketOrderID).update({
-    status: 'paid',
-  });
-}
-
-export function updateTicketPaymentStatusToUnPaid(ticketOrderID) {
-  return getCollection(FIRESTORE_COLLECTION.TICKETS).doc(ticketOrderID).update({
-    status: 'unpaid',
-  });
 }
 
 // Object.assign() i spread operator
