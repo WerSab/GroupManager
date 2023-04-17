@@ -40,7 +40,7 @@ import {ScrollView} from 'react-native-gesture-handler';
 import TicketOrderDetails from '../styles/TicketOrderDetails';
 import {getUserOrders} from '../firebase/firestore-order-methods';
 
-const MyTicketsScreen = ({route}) => {
+const MyBookingsListScreen = ({route}) => {
   const [myOrders, setMyOrders] = useState();
   const [ticketList, setTicketList] = useState(new Map());
   const [error, setError] = useState();
@@ -154,7 +154,7 @@ const MyTicketsScreen = ({route}) => {
   );
 };
 
-export default MyTicketsScreen;
+export default MyBookingsListScreen;
 
 const styles = StyleSheet.create({
   mainBody: {

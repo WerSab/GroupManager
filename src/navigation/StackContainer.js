@@ -15,7 +15,7 @@ import {UserContext} from '../context/UserContextProvider';
 import TournamentsScreen from '../screens/TournamentsScreen';
 import TournamentDetailsScreen from '../screens/TournamentDetailsScreen';
 import UsersScreen from '../screens/UsersScreen';
-import MyTicketsScreen from '../screens/MyTicketsScreen';
+import MyBookingsListScreen from '../screens/MyBookingsListScreen';
 import MyBookingsScreen from '../screens/MyProfileScreen';
 import MyMessagesScreen from '../screens/MyMessagesScreen';
 import {SCREEN} from './screens';
@@ -117,7 +117,7 @@ function StackContainer() {
                     />
                     <Stack.Screen
                       name={SCREEN.PLAYER_TAB.MY_TICKETS}
-                      component={MyTicketsScreen}
+                      component={MyBookingsListScreen}
                       options={{
                         headerBackVisible: false,
                         headerTitle: props => <LogoTitle {...props} />,
