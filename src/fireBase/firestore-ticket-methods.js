@@ -8,31 +8,6 @@ import {
 import {getDocumentReferenceById} from './firestore-helpers';
 import {setDateTicketClearedAt} from '../store/localStore';
 
-export function getUserTickets(userId) {
-  return new Promise((resolve, reject) => {
-    console.log(`${FIRESTORE_COLLECTION.USERS}/${userId}`);
-    const userRef = getDocumentReferenceById(
-      `${FIRESTORE_COLLECTION.USERS}/${userId}`,
-    );
-    getCollection(FIRESTORE_COLLECTION.TICKETS)
-      .where('user', '==', userRef)
-      .where('status', '==', TICKET_PAYMENT_STATUS.PAID)
-      .get()
-      .then(querySnapshot => {
-        const allDocuments = querySnapshot.docs;
-        const ticketList = allDocuments.map(function (collectionElement) {
-          return {
-            id: collectionElement.id,
-            ...collectionElement.data(),
-          };
-        });
-
-        resolve(ticketList);
-      })
-      .catch(error => reject(error));
-  });
-}
-
 export function bulkDeleteTicket(documentReferences) {
   return new Promise((resolve, reject) => {
     const batch = getFirestoreBatch();

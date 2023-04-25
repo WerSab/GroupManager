@@ -15,7 +15,7 @@ import {UserContext} from '../context/UserContextProvider';
 import TournamentsScreen from '../screens/TournamentsScreen';
 import TournamentDetailsScreen from '../screens/TournamentDetailsScreen';
 import UsersScreen from '../screens/UsersScreen';
-import MyBookingsListScreen from '../screens/MyBookingsListScreen';
+import MyOrdersScreen from '../screens/MyOrdersScreen';
 import MyBookingsScreen from '../screens/MyProfileScreen';
 import MyMessagesScreen from '../screens/MyMessagesScreen';
 import {SCREEN} from './screens';
@@ -30,7 +30,7 @@ import ModifyTournamentScreen from '../screens/ModifyTournamentScreen';
 import MyTournamentDetails from '../screens/MyTournamentDetailsScreen';
 import TicketOrderingScreen from '../screens/TicketOrderingScreen';
 import TicketPaymentSummaryScreen from '../screens/TicketPaymentSummaryScreen';
-import MyConfirmedTicketsScreen from '../screens/MyConfirmedTicketsScreen';
+import MyConfirmedOrdersScreen from '../screens/MyConfirmedOrdersScreen';
 import TournamentCreator from '../screens/TournamentCreator';
 import {TicketTypeCreator} from '../screens/TicketTypeCreator';
 import {TicketBasket} from '../screens/TicketBasket';
@@ -117,7 +117,7 @@ function StackContainer() {
                     />
                     <Stack.Screen
                       name={SCREEN.PLAYER_TAB.MY_TICKETS}
-                      component={MyBookingsListScreen}
+                      component={MyOrdersScreen}
                       options={{
                         headerBackVisible: false,
                         headerTitle: props => <LogoTitle {...props} />,
@@ -131,8 +131,8 @@ function StackContainer() {
                       }}
                     />
                     <Stack.Screen
-                      name={SCREEN.PLAYER_TAB.MY_CONFIRMED_TICKETS}
-                      component={MyConfirmedTicketsScreen}
+                      name={SCREEN.PLAYER_TAB.MY_CONFIRMED_ORDERS}
+                      component={MyConfirmedOrdersScreen}
                       options={{
                         headerBackVisible: false,
                         headerTitle: props => <LogoTitle {...props} />,

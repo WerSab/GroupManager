@@ -31,29 +31,57 @@ import {
   getDayFromMillis,
   setNewCleanUpDate,
 } from '../store/localStore';
-import {getUserTickets} from '../firebase/firestore-ticket-methods';
+import {
+  extractTicketsInfo,
+  getUserTickets,
+} from '../firebase/firestore-ticket-methods';
 import ErrorScreen from './ErrorScreen';
 import {ScrollView} from 'react-native-gesture-handler';
+import TicketOrderDetails from '../styles/TicketOrderDetails';
+import {getUserOrders} from '../firebase/firestore-order-methods';
+import {TICKET_PAYMENT_STATUS} from '../config';
+import {useAsync} from '../hooks/useAsync';
 
-const MyConfirmedTicketsScreen = ({route}) => {
-  const [myTickets, setMyTickets] = useState();
+const MyOrdersScreen = ({route}) => {
+  const [myOrders, setMyOrders] = useState();
   const [error, setError] = useState();
   const [loading, setLoading] = useState(true);
   const userContext = useContext(UserContext);
   const userID = userContext.user.uid;
+  console.log('myOrders', myOrders);
 
+  useAsync(() => {});
+
+  const navigation = useNavigation();
+  const now = getCurrentDate();
+
+  // 1. useEffecta ma w ogole nie byc
+  // 2. przenosimy logike, ktora znajduje sie w useEffect do oddzielnej, asynchornicznej funkcji
+  // 3. ta asynchroniczna funkcja ma zostac przekazana (referencja) do naszego nowego hooka useAsync(FN)
+  // 4. useAsync obsluguje odpowiednio stany reactowe
+  // 5. uzywamy zwroconych stanow (loading, data, error) w komponencie MyOrdersScreen
+  // 6. useCallback- zgooglować
   useEffect(() => {
-    Promise.resolve();
-    getUserTickets(userID)
+    Promise.resolve()
+      .then(() => {
+        return deleteOutdatedTickets(userID);
+      })
+      .then(() => {
+        return getUserOrders(userID, TICKET_PAYMENT_STATUS.UNPAID);
+      })
       .then(result => {
-        setMyTickets(result);
+        console.log('result', result);
+        setMyOrders(result);
         setLoading(false);
+        return result.tickets;
       })
       .catch(error => {
         setError(error);
       });
   }, []);
-
+  if (error) {
+    return <ErrorScreen errorMessage={error.message} />;
+  }
   if (loading) {
     return (
       <View style={styles.buttonContainer}>
@@ -61,62 +89,80 @@ const MyConfirmedTicketsScreen = ({route}) => {
       </View>
     );
   }
-  if (error) {
-    return <ErrorScreen errorMessage={error.message} />;
-  }
-  if (!myTickets && myTickets.length === 0) {
+
+  if (!myOrders && myOrders.length === 0) {
+    console.log('nie posiadasz biletów');
     return (
-      <View style={styles.buttonContainer}>
+      <View>
         <Text style={styles.text}>Nie posiadasz żadnych biletów.</Text>
       </View>
     );
   }
+
   const renderItem = item => {
+    const createdAt = item.createdAt;
+    const createdAt_details = Object.entries(createdAt);
+    const ticketOrderPeriod = createdAt_details[0][1];
+    const ticketReference = item.tickets;
+
     return (
       <View style={styles.listStyle} key={item.id}>
         <Text style={styles.itemStyle}>
+          <View style={styles.singleButtonView}>
+            <Button
+              activeOpacity={2}
+              color="#47b8ce"
+              title="Kopiuj kod"
+              onPress={() => {
+                Clipboard.setString(item.id);
+                Alert.alert('Kod zamówienia został pomyslnie skopiowany');
+              }}
+            />
+          </View>
           {'\n'}
           <Text style={styles.textBold}>Kod zamówienia:</Text>{' '}
           <Text>{item.id}</Text>
           {'\n'}
-          <Text style={styles.textBold}>Koszt biletów:</Text>{' '}
+          <Text style={styles.textBold}>Razem do zapłaty:</Text>{' '}
           <Text>{item.price}</Text> <Text>zł.</Text>
           {'\n'}
-          <Text style={styles.textBold}>Ilość biletów:</Text>
-          <Text> {item.slots} </Text>
+          <Text style={styles.textBold}>Zamówienie wygaśnie za:</Text>
+          <Text>
+            {' '}
+            {Math.round(getDayFromMillis(now - ticketOrderPeriod))} dni
+          </Text>
         </Text>
       </View>
     );
   };
 
-  const myTicketList = myTickets.map(ticket => renderItem(ticket));
+  const myOrderList = myOrders.map(order => renderItem(order));
 
   return (
     <View style={styles.mainBody}>
       <View style={styles.buttonContainer}>
-        <Text style={styles.title}>Moje Bilety:</Text>
-        {myTicketList}
-        {/* // TODO: zadanie
-                //zadanie!!!!- pomapowac bilety - zamiana struktur java scriptowych na komponenty Reactowe (żeby je mozna było wyswuetlić w komponnetach View, text itd.) */}
-        <FlatList
-          data={myTicketList}
+        <Text style={styles.title}>Moje Zamówienia:</Text>
+        {/* <FlatList
+          data={myOrders}
           renderItem={({item}) => renderItem(item)}
           keyExtractor={(item, index) => index.toString()}
           style={styles.container}
           withSearchbar={false}
-        />
+        /> */}
+        {myOrderList}
       </View>
     </View>
   );
 };
 
-export default MyConfirmedTicketsScreen;
+export default MyOrdersScreen;
 
 const styles = StyleSheet.create({
   mainBody: {
     flex: 1,
-    justifyContent: 'center',
+    //justifyContent: 'center',
     backgroundColor: '#C5EEFF',
+    //alignItems: 'center',
   },
   title: {
     color: '#005b98',
@@ -151,15 +197,15 @@ const styles = StyleSheet.create({
   },
   listStyle: {
     flexDirection: 'row',
-    padding: 5,
-    marginBottom: 5,
-    marginRight: 5,
-    marginLeft: 5,
+    // padding: 5,
+    // marginBottom: 5,
+    // marginRight: 5,
+    // marginLeft: 5,
     borderRadius: 5,
     textAlign: 'center',
     fontSize: 16,
     justifyContent: 'space-between',
-    alignItems: 'center',
+    //alignItems: 'center',
   },
   itemStyle: {
     flexDirection: 'column',
