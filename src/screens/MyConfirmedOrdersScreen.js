@@ -31,51 +31,31 @@ import {
   getDayFromMillis,
   setNewCleanUpDate,
 } from '../store/localStore';
-import {
-  extractTicketsInfo,
-  getUserTickets,
-} from '../firebase/firestore-ticket-methods';
+import {getUserOrders} from '../firebase/firestore-order-methods';
 import ErrorScreen from './ErrorScreen';
 import {ScrollView} from 'react-native-gesture-handler';
-import TicketOrderDetails from '../styles/TicketOrderDetails';
-import {getUserOrders} from '../firebase/firestore-order-methods';
+import {TICKET_PAYMENT_STATUS} from '../config';
 
-const MyBookingsListScreen = ({route}) => {
-  const [myOrders, setMyOrders] = useState();
-  const [ticketList, setTicketList] = useState(new Map());
+const MyConfirmedOrdersScreen = ({route}) => {
+  const [myTickets, setMyTickets] = useState();
   const [error, setError] = useState();
   const [loading, setLoading] = useState(true);
   const userContext = useContext(UserContext);
   const userID = userContext.user.uid;
-  console.log('myOrders', myOrders);
-  console.log('ticketList', ticketList);
-
-  const navigation = useNavigation();
 
   useEffect(() => {
-    Promise.resolve() //przy łańcuchu wywołań
-      .then(() => {
-        return deleteOutdatedTickets(userID);
-      })
-      .then(() => {
-        return getUserOrders(userID);
-      })
+    Promise.resolve();
+    getUserOrders(userID, TICKET_PAYMENT_STATUS.PAID)
       .then(result => {
-        console.log('result', result);
-        setMyOrders(result);
+        console.log('MyconfirmedTickets_list', result);
+        setMyTickets(result);
         setLoading(false);
-        return result.tickets;
       })
-      // .then(result => {
-      //   setTicketList(extractTicketsInfo(result));
-      // })
       .catch(error => {
         setError(error);
       });
   }, []);
-  if (error) {
-    return <ErrorScreen errorMessage={error.message} />;
-  }
+
   if (loading) {
     return (
       <View style={styles.buttonContainer}>
@@ -83,84 +63,63 @@ const MyBookingsListScreen = ({route}) => {
       </View>
     );
   }
-
-  if (!myOrders && myOrders.length === 0) {
-    console.log('nie posiadasz biletów');
+  if (error) {
+    return <ErrorScreen errorMessage={error.message} />;
+  }
+  if (!myTickets && myTickets.length === 0) {
     return (
-      <View>
+      <View style={styles.buttonContainer}>
         <Text style={styles.text}>Nie posiadasz żadnych biletów.</Text>
       </View>
     );
   }
-  const now = getCurrentDate();
   const renderItem = item => {
-    const createdAt = item.createdAt;
-    const createdAt_details = Object.entries(createdAt);
-    const ticketOrderPeriod = createdAt_details[0][1];
-    //extractTicketsInfo(item.tickets);
-    const ticketReference = item.tickets;
-    console.log('ticketReference', ticketReference);
-    // ticketReference
-
     return (
-      <>
-        <View style={styles.listStyle} key={item.id}>
-          <Text style={styles.itemStyle}>
-            <View style={styles.singleButtonView}>
-              <Button
-                activeOpacity={2}
-                color="#47b8ce"
-                title="Kopiuj kod"
-                onPress={() => {
-                  Clipboard.setString(item.id);
-                  Alert.alert('Kod zamówienia został pomyslnie skopiowany');
-                }}
-              />
-            </View>
-            {'\n'}
-            <Text style={styles.textBold}>Kod zamówienia:</Text>{' '}
-            <Text>{item.id}</Text>
-            {'\n'}
-            <Text style={styles.textBold}>Razem do zapłaty:</Text>{' '}
-            <Text>{item.price}</Text> <Text>zł.</Text>
-            {'\n'}
-            <Text style={styles.textBold}>Zamówienie wygaśnie za:</Text>
-            <Text>
-              {' '}
-              {Math.round(getDayFromMillis(now - ticketOrderPeriod))} dni
-            </Text>
-          </Text>
-        </View>
-        {/* <TicketOrderDetails key={`${item.id}`} orderId={item.id} /> */}
-      </>
+      <View style={styles.listStyle} key={item.id}>
+        <Text style={styles.itemStyle}>
+          {'\n'}
+          <Text style={styles.textBold}>Kod zamówienia:</Text>{' '}
+          <Text>{item.id}</Text>
+          {'\n'}
+          <Text style={styles.textBold}>Koszt biletów:</Text>{' '}
+          <Text>{item.price}</Text> <Text>zł.</Text>
+          {'\n'}
+          <Text style={styles.textBold}>Ilość biletów:</Text>
+          <Text> {item.slots} </Text>
+        </Text>
+      </View>
     );
   };
 
-  //const myTicketList = myOrders.map(ticket => renderItem(ticket));
-  console.log('MTS_MyTickets', myOrders);
+  const myTicketList = myTickets.map(ticket => renderItem(ticket));
+
   return (
     <View style={styles.mainBody}>
       <View style={styles.buttonContainer}>
-        <Text style={styles.title}>Moje Zamówienia:</Text>
-        <FlatList
-          data={myOrders}
+        <Text style={styles.title}>Moje Bilety:</Text>
+        {myTicketList}
+        {/* // TODO: zadanie
+                //zadanie!!!!- pomapowac bilety - zamiana struktur java scriptowych na komponenty Reactowe (żeby je mozna było wyswuetlić w komponnetach View, text itd.) */}
+        {/* <FlatList
+          data={myTicketList}
           renderItem={({item}) => renderItem(item)}
           keyExtractor={(item, index) => index.toString()}
           style={styles.container}
           withSearchbar={false}
-        />
+        /> */}
       </View>
     </View>
   );
 };
 
-export default MyBookingsListScreen;
+export default MyConfirmedOrdersScreen;
 
 const styles = StyleSheet.create({
   mainBody: {
     flex: 1,
-    justifyContent: 'center',
+    //justifyContent: 'center',
     backgroundColor: '#C5EEFF',
+    alignItems: 'center',
   },
   title: {
     color: '#005b98',

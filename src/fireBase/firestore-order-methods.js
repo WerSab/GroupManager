@@ -26,24 +26,32 @@ export function getTicketsOrdersList() {
   });
 }
 
-export function getUserOrders(userId) {
+getUserOrders('xyz');
+
+export function getUserOrders(userId, ticketPaymentStatus) {
   return new Promise((resolve, reject) => {
     console.log(`${FIRESTORE_COLLECTION.USERS}/${userId}`);
     const userRef = getDocumentReferenceById(
       `${FIRESTORE_COLLECTION.USERS}/${userId}`,
     );
-    console.log('userRef:', userRef);
-    getCollection(FIRESTORE_COLLECTION.ORDERS)
-      .where('user', '==', userRef)
-      .where('status', '==', TICKET_PAYMENT_STATUS.UNPAID)
-      .get()
+    const userOrders = getCollection(FIRESTORE_COLLECTION.ORDERS).where(
+      'user',
+      '==',
+      userRef,
+    );
+    const orders = ticketPaymentStatus
+      ? userOrders.where('status', '==', ticketPaymentStatus).get()
+      : userOrders.get();
+
+    orders
       .then(querySnapshot => {
         console.log('querysnapshot.documents:', querySnapshot.docs);
         const allDocuments = querySnapshot.docs;
         const ticketList = allDocuments.map(function (collectionElement) {
+          const orderFields = collectionElement.data();
           return {
             id: collectionElement.id,
-            ...collectionElement.data(),
+            ...orderFields,
           };
         });
 

@@ -177,12 +177,12 @@ Old version
 //koszyk z info o zakupionych biletach
 //const tournament = getTournamentFromContext(tournamentContext, tournamentId);
 // const status = useMemo(() => {
-// return ticketType.prices > 0 ? TICKET_PAYMENT_STATUS.UNPAID : TICKET_PAYMENT_STATUS.PAID;
+// return ticketType.prices > 0 ? TICKET*PAYMENT_STATUS.UNPAID : TICKET_PAYMENT_STATUS.PAID;
 // }, [ticketType]);
 // function getCalculatedOrderPrice(discountTicketPrice, discountAmount) {
 // const price = parseInt(discountTicketPrice);
 // const amount = parseInt(discountAmount);
-// return Math.round(price _ amount _ 100) / 100; //zaokrąglenie
+// return Math.round(price * amount \_ 100) / 100; //zaokrąglenie
 // }
 
 // const handleFinalPriceBlur = () => {
@@ -273,7 +273,7 @@ Old version
 // setIsButtonSafeDisabled(true);
 // addNewTicketOrderToCollection(data)
 // .then((ticketOrderDocumentReference) => {
-// // navigation.navigate(SCREEN.TICKET_PAYMENT_SUMMARY,
+// // navigation.navigate(SCREEN.TICKET*PAYMENT_SUMMARY,
 // // {
 // // ticketOrderDocumentReference,
 // // }
@@ -288,7 +288,7 @@ Old version
 // console.log("OrdersScreen error: ", err);
 // });
 // }
-// {/_ <FlatList
+// {/* <FlatList
 // data={ticketTypesData}
 // renderItem={renderTicketType}
 // /> _/}
@@ -307,4 +307,7 @@ Old version
 // placeholder="Wpisz ilość biletów..."
 // placeholderTextColor="#8b9cb5"
 // />
-// </View> _/}
+// </View> \_/}
+24.04.2023 - wyświetlanie biletów zamówienia:
+button - wyświetl szczegóły
+rozpakowanie wszystkich referencji pod dane zamówienie
