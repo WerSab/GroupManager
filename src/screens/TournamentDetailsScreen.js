@@ -41,10 +41,6 @@ import editIcon from '../assets/icons/edit.png';
 import {TournamentTicketType} from '../components/TournamentTicketType';
 import {useNavigateWithParams} from '../hooks/useNavigateWithParams';
 
-// enum SupportedTicketTypeAction = {
-//   ADD = "ADD",
-// DELETE = "DELETE"
-// }
 const SUPPORTED_TICKET_TYPE_ACTION = {
   ADD: 'ADD',
   DELETE: 'DELETE',
@@ -199,9 +195,8 @@ export default TournamentDetails;
 const styles = StyleSheet.create({
   mainBody: {
     flex: 1,
-    //justifyContent: 'center',
+
     backgroundColor: '#C5EEFF',
-    //alignItems: 'center',
   },
   image: {height: 70, width: 110, flexBasis: '20%'},
   textContainer: {

@@ -4,10 +4,6 @@ import {Alert} from 'react-native';
 import {View, Text, TouchableOpacity, StyleSheet, Image} from 'react-native';
 import deleteIcon from '../assets/icons/delete.png';
 
-//27
-
-const PriceDisplayable = () => {};
-
 const PricesDisplayable = props => {
   // petla i w petli:
   // <PriceDisplayable {...params} />;

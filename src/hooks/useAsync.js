@@ -1,7 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
 
-fetch();
-
 // w idealnym swiecie: () => Promise<T>
 // export const useAsync <T,> = (asyncFn: () => Promise<T>) => {// implementacja hook'a};
 // const exampleFn = () => Promise.resolve("hello world"); -> return type Promise'a funkcji exampleFn to: Promise<string>
@@ -42,10 +40,10 @@ export const useAsync = (asyncFn, invokeImmediately = true) => {
     // const x = async () => {};
     // x();
     // (() => {})();
-
     if (!invokeImmediately) {
       return;
     }
+    console.log('execute in useasync');
     execute();
   }, [execute, invokeImmediately]);
 
