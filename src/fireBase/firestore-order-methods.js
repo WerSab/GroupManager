@@ -26,8 +26,6 @@ export function getTicketsOrdersList() {
   });
 }
 
-getUserOrders('xyz');
-
 export function getUserOrders(userId, ticketPaymentStatus) {
   return new Promise((resolve, reject) => {
     console.log(`${FIRESTORE_COLLECTION.USERS}/${userId}`);
@@ -39,16 +37,18 @@ export function getUserOrders(userId, ticketPaymentStatus) {
       '==',
       userRef,
     );
-    const orders = ticketPaymentStatus
-      ? userOrders.where('status', '==', ticketPaymentStatus).get()
-      : userOrders.get();
+    const ordersQuery = ticketPaymentStatus
+      ? userOrders.where('status', '==', ticketPaymentStatus)
+      : userOrders;
 
-    orders
+    ordersQuery
+      .get()
       .then(querySnapshot => {
         console.log('querysnapshot.documents:', querySnapshot.docs);
         const allDocuments = querySnapshot.docs;
         const ticketList = allDocuments.map(function (collectionElement) {
           const orderFields = collectionElement.data();
+
           return {
             id: collectionElement.id,
             ...orderFields,
@@ -57,7 +57,10 @@ export function getUserOrders(userId, ticketPaymentStatus) {
 
         resolve(ticketList);
       })
-      .catch(error => reject(error));
+      .catch(error => {
+        console.error('getUserOrders:', error);
+        reject(error);
+      });
   });
 }
 

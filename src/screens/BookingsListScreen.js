@@ -27,9 +27,8 @@ const BookingsListScreen = () => {
   const [isButtonConfirmedDisabled, setIsButtonConfirmedDisabled] =
     useState(false);
   const [localOrders, setLocalOrders] = useState(orders);
-  console.log('orders:', orders);
-  // myTickets[0].status;
-  //wrzucić stałe dot. statusu zamówienia do osbonego pliku firestore const., usunąc stany buttonów z tego komponentu
+  console.log('orders o Booking screen:', localOrders);
+
   const isOrderPaid = order => {
     return order.status === ORDER_STATUS.PAID;
   };
@@ -121,7 +120,6 @@ const BookingsListScreen = () => {
 
           <Button
             activeOpacity={2}
-            color="#47b8ce"
             title="Cofnij"
             disabled={!isOrderPaid(item)}
             onPress={() => handleUndoPress(item.id)}

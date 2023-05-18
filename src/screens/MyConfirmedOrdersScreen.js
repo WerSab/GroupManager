@@ -8,7 +8,7 @@
 // tickets.where(tournament == 'tournaments/tournamentId');
 
 import {useNavigation} from '@react-navigation/core';
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -17,6 +17,7 @@ import {
   Image,
   FlatList,
   Alert,
+  Modal,
 } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {Button} from 'react-native-elements';
@@ -25,36 +26,101 @@ import {TicketContext} from '../context/TicketContextProvider';
 import {TournamentContext} from '../context/TournamentContextProvider';
 import {UserContext} from '../context/UserContextProvider';
 import {SCREEN} from '../navigation/screens';
-import {
-  deleteOutdatedTickets,
-  getCurrentDate,
-  getDayFromMillis,
-  setNewCleanUpDate,
-} from '../store/localStore';
+
 import {getUserOrders} from '../firebase/firestore-order-methods';
 import ErrorScreen from './ErrorScreen';
 import {ScrollView} from 'react-native-gesture-handler';
 import {TICKET_PAYMENT_STATUS} from '../config';
+import {useAsync} from '../hooks/useAsync';
+import {useUserTickets} from '../hooks/useUserTickets';
+import {extractTicketsInfo} from '../firebase/firestore-ticket-methods';
+import {TicketDataView} from '../components/TicketDataView';
 
 const MyConfirmedOrdersScreen = ({route}) => {
-  const [myTickets, setMyTickets] = useState();
-  const [error, setError] = useState();
-  const [loading, setLoading] = useState(true);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const userContext = useContext(UserContext);
   const userID = userContext.user.uid;
 
+  const fetchUserOrders = useCallback(() => {
+    try {
+      return getUserOrders(userID, TICKET_PAYMENT_STATUS.PAID);
+    } catch (error) {
+      throw error;
+    }
+  }, [userID]);
+
+  const initializeLocalOrders = orders => {
+    return orders?.map(order => {
+      return {
+        ...order,
+        isExtracted: false,
+      };
+    });
+  };
+
+  const {data: myOrders, error, loading} = useAsync(fetchUserOrders);
+  const [localOrders, setLocalOrders] = useState();
+  console.log('myOrders', myOrders);
+
   useEffect(() => {
-    Promise.resolve();
-    getUserOrders(userID, TICKET_PAYMENT_STATUS.PAID)
-      .then(result => {
-        console.log('MyconfirmedTickets_list', result);
-        setMyTickets(result);
-        setLoading(false);
-      })
-      .catch(error => {
-        setError(error);
-      });
-  }, []);
+    if (localOrders) {
+      return;
+    }
+    setLocalOrders(initializeLocalOrders(myOrders));
+  }, [myOrders, localOrders]);
+
+  const getOrderDetails = useCallback(
+    async orderId => {
+      try {
+        console.log('orderId', orderId);
+
+        const order = localOrders?.find(order => order.id === orderId);
+
+        const ticketReferences = order.tickets;
+        console.log('ticketReferences', ticketReferences);
+        //11.05.- obsług błędu do poniżej
+
+        const extractedTickets = await extractTicketsInfo(ticketReferences);
+
+        console.log('extractedTickets', extractedTickets);
+
+        // type SetStateAction<S> = S | ((prevState: S) => S);
+        // setLocalOrders((prevState) => {
+        //   return [];
+        // });
+        setLocalOrders(prevLocalOrders => {
+          return prevLocalOrders.map(order => {
+            if (order.id !== orderId) {
+              return order;
+            }
+            return {
+              ...order,
+              tickets: extractedTickets,
+              isExtracted: true,
+            };
+          });
+        });
+      } catch (error) {
+        throw error;
+      }
+    },
+    [localOrders],
+  );
+
+  const handleShowDetailsPress = useCallback(
+    orderId => {
+      return () => {
+        const order = localOrders.find(order => order.id === orderId);
+        if (!order?.isExtracted) {
+          getOrderDetails(orderId);
+        }
+        setIsModalVisible(true);
+      };
+    },
+    [localOrders, getOrderDetails],
+  );
+
+  //console.log('local orders:', localOrders);
 
   if (loading) {
     return (
@@ -66,47 +132,91 @@ const MyConfirmedOrdersScreen = ({route}) => {
   if (error) {
     return <ErrorScreen errorMessage={error.message} />;
   }
-  if (!myTickets && myTickets.length === 0) {
+  if (!myOrders && myOrders.length === 0) {
     return (
       <View style={styles.buttonContainer}>
         <Text style={styles.text}>Nie posiadasz żadnych biletów.</Text>
       </View>
     );
   }
+
   const renderItem = item => {
     return (
-      <View style={styles.listStyle} key={item.id}>
-        <Text style={styles.itemStyle}>
-          {'\n'}
-          <Text style={styles.textBold}>Kod zamówienia:</Text>{' '}
-          <Text>{item.id}</Text>
-          {'\n'}
-          <Text style={styles.textBold}>Koszt biletów:</Text>{' '}
-          <Text>{item.price}</Text> <Text>zł.</Text>
-          {'\n'}
-          <Text style={styles.textBold}>Ilość biletów:</Text>
-          <Text> {item.slots} </Text>
+      <View style={styles.itemStyle} key={item.id}>
+        <Text>
+          <View>
+            <Text style={styles.textDark}>ID: {item.id}</Text>
+          </View>
+          <View>
+            <Text style={styles.textDark}>
+              Koszt zamówienia: {item.price}zł.
+            </Text>
+          </View>
+          <View>
+            <Button
+              activeOpacity={2}
+              color="#47b8ce"
+              title="Wyswietl szczegóły"
+              onPress={handleShowDetailsPress(item.id)}
+            />
+          </View>
         </Text>
       </View>
     );
   };
 
-  const myTicketList = myTickets.map(ticket => renderItem(ticket));
+  const parsedTicketDataView = localOrders?.map(orderData => (
+    <TicketDataView
+      key={orderData.id.toString()}
+      ticketData={orderData.isExtracted ? orderData.tickets : undefined}
+      ticketId={orderData.Id}
+    />
+  ));
+
+  const myConfirmedOrderList = myOrders.map(ticketOrder =>
+    renderItem(ticketOrder),
+  );
 
   return (
     <View style={styles.mainBody}>
-      <View style={styles.buttonContainer}>
-        <Text style={styles.title}>Moje Bilety:</Text>
-        {myTicketList}
-        {/* // TODO: zadanie
-                //zadanie!!!!- pomapowac bilety - zamiana struktur java scriptowych na komponenty Reactowe (żeby je mozna było wyswuetlić w komponnetach View, text itd.) */}
-        {/* <FlatList
-          data={myTicketList}
-          renderItem={({item}) => renderItem(item)}
-          keyExtractor={(item, index) => index.toString()}
-          style={styles.container}
-          withSearchbar={false}
-        /> */}
+      {isModalVisible && (
+        <Modal
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => setIsModalVisible(false)}
+          onBackdropPress={() => setIsModalVisible(false)}
+          onBackButtonPress={() => setIsModalVisible(false)}
+        >
+          <ScrollView>
+            <View style={styles.modalView}>
+              <View
+                style={{
+                  flexDirection: 'column',
+                  justifyContent: 'space-around',
+                  width: '100%',
+                }}
+              >
+                <Text>{parsedTicketDataView}</Text>
+
+                <Button
+                  activeOpacity={2}
+                  color="#47b8ce"
+                  title="Zamknij"
+                  onPress={() => {
+                    setIsModalVisible(false);
+                  }}
+                ></Button>
+              </View>
+            </View>
+          </ScrollView>
+        </Modal>
+      )}
+
+      <View>
+        <ScrollView>
+          <Text style={styles.title}>Moje Bilety:</Text>
+          {myConfirmedOrderList}
+        </ScrollView>
       </View>
     </View>
   );
@@ -117,20 +227,12 @@ export default MyConfirmedOrdersScreen;
 const styles = StyleSheet.create({
   mainBody: {
     flex: 1,
-    //justifyContent: 'center',
     backgroundColor: '#C5EEFF',
-    alignItems: 'center',
   },
   title: {
     color: '#005b98',
     fontSize: 20,
     padding: 10,
-  },
-  singleButtonView: {
-    flexDirection: 'row',
-    textAlign: 'right',
-    justifyContent: 'flex-end',
-    alignItems: 'flex-end',
   },
 
   text: {
@@ -138,63 +240,35 @@ const styles = StyleSheet.create({
     fontSize: 25,
     padding: 10,
   },
-  textBold: {
+
+  textDark: {
     color: '#005b98',
     fontSize: 16,
     padding: 10,
-    fontWeight: 'bold',
+    flexDirection: 'column',
   },
-  textDark: {
-    color: '#005b98',
-    fontSize: 20,
-    padding: 20,
-  },
-  container: {
-    flex: 2,
-  },
-  listStyle: {
-    flexDirection: 'row',
-    padding: 5,
-    marginBottom: 5,
-    marginRight: 5,
-    marginLeft: 5,
-    borderRadius: 5,
-    textAlign: 'center',
-    fontSize: 16,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
+
   itemStyle: {
     flexDirection: 'column',
-    width: '95%',
-    padding: 7,
-    marginBottom: 5,
+    padding: 5,
+    marginStart: 20,
+    marginEnd: 20,
+    marginTop: 20,
     color: '#005b98',
     backgroundColor: 'white',
-    marginRight: 5,
-    marginLeft: 5,
+    marginRight: 20,
+    marginLeft: 20,
     borderRadius: 5,
-    textAlign: 'left',
-    fontSize: 15,
-    alignItems: 'center',
+    fontSize: 16,
   },
-  icon_1: {
-    height: 40,
-    width: 40,
+
+  singleButtonView: {
+    flexDirection: 'row',
+    textAlign: 'right',
     justifyContent: 'flex-end',
-    padding: 15,
-    height: 30,
-    width: 30,
-    marginTop: 20,
-    marginLeft: 35,
-    marginRight: 15,
-    margin: 10,
+    alignItems: 'flex-end',
   },
-  icon: {
-    height: 25,
-    width: 25,
-    justifyContent: 'flex-end',
-  },
+
   deleteButton: {
     flexDirection: 'row',
     borderRadius: 10,
@@ -211,9 +285,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'white',
-    borderRadius: 20,
+    borderRadius: 5,
     alignItems: 'center',
     elevation: 5,
-    margin: '10%',
+    margin: '5%',
+    width: 'auto',
   },
 });

@@ -31,12 +31,12 @@ export function bulkDeleteTicket(documentReferences) {
 export function extractTicketsInfo(tickets) {
   const ticketPromises = tickets.map(function (element) {
     return new Promise((resolve, reject) => {
-      element.ticket
+      element
         .get()
         .then(ticketTypeResult => {
           resolve({
-            ...element,
-            ticket: ticketTypeResult.data(),
+            id: ticketTypeResult.id,
+            ...ticketTypeResult.data(),
           });
         })
         .catch(error => {
@@ -44,8 +44,20 @@ export function extractTicketsInfo(tickets) {
         });
     });
   });
+
   return Promise.all(ticketPromises);
 }
+
+// export function extractTicketsInfoAW(tickets) {
+//   const ticketPromises = tickets.map(async ticket => {
+//     const ticket = await ticket.get();
+//     return {
+//       id: ticket.id,
+//       ...ticket.data(),
+//     };
+//   });
+//   return Promise.all(ticketPromises);
+// }
 
 export function deleteTicket(ticketId) {
   // tworzysz batcha
@@ -154,15 +166,8 @@ export function addNewTicketOrderToCollection(data) {
             }, // https://rnfirebase.io/reference/firestore/fieldvalue
           );
         });
-        console.log('test2');
         // to tworzy zamowienie (dokument)
-        console.log({
-          user: data.user,
-          //tickets: ticketReferences,
-          createdAt: createdAt,
-          status: data.status,
-        });
-        console.log('save.user', data.user);
+
         batch.set(orderReference, {
           //14.11. - dorzucić tutaj price do obiektu
           price: data.price,

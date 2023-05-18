@@ -92,12 +92,6 @@ const TicketOrderingScreen = ({route, props}) => {
     setFinalPrice(calculatedPrice);
   };
 
-  function foo(x) {}
-
-  function boo(x, y) {}
-
-  x => boo('a', 'b', x);
-
   const renderTicketItem = ({item}) => {
     const ticketTypeId = item.id;
 
@@ -182,7 +176,6 @@ const TicketOrderingScreen = ({route, props}) => {
       <Text style={styles.buttonTextStyleDark}>
         <Button
           activeOpacity={2}
-          color="#47b8ce"
           title="Zarezerwuj"
           disabled={isButtonSafeDisabled}
           onPress={() => {
@@ -197,13 +190,12 @@ export default TicketOrderingScreen;
 const styles = StyleSheet.create({
   mainBody: {
     flex: 1,
-    justifyContent: 'center',
-    backgroundColor: '#015a92',
-    alignContent: 'center',
+    backgroundColor: '#C5EEFF',
+    alignItems: 'center',
   },
   headline: {
     alignSelf: 'center',
-    color: 'white',
+    color: '#005b98',
     paddingVertical: 6,
     paddingHorizontal: 2,
     fontSize: 22,
@@ -212,26 +204,15 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     borderColor: '#3175ab',
-    height: 40,
-    marginTop: 20,
-    marginLeft: 35,
-    marginRight: 35,
-    margin: 10,
   },
   buttonStyle: {
     backgroundColor: 'white',
-    color: '#FFFFFF',
     borderColor: '#7DE24E',
-    height: 40,
     alignItems: 'center',
     borderRadius: 30,
-    marginLeft: 35,
-    marginRight: 35,
-    marginTop: 20,
-    marginBottom: 25,
   },
   buttonTextStyle: {
-    color: 'white',
+    color: '#005b98',
     paddingVertical: 10,
     fontSize: 18,
   },

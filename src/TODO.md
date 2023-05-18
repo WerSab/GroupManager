@@ -311,3 +311,28 @@ Old version
 24.04.2023 - wyświetlanie biletów zamówienia:
 button - wyświetl szczegóły
 rozpakowanie wszystkich referencji pod dane zamówienie
+// 1. useEffecta ma w ogole nie byc
+// 2. przenosimy logike, ktora znajduje sie w useEffect do oddzielnej, asynchornicznej funkcji
+// 3. ta asynchroniczna funkcja ma zostac przekazana (referencja) do naszego nowego hooka useAsync(FN)
+// 4. useAsync obsluguje odpowiednio stany reactowe
+// 5. uzywamy zwroconych stanow (loading, data, error) w komponencie MyOrdersScreen
+// 6. useCallback- zgooglować
+
+27.04.2023
+
+1. refactor myOrdersScreen -uzycie useAsync
+2. to samo myConfirmed
+3. Wyswietlenie szczegółów biletów na myConfirmed
+
+   08.05.2023
+   Zmienić kopiowanie do przelewu - kazdy element osobno po kliku
+   MyConfirmedOrderScreen - zbadać dlaczego myOrder is undefined (use Effect - prawdopodobnie trzeba będzie tam zmieniać local Orders)
+
+   15.05.2023
+   Closures - domknięcia - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures
+   Generator - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Iterators_and_Generators
+
+   Zadanie - odwołac się przez ticketType do kolekcji Tournaments i pozyskac nazwę turnieju i wypisac ją w szczegółach.
+
+tickets -> ticketType(string) -> getTournamentByTicketType(ticketTypeId) -> getTicketTypeDocRef(ticketTypeId) -> .getParent -> rozpakowac i odpowiednio zwrocic na ekran.
+https://stackoverflow.com/questions/56219469/firestore-get-the-parent-document-of-a-subcollection

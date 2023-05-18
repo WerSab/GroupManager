@@ -34,7 +34,6 @@ export function getTournaments() {
 }
 
 export function getTicketTypesForTournamentId(tournamentId) {
-  console.log('test2');
   return new Promise((resolve, reject) => {
     getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
       .doc(tournamentId)
