@@ -1,5 +1,6 @@
 import {FIRESTORE_COLLECTION, TICKET_PAYMENT_STATUS} from '../config';
 import {getCollection, getDocumentReferenceById} from './firestore-helpers';
+import {extractTournamentInfo} from './firestore-tournament-methods';
 
 export function getTicketsOrdersList() {
   return new Promise((resolve, reject) => {
@@ -41,21 +42,50 @@ export function getUserOrders(userId, ticketPaymentStatus) {
       ? userOrders.where('status', '==', ticketPaymentStatus)
       : userOrders;
 
+    let extractedOrderList = [];
+
     ordersQuery
+      .orderBy('createdAt', 'desc')
       .get()
       .then(querySnapshot => {
         console.log('querysnapshot.documents:', querySnapshot.docs);
         const allDocuments = querySnapshot.docs;
-        const ticketList = allDocuments.map(function (collectionElement) {
+        const orderList = allDocuments.map(function (collectionElement) {
           const orderFields = collectionElement.data();
-
+          const tournament = extractTournamentInfo(orderFields.tournament);
           return {
             id: collectionElement.id,
             ...orderFields,
+            tournament: tournament,
           };
         });
+        return orderList;
+      })
+      .then(orderList => {
+        extractedOrderList = orderList;
+        const tournaments = orderList.map(order => {
+          return order.tournament;
+        });
+        const result = Promise.all(tournaments);
+        return result;
+        // return Promise.all(tournaments);
+      })
+      .then(tournamentList => {
+        console.log('resolved tournament list:', tournamentList);
+        const result = extractedOrderList.map((extractedOrder, idx) => {
+          const extractedTournament = tournamentList[idx];
 
-        resolve(ticketList);
+          // const tournamentReference = extractedOrder.tournament;
+          // console.log('Extracted order at', idx, ' =', tournamentReference);
+          // const foundExtractedTournament = tournamentList.find(
+          //   tournament => tournament.id === tournamentReference.id,
+          // );
+          return {
+            ...extractedOrder,
+            tournament: extractedTournament,
+          };
+        });
+        resolve(result);
       })
       .catch(error => {
         console.error('getUserOrders:', error);
