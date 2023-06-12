@@ -4,10 +4,39 @@ import {
   addToArray,
   getCollection,
   getDateFromTimestamp,
+  getDocumentReferenceById,
   getFirestoreTimestampFromDate,
 } from '../firebase/firestore-helpers';
 import firestore from '@react-native-firebase/firestore';
 import {mapFirestoreTournament} from './firestore-mappers';
+
+export const getTournamentReferenceById = tournamentId => {
+  return getDocumentReferenceById(
+    `${FIRESTORE_COLLECTION.TOURNAMENTS}/${tournamentId}`,
+  );
+};
+// unpackReference[0].ticket.get().then((result) => {
+//     setTicketList(result);
+// })
+//     .catch((error) => {
+//         setError(error);
+//     })
+export function extractTournamentInfo(tournamentRef) {
+  const tournamentPromise = new Promise((resolve, reject) => {
+    tournamentRef
+      .get()
+      .then(tournamentResult => {
+        resolve({
+          id: tournamentResult.id,
+          ...tournamentResult.data(),
+        });
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
+  return tournamentPromise;
+}
 
 export function getTournaments() {
   return new Promise((resolve, reject) => {
