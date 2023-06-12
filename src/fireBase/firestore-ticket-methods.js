@@ -7,6 +7,7 @@ import {
 } from './firestore-helpers';
 import {getDocumentReferenceById} from './firestore-helpers';
 import {setDateTicketClearedAt} from '../store/localStore';
+import {getTournamentReferenceById} from './firestore-tournament-methods';
 
 export function bulkDeleteTicket(documentReferences) {
   return new Promise((resolve, reject) => {
@@ -48,17 +49,6 @@ export function extractTicketsInfo(tickets) {
   return Promise.all(ticketPromises);
 }
 
-// export function extractTicketsInfoAW(tickets) {
-//   const ticketPromises = tickets.map(async ticket => {
-//     const ticket = await ticket.get();
-//     return {
-//       id: ticket.id,
-//       ...ticket.data(),
-//     };
-//   });
-//   return Promise.all(ticketPromises);
-// }
-
 export function deleteTicket(ticketId) {
   // tworzysz batcha
   // batch.delete(ref)
@@ -87,10 +77,9 @@ export function deleteTicket(ticketId) {
 }  
 */
 export function addNewTicketOrderToCollection(data) {
-  console.log('data:', data);
-
   const createdAt = getFirestoreTimestampFromDate();
-  console.log('createdAt:', createdAt);
+  const tournamentReference = getTournamentReferenceById(data.tournamentId);
+
   const getTicketTypeDocumentReferenceByTicketTypeId = (
     tournamentId,
     ticketTypeId,
@@ -177,6 +166,7 @@ export function addNewTicketOrderToCollection(data) {
           tickets: ticketReferences,
           createdAt: createdAt,
           status: data.status,
+          tournament: tournamentReference,
         });
         batch
           .commit()

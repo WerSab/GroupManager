@@ -336,3 +336,41 @@ rozpakowanie wszystkich referencji pod dane zamówienie
 
 tickets -> ticketType(string) -> getTournamentByTicketType(ticketTypeId) -> getTicketTypeDocRef(ticketTypeId) -> .getParent -> rozpakowac i odpowiednio zwrocic na ekran.
 https://stackoverflow.com/questions/56219469/firestore-get-the-parent-document-of-a-subcollection
+
+18.05.2023 Konkatenacja stringów (łączenie stringów ze zmiennymi)
+const ex1 = FIRESTORE_COLLECTION.TOURNAMENTS + '/' + tournamentId;
+const ex2 = `${FIRESTORE_COLLECTION.TOURNAMENTS}/${tournamentId}`;
+
+Przykład wykorzystania:
+return getDocumentReferenceById(
+`${FIRESTORE_COLLECTION.TOURNAMENTS}/${tournamentId}`,
+);
+Zadanie
+MyOrderDetailsScreen - przy ładowaniu list ordersów załadować też dane z turnieju.
+Metody firestorowe:
+get()
+doc()
+data()
+29.05.2023
+Uzyskać datę :
+Z firestore timestamp na data JS, z daty JS przy uzyciu metody format (data-time-methods): data JS i string (metoda format)
+Przedatowane ordersy/tickety - nie usuwamy tylko zmieniamy ich status na expired
+
+cronjob - przeczytać- mechanizm który uruchamia się co jakiś czas (wykorzystanie np, przy zaciąganiu danych z bazy)
+
+https://www.digitalocean.com/community/tutorials/nodejs-cron-jobs-by-examples
+
+setInterval(() => {
+// job ktory bierze wszystkie ordery z bazy i sprawdza
+// ktore nalezy oznaczyc jako expired (zmienic status)
+}, 24h \* 1000);
+
+Vysor - aplikacja na komp i spartfphone do przechwytywaia ekranu
+
+1. feature branche
+
+   - jezeli tworzymy nowy featureowy branch to mergujemy nowo wprowadzone zmiany jak najszybciej mozemy
+
+   (main): C1 -> C2 -> C3 -> C4 -> C5 -> C6 -> C7
+   (feature/zyx): C3 -> merge master -> C1.5 -> C1.6 -> merged
+   (feature/xyz): C4 -> C5 -> C2.6 -> merge master -> C7 -> merged (C7)

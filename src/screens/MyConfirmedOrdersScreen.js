@@ -35,6 +35,9 @@ import {useAsync} from '../hooks/useAsync';
 import {useUserTickets} from '../hooks/useUserTickets';
 import {extractTicketsInfo} from '../firebase/firestore-ticket-methods';
 import {TicketDataView} from '../components/TicketDataView';
+import {extractTournamentInfo} from '../firebase/firestore-tournament-methods';
+import {getDateFromTimestamp} from '../firebase/firestore-helpers';
+import {formatDate} from '../common/date-time-methods';
 
 const MyConfirmedOrdersScreen = ({route}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -60,7 +63,7 @@ const MyConfirmedOrdersScreen = ({route}) => {
 
   const {data: myOrders, error, loading} = useAsync(fetchUserOrders);
   const [localOrders, setLocalOrders] = useState();
-  console.log('myOrders', myOrders);
+  console.log('localOrders', localOrders);
 
   useEffect(() => {
     if (localOrders) {
@@ -75,13 +78,9 @@ const MyConfirmedOrdersScreen = ({route}) => {
         console.log('orderId', orderId);
 
         const order = localOrders?.find(order => order.id === orderId);
-
         const ticketReferences = order.tickets;
         console.log('ticketReferences', ticketReferences);
-        //11.05.- obsług błędu do poniżej
-
         const extractedTickets = await extractTicketsInfo(ticketReferences);
-
         console.log('extractedTickets', extractedTickets);
 
         // type SetStateAction<S> = S | ((prevState: S) => S);
@@ -141,11 +140,25 @@ const MyConfirmedOrdersScreen = ({route}) => {
   }
 
   const renderItem = item => {
+    const tournamentDate = formatDate(item.tournament.startDate);
     return (
       <View style={styles.itemStyle} key={item.id}>
         <Text>
           <View>
             <Text style={styles.textDark}>ID: {item.id}</Text>
+          </View>
+          <View>
+            <Text style={styles.textDark}>
+              Nazwa wydarzenia: {item.tournament.name}
+            </Text>
+          </View>
+          <View>
+            <Text style={styles.textDark}>Termin: {tournamentDate}</Text>
+          </View>
+          <View>
+            <Text style={styles.textDark}>
+              Miejsce: {item.tournament.place}
+            </Text>
           </View>
           <View>
             <Text style={styles.textDark}>
@@ -173,7 +186,7 @@ const MyConfirmedOrdersScreen = ({route}) => {
     />
   ));
 
-  const myConfirmedOrderList = myOrders.map(ticketOrder =>
+  const myConfirmedOrderList = localOrders.map(ticketOrder =>
     renderItem(ticketOrder),
   );
 
@@ -182,22 +195,15 @@ const MyConfirmedOrdersScreen = ({route}) => {
       {isModalVisible && (
         <Modal
           animationType="slide"
-          transparent={true}
+          transparent={false}
           onRequestClose={() => setIsModalVisible(false)}
           onBackdropPress={() => setIsModalVisible(false)}
           onBackButtonPress={() => setIsModalVisible(false)}
         >
           <ScrollView>
             <View style={styles.modalView}>
-              <View
-                style={{
-                  flexDirection: 'column',
-                  justifyContent: 'space-around',
-                  width: '100%',
-                }}
-              >
-                <Text>{parsedTicketDataView}</Text>
-
+              <Text>{parsedTicketDataView}</Text>
+              <View style={styles.singleButtonView}>
                 <Button
                   activeOpacity={2}
                   color="#47b8ce"
@@ -264,6 +270,9 @@ const styles = StyleSheet.create({
 
   singleButtonView: {
     flexDirection: 'row',
+    marginEnd: 20,
+    marginTop: 20,
+    marginBottom: 20,
     textAlign: 'right',
     justifyContent: 'flex-end',
     alignItems: 'flex-end',
@@ -281,14 +290,8 @@ const styles = StyleSheet.create({
   },
   modalView: {
     flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: '#C5EEFF',
     borderRadius: 5,
-    alignItems: 'center',
-    elevation: 5,
     margin: '5%',
-    width: 'auto',
   },
 });
