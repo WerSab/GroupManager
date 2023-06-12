@@ -10,3 +10,10 @@ export const getEventDuration = (tournament, format) => {
   const duration = dayjs.duration(end.diff(start));
   return duration.format(format);
 };
+
+export const getFormattedDiff = (_start, _end, format) => {
+  const start = dayjs(_start);
+  const end = dayjs(_end);
+  const duration = dayjs.duration(end.diff(start));
+  return duration.format(format);
+};

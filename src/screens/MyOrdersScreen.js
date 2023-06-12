@@ -8,6 +8,7 @@ import {
   Image,
   FlatList,
   Alert,
+  TouchableHighlight,
 } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {Button} from 'react-native-elements';
@@ -32,6 +33,12 @@ import TicketOrderDetails from '../styles/TicketOrderDetails';
 import {getUserOrders} from '../firebase/firestore-order-methods';
 import {TICKET_PAYMENT_STATUS} from '../config';
 import {useAsync} from '../hooks/useAsync';
+import {getDateFromTimestamp} from '../firebase/firestore-helpers';
+import dayjs from 'dayjs';
+import {
+  getFormattedDiff,
+  getOrderExpirationInHours,
+} from './common/tournament-methods';
 
 const MyOrdersScreen = ({route}) => {
   const userContext = useContext(UserContext);
@@ -77,42 +84,94 @@ const MyOrdersScreen = ({route}) => {
   }
 
   const renderItem = item => {
-    const createdAt = item.createdAt;
-    const createdAt_details = Object.entries(createdAt);
-    const ticketOrderPeriod = createdAt_details[0][1];
+    const createdAt = getDateFromTimestamp(item.createdAt);
+    const willExpireInHours = getFormattedDiff(now, createdAt.getTime(), 'HH');
     const ticketReference = item.tickets;
     const orderId = item.id;
     return (
-      <View style={styles.listStyle} key={item.id}>
-        <Text style={styles.itemStyle}>
-          <View>
-            <Text style={styles.textDark}>Kod: {item.id}</Text>
-          </View>
-          <View>
-            <Text style={styles.textDark}>Do zapłaty: {item.price} zł.</Text>
-          </View>
-          <View>
-            <Text style={styles.textDark}>
-              Zamówienie wygaśnie za:{' '}
-              {Math.round(getDayFromMillis(now - ticketOrderPeriod))} dni
-            </Text>
-          </View>
-          <View>
-            <Text style={styles.textDark}>
-              <Button
-                activeOpacity={2}
-                color="#47b8ce"
-                title="Kopiuj dane do przelewu"
-                onPress={() => {
-                  Clipboard.setString(
-                    `Numer konta: 87 8600 0002 0000 0000 3838 0005, Adres: Centrum Kultury i Sportu w Skawinie, ul. Żwirki i Wigury 11,32-050 Skawina, Tytuł przelewu: ${orderId}`,
-                  );
-                  Alert.alert(`Dane do przelewu zostały pomyślnie skopiowane`);
-                }}
-              />
-            </Text>
-          </View>
+      <View style={styles.itemStyle} key={item.id}>
+        <Text style={styles.textDark}>
+          Dane do przelewu (naciśnij aby skopiować):
         </Text>
+
+        <View>
+          {/* <Text style={styles.textDark}>Numer konta:</Text> */}
+          <TouchableOpacity
+            style={styles.touchableOpacityView}
+            onPress={() => {
+              Clipboard.setString(`87 8600 0002 0000 0000 3838 0005`);
+              Alert.alert('Pomyślnie skopiowane');
+            }}
+          >
+            <Text style={styles.textDarkBold}>
+              Numer konta: 87 8600 0002 0000 0000 3838 0005
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <View>
+          {/* <Text style={styles.textDark}>Nazwa i adres odbiorcy: </Text> */}
+          <TouchableOpacity
+            style={styles.touchableOpacityView}
+            onPress={() => {
+              Clipboard.setString(
+                `Centrum Kultury i Sportu w Skawinie, ul. Żwirki i Wigury 11,32-050 Skawina`,
+              );
+              Alert.alert(`Pomyślnie skopiowane`);
+            }}
+          >
+            <Text style={styles.textDarkBold}>
+              Nazwa i adres odbiorcy: Centrum Kultury i Sportu w Skawinie, ul.
+              Żwirki i Wigury 11,32-050 Skawina
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        <View>
+          {/* <Text style={styles.textDark}>Tytuł przelewu: </Text> */}
+          <TouchableOpacity
+            style={styles.touchableOpacityView}
+            onPress={() => {
+              Clipboard.setString(` ${item.id}`);
+              Alert.alert(`Pomyślnie skopiowane`);
+            }}
+          >
+            <Text style={styles.textDarkBold}>Tytuł przelewu: {item.id}</Text>
+          </TouchableOpacity>
+        </View>
+        <View>
+          {/* <Text style={styles.textDark}>Kwota do zapłaty:</Text> */}
+          <TouchableOpacity
+            style={styles.touchableOpacityView}
+            onPress={() => {
+              Clipboard.setString(` ${item.price}`);
+              Alert.alert(`Pomyślnie skopiowane`);
+            }}
+          >
+            <Text style={styles.textDarkBold}>
+              Kwota do zapłaty: {item.price} zł.
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <View>
+          <Text style={styles.textDark}>
+            *Zamówienie wygaśnie za: {willExpireInHours}
+          </Text>
+        </View>
+        <View>
+          <Text style={styles.textDark}>
+            {/* <Button
+              activeOpacity={2}
+              color="#47b8ce"
+              title="Kopiuj dane do przelewu"
+              onPress={() => {
+                Clipboard.setString(
+                  `Numer konta: 87 8600 0002 0000 0000 3838 0005, Adres: c, Tytuł przelewu: ${orderId}`,
+                );
+                Alert.alert(`Dane do przelewu zostały pomyślnie skopiowane`);
+              }}
+            /> */}
+          </Text>
+        </View>
       </View>
     );
   };
@@ -122,10 +181,7 @@ const MyOrdersScreen = ({route}) => {
   return (
     <View style={styles.mainBody}>
       <ScrollView>
-        <View style={styles.buttonContainer}>
-          <Text style={styles.title}>Moje Zamówienia:</Text>
-          {myOrderList}
-        </View>
+        <View>{myOrderList}</View>
       </ScrollView>
     </View>
   );
@@ -153,20 +209,27 @@ const styles = StyleSheet.create({
   textDark: {
     color: '#005b98',
     fontSize: 16,
-    padding: 10,
+    padding: 5,
+    flexDirection: 'column',
+  },
+  textDarkBold: {
+    color: '#005b98',
+    fontSize: 16,
+    fontWeight: 'bold',
+    padding: 2,
     flexDirection: 'column',
   },
 
   itemStyle: {
     flexDirection: 'column',
-    padding: 5,
-    marginStart: 20,
-    marginEnd: 20,
+    padding: 15,
+    marginStart: 10,
+    marginEnd: 10,
     marginTop: 20,
     color: '#005b98',
     backgroundColor: 'white',
-    marginRight: 20,
-    marginLeft: 20,
+    marginRight: 5,
+    marginLeft: 5,
     borderRadius: 5,
     fontSize: 16,
   },
@@ -176,6 +239,14 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     justifyContent: 'flex-end',
     alignItems: 'flex-end',
+  },
+  touchableOpacityView: {
+    //alignItems: 'flex-start',
+    justifyContent: 'space-evenly',
+    borderWidth: 1,
+    borderColor: 'white',
+    borderRadius: 5,
+    backgroundColor: '#C5EEFF',
   },
 
   deleteButton: {

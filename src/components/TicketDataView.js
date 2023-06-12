@@ -17,19 +17,21 @@ export const TicketDataView = props => {
 
   const renderItem = item => {
     return (
-      <View style={styles.itemStyle} key={item.id}>
-        <Text style={styles.textDark}>
-          Nazwa biletu:
-          <Text style={styles.textDarkBold}> {item.name}</Text>
-        </Text>
-        <Text style={styles.textDark}>
-          Typ biletu:
-          <Text style={styles.textDarkBold}> {item.type}</Text>
-        </Text>
-        <Text style={styles.textDark}>
-          Ilość biletów:
-          <Text style={styles.textDarkBold}> {item.amount}</Text>
-        </Text>
+      <View style={styles.mainBody} key={item.id}>
+        <View style={styles.itemStyle}>
+          <Text style={styles.textDark}>
+            Nazwa biletu:
+            <Text style={styles.textDarkBold}> {item.name}</Text>
+          </Text>
+          <Text style={styles.textDark}>
+            Typ biletu:
+            <Text style={styles.textDarkBold}> {item.type}</Text>
+          </Text>
+          <Text style={styles.textDark}>
+            Ilość biletów:
+            <Text style={styles.textDarkBold}> {item.amount}</Text>
+          </Text>
+        </View>
       </View>
     );
   };
@@ -41,9 +43,9 @@ export const TicketDataView = props => {
 };
 
 const styles = StyleSheet.create({
-  listStyle: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
+  mainBody: {
+    flex: 1,
+    backgroundColor: '#C5EEFF',
   },
   itemStyle: {
     flexDirection: 'column',
@@ -52,7 +54,7 @@ const styles = StyleSheet.create({
     marginEnd: 20,
     marginTop: 20,
     color: '#005b98',
-    backgroundColor: '#C5EEFF',
+    backgroundColor: 'white',
     marginRight: 20,
     marginLeft: 20,
     borderRadius: 5,
@@ -71,9 +73,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     padding: 10,
     flexDirection: 'column',
-  },
-  icon: {
-    height: 25,
-    width: 25,
   },
 });
