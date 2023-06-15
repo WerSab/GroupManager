@@ -6,7 +6,7 @@ import {
   getDateFromTimestamp,
   getDocumentReferenceById,
   getFirestoreTimestampFromDate,
-} from '../firebase/firestore-helpers';
+} from './/firestore-helpers';
 import firestore from '@react-native-firebase/firestore';
 import {mapFirestoreTournament} from './firestore-mappers';
 
