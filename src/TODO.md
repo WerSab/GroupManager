@@ -374,3 +374,4 @@ Vysor - aplikacja na komp i spartfphone do przechwytywaia ekranu
    (main): C1 -> C2 -> C3 -> C4 -> C5 -> C6 -> C7
    (feature/zyx): C3 -> merge master -> C1.5 -> C1.6 -> merged
    (feature/xyz): C4 -> C5 -> C2.6 -> merge master -> C7 -> merged (C7)
+   GroupManager/android/app/build.gradle' line: 235
