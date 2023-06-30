@@ -15,7 +15,7 @@ import {UserContext} from '../context/UserContextProvider';
 import TournamentsScreen from '../screens/TournamentsScreen';
 import TournamentDetailsScreen from '../screens/TournamentDetailsScreen';
 import UsersScreen from '../screens/UsersScreen';
-import MyTicketsScreen from '../screens/MyTicketsScreen';
+import MyOrdersScreen from '../screens/MyOrdersScreen';
 import MyBookingsScreen from '../screens/MyProfileScreen';
 import MyMessagesScreen from '../screens/MyMessagesScreen';
 import {SCREEN} from './screens';
@@ -30,12 +30,12 @@ import ModifyTournamentScreen from '../screens/ModifyTournamentScreen';
 import MyTournamentDetails from '../screens/MyTournamentDetailsScreen';
 import TicketOrderingScreen from '../screens/TicketOrderingScreen';
 import TicketPaymentSummaryScreen from '../screens/TicketPaymentSummaryScreen';
-import MyConfirmedTicketsScreen from '../screens/MyConfirmedTicketsScreen';
-import PaidTicketListScreen from '../screens/PaidTicketsListScreen';
+import MyConfirmedOrdersScreen from '../screens/MyConfirmedOrdersScreen';
 import TournamentCreator from '../screens/TournamentCreator';
 import {TicketTypeCreator} from '../screens/TicketTypeCreator';
 import {TicketBasket} from '../screens/TicketBasket';
 import OrderContextProvider from '../context/OrderContextProvider';
+import PaidOrdersListScreen from '../screens/PaidOrdersListScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -56,7 +56,8 @@ function StackContainer() {
                 headerBackVisible: false,
                 headerTitle: props => <LogoTitle {...props} />,
                 headerTitleAlign: 'center',
-              }}>
+              }}
+            >
               {props => <ErrorComponent {...props} errorMessage={error} />}
             </Stack.Screen>
           </Stack.Navigator>
@@ -116,7 +117,7 @@ function StackContainer() {
                     />
                     <Stack.Screen
                       name={SCREEN.PLAYER_TAB.MY_TICKETS}
-                      component={MyTicketsScreen}
+                      component={MyOrdersScreen}
                       options={{
                         headerBackVisible: false,
                         headerTitle: props => <LogoTitle {...props} />,
@@ -130,8 +131,8 @@ function StackContainer() {
                       }}
                     />
                     <Stack.Screen
-                      name={SCREEN.PLAYER_TAB.MY_CONFIRMED_TICKETS}
-                      component={MyConfirmedTicketsScreen}
+                      name={SCREEN.PLAYER_TAB.MY_CONFIRMED_ORDERS}
+                      component={MyConfirmedOrdersScreen}
                       options={{
                         headerBackVisible: false,
                         headerTitle: props => <LogoTitle {...props} />,
@@ -380,8 +381,8 @@ function StackContainer() {
                     }}
                   />
                   <Stack.Screen
-                    name={SCREEN.MANAGER_TAB.PAID_TICKETS_LIST}
-                    component={PaidTicketListScreen}
+                    name={SCREEN.MANAGER_TAB.PAID_ORDERS_LIST}
+                    component={PaidOrdersListScreen}
                     options={{
                       headerBackVisible: false,
                       headerTitle: props => <LogoTitle {...props} />,

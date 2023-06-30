@@ -24,7 +24,9 @@ const UsersScreen = () => {
     <>
       {/*<CustomHeader/>*/}
       <View style={styles.mainBody}>
-        <Text style={styles.text}>Użytkownicy</Text>
+        <View style={styles.buttonContainer}>
+          <Text style={styles.text}>Użytkownicy</Text>
+        </View>
         <FlatList
           data={usersList}
           renderItem={({item}) => renderItem(item)} //do renderItem przekazujemy wartośc funkcji renderItem
@@ -46,6 +48,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#C5EEFF',
     alignItems: 'center',
   },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: '#C5EEFF',
+    width: '100%',
+  },
   text: {
     color: '#015a92',
     fontSize: 20,
@@ -63,7 +71,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     borderRadius: 5,
     borderWidth: 0,
-    textAlign: 'center',
+    textAlign: 'left',
     fontSize: 16,
   },
 });

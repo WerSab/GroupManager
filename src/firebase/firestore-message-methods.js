@@ -1,5 +1,5 @@
 import {FIRESTORE_COLLECTION} from '../config';
-import {getCollection} from '../firebase/firestore-helpers';
+import {getCollection} from './/firestore-helpers';
 import firestore from '@react-native-firebase/firestore';
 
 export function getMessages() {

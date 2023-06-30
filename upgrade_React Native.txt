@@ -1,0 +1,81 @@
+git blame package.json
+git blame
+./gradlew clean
+cd android    
+git stash apply
+git reset --hard
+
+pull request - robimy na git hub
+git commit --ammend - pozwala nadpisać poprzedni commit (zmiany, wiadomość, autora, date itp)
+
+23.02.2023 - android/app/build.gradle - zmienic nazwy rndif... na groupmanage
+swipe.refresh.layout - sprawdzić czemu wprowadzona niższa wersja.
+
+
+
+NIE: price: cena,
+tylko \/
+prices: {
+	ulgowy: 20,
+	normalny: 30,
+}
+
+
+DODAJ NOWY BILET
+
+nazwa biletu
+wybierz typ: normalny/ulgowy
+cena biletu
+ilosc miejsc
+
+TO CO ZOSTAJE STALE DLA BILETU TO:
+nazwa biletu
+ilosc miejsc
+
+PRZYKLAD: BILET NA SEKTOR A -> zawiera 100 miejsc
+Zakladajac ze wspieramy bilety ulgowe i normalne to dla Sektora A potrzebujemy: typ uglowy i typ normalny gdzie kazdy z nich bedzie mial indywidualna cene
+
+=========RAMKA============
+typ ulgi/biletu: INPUT
+cena: INPUT -> w momencie gdy uzytkownik bluruje input -> dodajemy kolejna ramke
+=========================
+
+CASE GDY ZBLUROWANO POPRZEDNI INPUT Z CENA:
+=========RAMKA============
+typ ulgi/biletu: INPUT
+cena: INPUT -> w momencie gdy uzytkownik bluruje input -> dodajemy kolejna ramke
+=========================
+
+
+po potwierdzeniu nowego biletu - Pobieramy sobie wszystkie ramki i dodajemy (ALGORYTM A) do pola prices w obiekcie TicketType wszystkie wartosci ramek poza ramka, ktora jest pusta
+lub niepoprawna (niepoprawna = zawiera tylko jedna wartosc input np typ)
+
+
+Ad ALGORYTM/PROCEDURA A:
+
+Ta procedura zgrupuje wszystkie inputy tj: ilosc miejsc i nazwa biletu w obiekt oraz WSZYSTKIE RAMKI
+
+Procedura ta w skrocie musi przeiterowac po wszystkich ramkach,
+zebrac typ ramki oraz jej cene
+po zebraniu tej wartosci trzeba to dodac do obiektu PRICES
+BILET = {
+	name: "",
+	slots: 0,
+	prices: {
+		ulgowy: 0,
+		normalny: 0,
+	}
+}
+
+
+/////////////////////////////////////////////////////
+1. usunąc inputy typ i price z ogólnego widoku
+2. stworzyć ramkę - nowy komponent (ulga i cena)
+2.1. efekt w trakcie blur wyświetlamy nową ramkę (efekt blura na ostatnim inpucie tj. cena powoduje dodanie ramki)
+
+
+
+
+
+
+

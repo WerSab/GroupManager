@@ -9,34 +9,77 @@ import {
   Image,
   Alert,
 } from 'react-native';
-import {
-  getTicketsOrdersList,
-  updateTicketPaymentStatus,
-  updateTicketPaymentStatusToPaid,
-  updateTicketPaymentStatusToUnPaid,
-} from '../firebase/firestore-ticket-methods';
+
 import {Button} from 'react-native-elements';
 import {ScrollView} from 'react-native-gesture-handler';
+import {
+  getTicketsOrdersList,
+  updateOrderPaymentStatusToPaid,
+  updateOrderPaymentStatusToUnPaid,
+} from '../firebase/firestore-order-methods';
+import {useAsync} from '../hooks/useAsync';
+import {ORDER_STATUS} from '../firebase/firestore-constants';
+
+//zrobic na stanie listę z id do każdego zamówienia {orderId: bool/STATUS}
 
 const BookingsListScreen = () => {
-  //const navigation = useNavigation();
-  const [myTickets, setMyTickets] = useState();
-  const [error, setError] = useState();
-  const [loading, setLoading] = useState(true);
+  const {data: orders, error, loading} = useAsync(getTicketsOrdersList);
   const [isButtonConfirmedDisabled, setIsButtonConfirmedDisabled] =
     useState(false);
-  const [isButtonUndoDisabled, setIsButtonUndoDisabled] = useState(false);
+  const [localOrders, setLocalOrders] = useState(orders);
+  console.log('orders o Booking screen:', localOrders);
+
+  const isOrderPaid = order => {
+    return order.status === ORDER_STATUS.PAID;
+  };
+
+  const setOrderStatus = (orderId, status) => {
+    setLocalOrders(prevLocalOrders => {
+      return prevLocalOrders.map(order => {
+        if (orderId !== order.id) {
+          return order;
+        }
+        return {
+          ...order,
+          status,
+        };
+      });
+    });
+  };
 
   useEffect(() => {
-    getTicketsOrdersList()
-      .then(result => {
-        setMyTickets(result);
-        setLoading(false);
+    setLocalOrders(orders);
+  }, [orders]);
+
+  const handleConfirmPress = orderId => {
+    updateOrderPaymentStatusToPaid(orderId)
+      .then(() => {
+        setOrderStatus(orderId, ORDER_STATUS.PAID);
       })
-      .catch(error => {
-        setError(error);
+      .catch(function (err) {
+        console.log('catch error in promise.catch:', err);
+        Alert.alert(
+          'Wystąpił błąd',
+          `Przepraszamy mamy problem z serwerem, prosze spróbować później`,
+          [{text: 'Ok'}],
+        );
       });
-  }, []);
+  };
+
+  const handleUndoPress = orderId => {
+    updateOrderPaymentStatusToUnPaid(orderId)
+      .then(() => {
+        setOrderStatus(orderId, ORDER_STATUS.UNPAID);
+      })
+      .catch(function (err) {
+        console.log('catch error in promise.catch:', err);
+        Alert.alert(
+          'Wystąpił błąd',
+          `Przepraszamy mamy problem z serwerem, prosze spróbować później`,
+          [{text: 'Ok'}],
+        );
+      });
+  };
 
   if (loading) {
     return (
@@ -48,7 +91,7 @@ const BookingsListScreen = () => {
   if (error) {
     return <ErrorScreen errorMessage={error.message} />;
   }
-  if (!myTickets && myTickets.length === 0) {
+  if (!localOrders || localOrders.length === 0) {
     return (
       <View style={styles.buttonContainer}>
         <Text style={styles.text}>Nie posiadasz żadnych biletów.</Text>
@@ -59,51 +102,41 @@ const BookingsListScreen = () => {
   const renderItem = item => {
     return (
       <View style={styles.listStyle} key={item.id}>
-        <Text style={styles.itemStyle}>
-          {'\n'}
-          <Text style={styles.textBold}>Kod zamówienia:</Text>
-          <Text> {item.id}</Text>
-          {'\n'}
-          <Text style={styles.textBold}>Razem do zapłaty:</Text>
-          <Text> {item.price}</Text> <Text>zł.</Text>
-        </Text>
-        <View style={styles.itemView}>
+        <View style={styles.itemStyle}>
+          <Text style={styles.textBold}>Kod zamówienia: {item.id}</Text>
+
+          <Text style={styles.textBold}>
+            Razem do zapłaty: {item.price} zł.
+          </Text>
+        </View>
+        <View style={styles.buttonList}>
           <Button
             activeOpacity={2}
             color="#47b8ce"
             title="Zatwierdź"
-            disabled={isButtonConfirmedDisabled}
-            onPress={() => {
-              updateTicketPaymentStatusToPaid(item.id);
-              setIsButtonConfirmedDisabled(true);
-              setIsButtonUndoDisabled(false);
-            }}
+            disabled={isOrderPaid(item)}
+            onPress={() => handleConfirmPress(item.id)}
           />
 
           <Button
             activeOpacity={2}
-            color="#47b8ce"
-            title="Cofnij zatwierdź"
-            disabled={isButtonUndoDisabled}
-            onPress={() => {
-              updateTicketPaymentStatusToUnPaid(item.id);
-              setIsButtonUndoDisabled(true);
-              setIsButtonConfirmedDisabled(false);
-            }}
+            title="Cofnij"
+            disabled={!isOrderPaid(item)}
+            onPress={() => handleUndoPress(item.id)}
           />
         </View>
       </View>
     );
   };
 
-  const myTicketList = myTickets.map(ticket => renderItem(ticket));
+  const myTicketList = localOrders.map(ticket => renderItem(ticket));
 
   return (
     <View style={styles.mainBody}>
       <View style={styles.buttonContainer}>
-        <Text style={styles.text}>Zamówienia:</Text>
-        <ScrollView>{myTicketList}</ScrollView>
+        <Text style={styles.textDark}>Rezerwacje biletów:</Text>
       </View>
+      <ScrollView>{myTicketList}</ScrollView>
     </View>
   );
 };
@@ -113,14 +146,24 @@ export default BookingsListScreen;
 const styles = StyleSheet.create({
   mainBody: {
     flex: 1,
-    justifyContent: 'center',
-    backgroundColor: '#005b98',
+    backgroundColor: '#C5EEFF',
     alignItems: 'center',
   },
+  buttonContainer: {
+    flexDirection: 'column',
+    width: '100%',
+  },
+
+  buttonList: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: 5,
+  },
+
   title: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: '#005b98',
+    backgroundColor: '#C5EEFF',
     width: '100%',
   },
   singleButtonView: {
@@ -133,52 +176,33 @@ const styles = StyleSheet.create({
   itemView: {
     flexDirection: 'column',
     padding: 10,
+    marginBottom: 10,
+    marginVertical: 20,
   },
 
-  text: {
-    color: 'white',
-    fontSize: 25,
-    padding: 10,
-  },
   textBold: {
     color: '#005b98',
-    fontSize: 16,
-    padding: 10,
-    fontWeight: 'bold',
+    fontSize: 17,
   },
   textDark: {
     color: '#005b98',
     fontSize: 20,
     padding: 20,
   },
-  container: {
-    flex: 2,
-  },
+
   listStyle: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     padding: 5,
     marginBottom: 5,
-    marginRight: 5,
-    marginLeft: 5,
-    borderRadius: 5,
-    textAlign: 'center',
-    fontSize: 16,
-    justifyContent: 'space-between',
-    alignItems: 'center',
   },
   itemStyle: {
     flexDirection: 'column',
-    width: '65%',
     padding: 7,
-    marginBottom: 5,
-    color: '#005b98',
+    margin: 5,
     backgroundColor: 'white',
-    marginRight: 5,
-    marginLeft: 5,
-    borderRadius: 5,
     textAlign: 'left',
     fontSize: 15,
-    alignItems: 'center',
+    borderRadius: 5,
   },
   icon_1: {
     height: 40,

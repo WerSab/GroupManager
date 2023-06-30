@@ -41,10 +41,6 @@ import editIcon from '../assets/icons/edit.png';
 import {TournamentTicketType} from '../components/TournamentTicketType';
 import {useNavigateWithParams} from '../hooks/useNavigateWithParams';
 
-// enum SupportedTicketTypeAction = {
-//   ADD = "ADD",
-// DELETE = "DELETE"
-// }
 const SUPPORTED_TICKET_TYPE_ACTION = {
   ADD: 'ADD',
   DELETE: 'DELETE',
@@ -57,7 +53,6 @@ const TICKET_TYPE_ACTION = {
 
 const TournamentDetails = ({route}) => {
   const theme = useContext(ThemeContext);
-  console.log('theme:', theme);
   const {navigateWithPrevParams} = useNavigateWithParams(route);
   const tournamentContext = useContext(TournamentContext);
   const tournamentId = route.params.id;
@@ -65,14 +60,14 @@ const TournamentDetails = ({route}) => {
   const tournament = getTournamentFromContext(tournamentContext, tournamentId);
   const [ticketTypesData, loading, error, actions] =
     useTournamentTicketTypes(tournamentId);
-  console.log('Test_useTournamentTicketTypes_ticketTypesData', ticketTypesData);
+  console.log('aaaaaaaaa', ticketTypesData);
   const navigation = useNavigation();
 
   useEffect(() => {
-    console.log('route.params.ticketType:', route.params.ticketType);
     if (!route.params.ticketType) {
       return;
     }
+
     handleTicketTypeAction(
       SUPPORTED_TICKET_TYPE_ACTION.ADD,
       route.params.ticketType,
@@ -92,7 +87,6 @@ const TournamentDetails = ({route}) => {
 
   const handleTicketTypeAction = async (action, arg) => {
     const actionFn = TICKET_TYPE_ACTION[action];
-    console.log('actionFn:', actionFn);
     if (!actionFn) {
       throw new Error('Unsupported action');
     }
@@ -127,65 +121,71 @@ const TournamentDetails = ({route}) => {
   return (
     <>
       <View style={styles.mainBody}>
-        <View style={styles.itemStyle}>
-          <View style={styles.title}>
-            <Text style={styles.text}>{tournament.name}</Text>
+        <ScrollView>
+          <View style={styles.itemStyle}>
+            <View style={styles.title}>
+              <Text style={styles.text}>{tournament.name}</Text>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate(SCREEN.MODIFY_TOURNAMENT, {
+                    id: tournamentId,
+                  })
+                }
+              >
+                <Image style={styles.icon_1} source={editIcon} />
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.textDark}>Miejsce: {tournament.place}</Text>
+            <Text style={styles.textDark}>
+              Termin rozpoczęcia: {startTimeFormated}
+            </Text>
+            <Text style={styles.textDark}>
+              Termin zakończenia: {endTimeFormated}
+            </Text>
+            <Text style={styles.textDark}>Czas trwania: {eventDuration}</Text>
+            <Text style={styles.textDark}>
+              Ilość sprzedanych biletów: {tournament.interval}
+            </Text>
+            <Text style={styles.textDark}>
+              Rezerwacje: {tournament.interval}
+            </Text>
+            <Text style={styles.textDark}>
+              Ilość wolnych miejsc: {tournament.interval}
+            </Text>
             <TouchableOpacity
-              onPress={() =>
-                navigation.navigate(SCREEN.MODIFY_TOURNAMENT, {
-                  id: tournamentId,
-                })
-              }>
-              <Image style={styles.icon_1} source={editIcon} />
+              onPress={() => Linking.openURL(tournament.link)} //(then i catch/ obsłużyć w promisie/sprawdzić Regex/https://regex101.com/https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url#:~:text=javascript%3Avoid%20%280%29%20is%20valid%20URL%2C%20although%20not%20an,DNS%29%20https%3A%2F%2Fexample..com%20is%20valid%20URL%2C%20same%20as%20above
+            >
+              <Text style={styles.linkStyle}>
+                <Image source={linkIcon} style={styles.icon} />
+                Link do wydarzenia
+              </Text>
             </TouchableOpacity>
           </View>
-          <Text style={styles.textDark}>Miejsce: {tournament.place}</Text>
-          <Text style={styles.textDark}>
-            Termin rozpoczęcia: {startTimeFormated}
-          </Text>
-          <Text style={styles.textDark}>
-            Termin zakończenia: {endTimeFormated}
-          </Text>
-          <Text style={styles.textDark}>Czas trwania: {eventDuration}</Text>
-          <Text style={styles.textDark}>
-            Ilość sprzedanych biletów: {tournament.interval}
-          </Text>
-          <Text style={styles.textDark}>Rezerwacje: {tournament.interval}</Text>
-          <Text style={styles.textDark}>
-            Ilość wolnych miejsc: {tournament.interval}
-          </Text>
-          <TouchableOpacity
-            onPress={() => Linking.openURL(tournament.link)} //(then i catch/ obsłużyć w promisie/sprawdzić Regex/https://regex101.com/https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url#:~:text=javascript%3Avoid%20%280%29%20is%20valid%20URL%2C%20although%20not%20an,DNS%29%20https%3A%2F%2Fexample..com%20is%20valid%20URL%2C%20same%20as%20above
-          >
-            <Text style={styles.linkStyle}>
-              <Image source={linkIcon} style={styles.icon} />
-              Link do wydarzenia
-            </Text>
-          </TouchableOpacity>
-        </View>
 
-        {loading ? (
-          <Text style={styles.text}>Ładuje się ...</Text>
-        ) : error ? (
-          <Text>Blad pobierania biletów {!!error}</Text>
-        ) : (
-          <View>
-            <View style={styles.itemStyle}>
-              <View style={styles.title}>
-                <Text style={styles.text}> Bilety:</Text>
-                <TouchableOpacity
-                  onPress={() => {
-                    navigateWithPrevParams(SCREEN.TICKETTYPE_CREATOR, {
-                      fromScreenName: SCREEN.TOURNAMENTDETAILS,
-                    }); //zmienić przekierowanie na takie z parametrem
-                  }}>
-                  <Image style={styles.icon_1} source={addIcon} />
-                </TouchableOpacity>
+          {loading ? (
+            <Text style={styles.text}>Ładuje się ...</Text>
+          ) : error ? (
+            <Text>Blad pobierania biletów {!!error}</Text>
+          ) : (
+            <View>
+              <View style={styles.itemStyle}>
+                <View style={styles.title}>
+                  <Text style={styles.text}> Bilety:</Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigateWithPrevParams(SCREEN.TICKETTYPE_CREATOR, {
+                        fromScreenName: SCREEN.TOURNAMENTDETAILS,
+                      }); //zmienić przekierowanie na takie z parametrem
+                    }}
+                  >
+                    <Image style={styles.icon_1} source={addIcon} />
+                  </TouchableOpacity>
+                </View>
+                {parsedTicketTypesData}
               </View>
-              {parsedTicketTypesData}
             </View>
-          </View>
-        )}
+          )}
+        </ScrollView>
       </View>
     </>
     //{JSON.stringify(tournament, null, 2)}
@@ -195,9 +195,8 @@ export default TournamentDetails;
 const styles = StyleSheet.create({
   mainBody: {
     flex: 1,
-    //justifyContent: 'center',
+
     backgroundColor: '#C5EEFF',
-    //alignItems: 'center',
   },
   image: {height: 70, width: 110, flexBasis: '20%'},
   textContainer: {

@@ -18,12 +18,6 @@ const ManagerScreen = () => {
   const navigation = useNavigation();
   const [isSigningOut, setIsSigningOut] = useState(false);
   const currentUser = useContext(UserContext);
-  /*useEffect(() => {
-        navigation.navigate(SCREEN.TOURNAMENTLIST);
-    }
-    
-    )*/
-  //const onSignOutFunction = isSigningOut ? undefined : onSignOutPress;
 
   const renderItem = item => {
     return (
@@ -31,7 +25,8 @@ const ManagerScreen = () => {
         <TouchableOpacity
           onPress={() => {
             navigation.navigate(item.name);
-          }}>
+          }}
+        >
           <Text style={styles.itemName}>{item.name}</Text>
         </TouchableOpacity>
       </View>
@@ -55,7 +50,8 @@ const ManagerScreen = () => {
                     setIsSigningOut(true);
                     signOutFirebaseUser();
                   }
-            }>
+            }
+          >
             <Image style={styles.icon} source={signedOut} />
           </TouchableOpacity>
         </View>

@@ -4,10 +4,39 @@ import {
   addToArray,
   getCollection,
   getDateFromTimestamp,
+  getDocumentReferenceById,
   getFirestoreTimestampFromDate,
-} from '../firebase/firestore-helpers';
+} from './/firestore-helpers';
 import firestore from '@react-native-firebase/firestore';
 import {mapFirestoreTournament} from './firestore-mappers';
+
+export const getTournamentReferenceById = tournamentId => {
+  return getDocumentReferenceById(
+    `${FIRESTORE_COLLECTION.TOURNAMENTS}/${tournamentId}`,
+  );
+};
+// unpackReference[0].ticket.get().then((result) => {
+//     setTicketList(result);
+// })
+//     .catch((error) => {
+//         setError(error);
+//     })
+export function extractTournamentInfo(tournamentRef) {
+  const tournamentPromise = new Promise((resolve, reject) => {
+    tournamentRef
+      .get()
+      .then(tournamentResult => {
+        resolve({
+          id: tournamentResult.id,
+          ...tournamentResult.data(),
+        });
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
+  return tournamentPromise;
+}
 
 export function getTournaments() {
   return new Promise((resolve, reject) => {
@@ -34,7 +63,6 @@ export function getTournaments() {
 }
 
 export function getTicketTypesForTournamentId(tournamentId) {
-  console.log('test2');
   return new Promise((resolve, reject) => {
     getCollection(FIRESTORE_COLLECTION.TOURNAMENTS)
       .doc(tournamentId)
@@ -101,7 +129,10 @@ export async function addTicketType(tournamentId, ticketType) {
   const tournamentTicketTypes =
     getTournamentTicketTypesCollection(tournamentId);
   try {
-    return await tournamentTicketTypes.add(ticketType);
+    return await tournamentTicketTypes.add({
+      ...ticketType,
+      slotsTaken: 0,
+    });
   } catch (error) {
     console.log('addTicketType error:', error);
   }

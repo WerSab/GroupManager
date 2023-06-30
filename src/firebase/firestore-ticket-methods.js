@@ -7,51 +7,7 @@ import {
 } from './firestore-helpers';
 import {getDocumentReferenceById} from './firestore-helpers';
 import {setDateTicketClearedAt} from '../store/localStore';
-
-///tickets/1c3KBRLcK085IUOdhOfg
-
-export function getTicketsOrdersList() {
-  return new Promise((resolve, reject) => {
-    getCollection(FIRESTORE_COLLECTION.TICKETS)
-      .where('status', '==', TICKET_PAYMENT_STATUS.UNPAID)
-      .get()
-      .then(querySnapshot => {
-        const allDocuments = querySnapshot.docs;
-        const ticketOrdersList = allDocuments.map(function (collectionElement) {
-          return {
-            id: collectionElement.id,
-            ...collectionElement.data(),
-          };
-        });
-        resolve(ticketOrdersList);
-      })
-      .catch(error => reject(error));
-  });
-}
-export function getUserTickets(userId) {
-  return new Promise((resolve, reject) => {
-    console.log(`${FIRESTORE_COLLECTION.USERS}/${userId}`);
-    const userRef = getDocumentReferenceById(
-      `${FIRESTORE_COLLECTION.USERS}/${userId}`,
-    );
-    getCollection(FIRESTORE_COLLECTION.TICKETS)
-      .where('user', '==', userRef)
-      .where('status', '==', TICKET_PAYMENT_STATUS.PAID)
-      .get()
-      .then(querySnapshot => {
-        const allDocuments = querySnapshot.docs;
-        const ticketList = allDocuments.map(function (collectionElement) {
-          return {
-            id: collectionElement.id,
-            ...collectionElement.data(),
-          };
-        });
-
-        resolve(ticketList);
-      })
-      .catch(error => reject(error));
-  });
-}
+import {getTournamentReferenceById} from './firestore-tournament-methods';
 
 export function bulkDeleteTicket(documentReferences) {
   return new Promise((resolve, reject) => {
@@ -76,12 +32,12 @@ export function bulkDeleteTicket(documentReferences) {
 export function extractTicketsInfo(tickets) {
   const ticketPromises = tickets.map(function (element) {
     return new Promise((resolve, reject) => {
-      element.ticket
+      element
         .get()
         .then(ticketTypeResult => {
           resolve({
-            ...element,
-            ticket: ticketTypeResult.data(),
+            id: ticketTypeResult.id,
+            ...ticketTypeResult.data(),
           });
         })
         .catch(error => {
@@ -89,27 +45,8 @@ export function extractTicketsInfo(tickets) {
         });
     });
   });
+
   return Promise.all(ticketPromises);
-}
-
-export function getPaidTickets() {
-  return new Promise((resolve, reject) => {
-    getCollection(FIRESTORE_COLLECTION.TICKETS)
-      .where('status', '==', TICKET_PAYMENT_STATUS.PAID)
-      .get()
-      .then(querySnapshot => {
-        const allDocuments = querySnapshot.docs;
-        const ticketList = allDocuments.map(function (collectionElement) {
-          return {
-            id: collectionElement.id,
-            ...collectionElement.data(),
-          };
-        });
-
-        resolve(ticketList);
-      })
-      .catch(error => reject(error));
-  });
 }
 
 export function deleteTicket(ticketId) {
@@ -117,17 +54,6 @@ export function deleteTicket(ticketId) {
   // batch.delete(ref)
   // batch.commit();
   return getCollection(FIRESTORE_COLLECTION.TICKETS).doc(ticketId).delete();
-}
-export function updateTicketPaymentStatusToPaid(ticketOrderID) {
-  return getCollection(FIRESTORE_COLLECTION.TICKETS).doc(ticketOrderID).update({
-    status: 'paid',
-  });
-}
-
-export function updateTicketPaymentStatusToUnPaid(ticketOrderID) {
-  return getCollection(FIRESTORE_COLLECTION.TICKETS).doc(ticketOrderID).update({
-    status: 'unpaid',
-  });
 }
 
 // Object.assign() i spread operator
@@ -151,10 +77,9 @@ export function updateTicketPaymentStatusToUnPaid(ticketOrderID) {
 }  
 */
 export function addNewTicketOrderToCollection(data) {
-  console.log('data:', data);
-
   const createdAt = getFirestoreTimestampFromDate();
-  console.log('createdAt:', createdAt);
+  const tournamentReference = getTournamentReferenceById(data.tournamentId);
+
   const getTicketTypeDocumentReferenceByTicketTypeId = (
     tournamentId,
     ticketTypeId,
@@ -230,15 +155,8 @@ export function addNewTicketOrderToCollection(data) {
             }, // https://rnfirebase.io/reference/firestore/fieldvalue
           );
         });
-        console.log('test2');
         // to tworzy zamowienie (dokument)
-        console.log({
-          user: data.user,
-          //tickets: ticketReferences,
-          createdAt: createdAt,
-          status: data.status,
-        });
-        console.log('save.user', data.user);
+
         batch.set(orderReference, {
           //14.11. - dorzucić tutaj price do obiektu
           price: data.price,
@@ -248,6 +166,7 @@ export function addNewTicketOrderToCollection(data) {
           tickets: ticketReferences,
           createdAt: createdAt,
           status: data.status,
+          tournament: tournamentReference,
         });
         batch
           .commit()
