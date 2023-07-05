@@ -1,4 +1,4 @@
-import React, { useState, createRef } from 'react';
+import React, {useState, createRef} from 'react';
 import {
   StyleSheet,
   TextInput,
@@ -10,34 +10,32 @@ import {
   Button,
   FlatList,
   SafeAreaView,
-
 } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-import { FIRESTORE_COLLECTION } from '../config';
-import { Picker } from '@react-native-picker/picker';
-
-
+import {FIRESTORE_COLLECTION} from '../config';
+import {Picker} from '@react-native-picker/picker';
 
 const Roles = [
   {
-    title: 'manager '
+    title: 'manager ',
   },
   {
-    title: 'user '
+    title: 'user ',
   },
-]
+];
 
-const Item = ({ item, onPress, backgroundColor, textColor }) => (
-  <TouchableOpacity onPress={onPress} style={[styles.container, backgroundColor]}>
+const Item = ({item, onPress, backgroundColor, textColor}) => (
+  <TouchableOpacity
+    onPress={onPress}
+    style={[styles.container, backgroundColor]}
+  >
     <Text style={[styles.title, textColor]}>{item.title}</Text>
   </TouchableOpacity>
 );
 
-
-
-const RegisterScreen = ({ user, addUser, navigation, StackNavigator }) => {
+const RegisterScreen = ({user, addUser, navigation, StackNavigator}) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -52,18 +50,16 @@ const RegisterScreen = ({ user, addUser, navigation, StackNavigator }) => {
   const passwordRef = createRef();
   const confirmPasswordRef = createRef();
 
-
-
-  const renderItem = ({ item }) => {
-    const backgroundColor = item.title === role ? "white" : '#1a112b';
-    const color = item.title === role ? '#1a112b' : "white";
+  const renderItem = ({item}) => {
+    const backgroundColor = item.title === role ? 'white' : '#1a112b';
+    const color = item.title === role ? '#1a112b' : 'white';
 
     return (
       <Item
         item={item}
         onPress={() => setRole(item.title)}
-        backgroundColor={{ backgroundColor }}
-        textColor={{ color }}
+        backgroundColor={{backgroundColor}}
+        textColor={{color}}
       />
     );
   };
@@ -83,16 +79,16 @@ const RegisterScreen = ({ user, addUser, navigation, StackNavigator }) => {
       return;
     }
     auth()
-      .createUserWithEmailAndPassword(email, password)//tworzenie u zytkownika autoryzacyjnego (firebase auth)
-      .then((response) => {
+      .createUserWithEmailAndPassword(email, password) //tworzenie u zytkownika autoryzacyjnego (firebase auth)
+      .then(response => {
         const uid = response.user.uid; //pobieramy id nowo stworzonego użytkownika
         const data = {
           role: role,
           firstName: firstName,
           lastName: lastName,
-        };//tworzę obiekt wyjściowy dla dokumentu firestore
-        //firestore nie powinien przechowywać email and , bo posiada je autoryzacja 
-        return firestore()//wykonuje się promise, którego rezultat jest zwracany do then
+        }; //tworzę obiekt wyjściowy dla dokumentu firestore
+        //firestore nie powinien przechowywać email and , bo posiada je autoryzacja
+        return firestore() //wykonuje się promise, którego rezultat jest zwracany do then
           .collection(FIRESTORE_COLLECTION.USERS)
           .doc(uid)
           .set(data);
@@ -100,10 +96,9 @@ const RegisterScreen = ({ user, addUser, navigation, StackNavigator }) => {
       .then(() => {
         console.log('User updated');
       })
-      .catch((error) => {
+      .catch(error => {
         alert(error);
       });
-
   };
   // Firebase - technologia
   // Firestore - usługa firebase'a (baza danych)
@@ -114,7 +109,6 @@ const RegisterScreen = ({ user, addUser, navigation, StackNavigator }) => {
   // jakas_super_zmienna - kebab case
   return (
     <View style={styles.mainBody}>
-      
       <KeyboardAvoidingView enabled>
         <SafeAreaView>
           <ScrollView>
@@ -148,7 +142,8 @@ const RegisterScreen = ({ user, addUser, navigation, StackNavigator }) => {
                 returnKeyType="next"
                 secureTextEntry={true}
                 onSubmitEditing={() =>
-                  confirmPasswordRef.current && confirmPasswordRef.current.focus()
+                  confirmPasswordRef.current &&
+                  confirmPasswordRef.current.focus()
                 }
                 blurOnSubmit={false}
               />
@@ -201,7 +196,6 @@ const RegisterScreen = ({ user, addUser, navigation, StackNavigator }) => {
               />
             </View>
 
-
             {errortext != '' ? (
               <Text style={styles.errorTextStyle}>{errortext}</Text>
             ) : null}
@@ -212,15 +206,13 @@ const RegisterScreen = ({ user, addUser, navigation, StackNavigator }) => {
               onPress={() => {
                 onRegisterPress();
                 clearInputs();
-              }}>
+              }}
+            >
               <Text style={styles.buttonTextStyle}>ZAREJESTRUJ</Text>
             </TouchableOpacity>
           </ScrollView>
         </SafeAreaView>
       </KeyboardAvoidingView>
-
-
-
     </View>
   );
 };
@@ -231,7 +223,7 @@ const styles = StyleSheet.create({
   mainBody: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#015a92',
+    backgroundColor: '#C5EEFF',
     alignContent: 'center',
   },
 
@@ -244,31 +236,32 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   buttonStyle: {
-    backgroundColor: 'white',
+    backgroundColor: '#3175ab',
     borderWidth: 0,
-    color: '#FFFFFF',
-    borderColor: '#7DE24E',
+    color: 'white',
+    borderColor: '#3175ab',
     height: 40,
     alignItems: 'center',
-    borderRadius: 30,
+    borderRadius: 10,
     marginLeft: 35,
     marginRight: 35,
     marginTop: 20,
     marginBottom: 25,
   },
   buttonTextStyle: {
-    color: '#015a92',
+    color: 'white',
     paddingVertical: 10,
     fontSize: 16,
   },
   inputStyle: {
     flex: 1,
-    color: 'white',
+    color: '#3175ab',
     paddingLeft: 15,
     paddingRight: 15,
     borderWidth: 1,
-    borderRadius: 30,
-    borderColor: '#dadae8',
+    borderRadius: 10,
+    borderColor: 'white',
+    backgroundColor: 'white',
   },
   pickerStyle: {
     marginLeft: 115,
@@ -276,7 +269,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     color: 'white',
     height: 40,
-    width:160,
+    width: 160,
     borderWidth: 1,
     borderRadius: 30,
     backgroundColor: 'white',
@@ -320,12 +313,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 30,
     borderColor: '#dadae8',
-
-
   },
   flatListStyle: {
     flexDirection: 'row',
-  }
+  },
 });
 
 /*
