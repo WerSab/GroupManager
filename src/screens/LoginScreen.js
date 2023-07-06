@@ -28,6 +28,10 @@ const LoginScreen = ({navigation}) => {
   const passwordInputRef = createRef();
 
   const loginUser = () => {
+    if (email === '' || password === '') {
+      alert('Uzupełnij wszystkie pola');
+      return;
+    }
     setIsLogging(true);
     loginFireBaseUser(email, password)
       .then(() => {
@@ -63,7 +67,8 @@ const LoginScreen = ({navigation}) => {
           flex: 1,
           justifyContent: 'center',
           alignContent: 'center',
-        }}>
+        }}
+      >
         <SafeAreaView>
           <View>
             <KeyboardAvoidingView enabled>
@@ -107,7 +112,8 @@ const LoginScreen = ({navigation}) => {
                 onPress={() => {
                   loginUser();
                   console.log(loginUser);
-                }}>
+                }}
+              >
                 <Text style={styles.buttonTextStyle}>LOGIN</Text>
               </TouchableOpacity>
 
@@ -116,12 +122,14 @@ const LoginScreen = ({navigation}) => {
               </View>
               <Text
                 style={styles.registerTextStyle}
-                onPress={() => navigation.navigate('RegisterScreen')}>
+                onPress={() => navigation.navigate('RegisterScreen')}
+              >
                 New Here ? Register
               </Text>
               <Text
                 style={styles.registerTextStyle}
-                onPress={() => navigation.navigate('PasswordRecoveryScreen')}>
+                onPress={() => navigation.navigate('PasswordRecoveryScreen')}
+              >
                 Forgot password?
               </Text>
             </KeyboardAvoidingView>
