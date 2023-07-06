@@ -1,3 +1,10 @@
+// Firebase - technologia
+// Firestore - usługa firebase'a (baza danych)
+// Auth - usługa firebase'a (autoryzacja)
+//użyć tego pickera: https://github.com/react-native-picker/picker/blob/master/screenshots/picker-android.png
+// jakasSuperZmienna - camelCase
+// JakasSuperZmienna - PascalCase
+// jakas_super_zmienna - kebab case
 import React, {useState, createRef} from 'react';
 import {
   StyleSheet,
@@ -51,29 +58,6 @@ const RegisterScreen = ({user, addUser, navigation, StackNavigator}) => {
   const passwordRef = createRef();
   const confirmPasswordRef = createRef();
 
-  // const renderItem = ({item}) => {
-  //   const backgroundColor = item.title === role ? 'white' : '#1a112b';
-  //   const color = item.title === role ? '#1a112b' : 'white';
-
-  //   return (
-  //     <Item
-  //       item={item}
-  //       onPress={() => setRole(item.title)}
-  //       backgroundColor={{backgroundColor}}
-  //       textColor={{color}}
-  //     />
-  //   );
-  // };
-
-  const clearInputs = () => {
-    setFirstName('');
-    setLastName('');
-    setEmail('');
-    setPassword('');
-    setConfirmPassword('');
-    //setRole('');
-  };
-
   const onRegisterPress = () => {
     if (password !== confirmPassword) {
       alert("Passwords don't match.");
@@ -112,13 +96,7 @@ const RegisterScreen = ({user, addUser, navigation, StackNavigator}) => {
         alert(error);
       });
   };
-  // Firebase - technologia
-  // Firestore - usługa firebase'a (baza danych)
-  // Auth - usługa firebase'a (autoryzacja)
-  //użyć tego pickera: https://github.com/react-native-picker/picker/blob/master/screenshots/picker-android.png
-  // jakasSuperZmienna - camelCase
-  // JakasSuperZmienna - PascalCase
-  // jakas_super_zmienna - kebab case
+
   return (
     <View style={styles.mainBody}>
       <KeyboardAvoidingView enabled>
@@ -130,6 +108,7 @@ const RegisterScreen = ({user, addUser, navigation, StackNavigator}) => {
                 style={styles.inputStyle}
                 onChangeText={text => setEmail(text)}
                 value={email}
+                maxLength={30}
                 underlineColorAndroid="#f000"
                 placeholder="Email ..."
                 placeholderTextColor="#8b9cb5"
@@ -148,8 +127,9 @@ const RegisterScreen = ({user, addUser, navigation, StackNavigator}) => {
                 style={styles.inputStyle}
                 onChangeText={text => setPassword(text)}
                 value={password}
+                maxLength={10}
                 underlineColorAndroid="#f000"
-                placeholder="Hasło ..."
+                placeholder="Hasło max 10 znaków"
                 placeholderTextColor="#8b9cb5"
                 ref={passwordRef}
                 returnKeyType="next"
@@ -166,6 +146,7 @@ const RegisterScreen = ({user, addUser, navigation, StackNavigator}) => {
                 style={styles.inputStyle}
                 onChangeText={text => setConfirmPassword(text)}
                 value={confirmPassword}
+                maxLength={10}
                 underlineColorAndroid="#f000"
                 placeholder="Powtórz hasło ..."
                 placeholderTextColor="#8b9cb5"
@@ -183,6 +164,7 @@ const RegisterScreen = ({user, addUser, navigation, StackNavigator}) => {
               <TextInput
                 style={styles.inputStyle}
                 onChangeText={firstName => setFirstName(firstName)}
+                maxLength={20}
                 underlineColorAndroid="#f000"
                 placeholder="Imię ..."
                 placeholderTextColor="#8b9cb5"
@@ -199,6 +181,7 @@ const RegisterScreen = ({user, addUser, navigation, StackNavigator}) => {
               <TextInput
                 style={styles.inputStyle}
                 onChangeText={lastName => setLastName(lastName)}
+                maxLength={20}
                 underlineColorAndroid="#f000"
                 placeholder="Nazwisko ..."
                 placeholderTextColor="#8b9cb5"
@@ -219,7 +202,6 @@ const RegisterScreen = ({user, addUser, navigation, StackNavigator}) => {
               disabled={isRegistered}
               onPress={() => {
                 onRegisterPress();
-                //clearInputs();
               }}
             >
               <Text style={styles.buttonTextStyle}>ZAREJESTRUJ</Text>

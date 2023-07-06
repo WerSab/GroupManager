@@ -76,7 +76,8 @@ const LoginScreen = ({navigation}) => {
                 <TextInput
                   style={styles.inputStyle}
                   onChange={event => setEmail(event.nativeEvent.text)}
-                  placeholder="Enter Email" //dummy@abc.com
+                  maxLength={30}
+                  placeholder="Wpisz email..." //dummy@abc.com
                   placeholderTextColor="#8b9cb5"
                   autoCapitalize="none"
                   keyboardType="email-address"
@@ -92,7 +93,8 @@ const LoginScreen = ({navigation}) => {
                 <TextInput
                   style={styles.inputStyle}
                   onChange={event => setPassword(event.nativeEvent.text)}
-                  placeholder="Enter Password" //12345
+                  maxLength={10}
+                  placeholder="Wpisz hasło..." //12345
                   placeholderTextColor="#8b9cb5"
                   keyboardType="default"
                   ref={passwordInputRef}
@@ -124,13 +126,13 @@ const LoginScreen = ({navigation}) => {
                 style={styles.registerTextStyle}
                 onPress={() => navigation.navigate('RegisterScreen')}
               >
-                New Here ? Register
+                Nie posiadasz loginu? Zarejestruj się!
               </Text>
               <Text
                 style={styles.registerTextStyle}
                 onPress={() => navigation.navigate('PasswordRecoveryScreen')}
               >
-                Forgot password?
+                Zapomniałeś/łaś hasło?
               </Text>
             </KeyboardAvoidingView>
           </View>
