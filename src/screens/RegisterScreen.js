@@ -43,6 +43,7 @@ const RegisterScreen = ({user, addUser, navigation, StackNavigator}) => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [role, setRole] = useState('player');
   const [errortext, setErrortext] = useState('');
+  const [isRegistered, setIsRegistered] = useState('');
 
   const firstNameRef = createRef();
   const lastNameRef = createRef();
@@ -50,19 +51,19 @@ const RegisterScreen = ({user, addUser, navigation, StackNavigator}) => {
   const passwordRef = createRef();
   const confirmPasswordRef = createRef();
 
-  const renderItem = ({item}) => {
-    const backgroundColor = item.title === role ? 'white' : '#1a112b';
-    const color = item.title === role ? '#1a112b' : 'white';
+  // const renderItem = ({item}) => {
+  //   const backgroundColor = item.title === role ? 'white' : '#1a112b';
+  //   const color = item.title === role ? '#1a112b' : 'white';
 
-    return (
-      <Item
-        item={item}
-        onPress={() => setRole(item.title)}
-        backgroundColor={{backgroundColor}}
-        textColor={{color}}
-      />
-    );
-  };
+  //   return (
+  //     <Item
+  //       item={item}
+  //       onPress={() => setRole(item.title)}
+  //       backgroundColor={{backgroundColor}}
+  //       textColor={{color}}
+  //     />
+  //   );
+  // };
 
   const clearInputs = () => {
     setFirstName('');
@@ -76,6 +77,16 @@ const RegisterScreen = ({user, addUser, navigation, StackNavigator}) => {
   const onRegisterPress = () => {
     if (password !== confirmPassword) {
       alert("Passwords don't match.");
+      return;
+    }
+    if (
+      firstName === '' ||
+      lastName === '' ||
+      email === '' ||
+      password === '' ||
+      confirmPassword === ''
+    ) {
+      alert('Uzupełnij wszystkie pola');
       return;
     }
     auth()
@@ -95,6 +106,7 @@ const RegisterScreen = ({user, addUser, navigation, StackNavigator}) => {
       })
       .then(() => {
         console.log('User updated');
+        setIsRegistered(true);
       })
       .catch(error => {
         alert(error);
@@ -110,6 +122,7 @@ const RegisterScreen = ({user, addUser, navigation, StackNavigator}) => {
   return (
     <View style={styles.mainBody}>
       <KeyboardAvoidingView enabled>
+        <Text style={styles.textStyle}>Rejestracja</Text>
         <SafeAreaView>
           <ScrollView>
             <View style={styles.SectionStyle}>
@@ -203,9 +216,10 @@ const RegisterScreen = ({user, addUser, navigation, StackNavigator}) => {
             <TouchableOpacity
               style={styles.buttonStyle}
               activeOpacity={0.5}
+              disabled={isRegistered}
               onPress={() => {
                 onRegisterPress();
-                clearInputs();
+                //clearInputs();
               }}
             >
               <Text style={styles.buttonTextStyle}>ZAREJESTRUJ</Text>
@@ -273,6 +287,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 30,
     backgroundColor: 'white',
+  },
+  textStyle: {
+    color: '#3175ab',
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 25,
+    alignSelf: 'center',
+    padding: 60,
   },
   errorTextStyle: {
     color: 'red',
