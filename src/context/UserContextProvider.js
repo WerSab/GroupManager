@@ -17,6 +17,13 @@ const UserContextProvider = props => {
     data: null,
   });
 
+  const setIsUserRegistered = () => {
+    setUserState(prevState => ({
+      ...prevState,
+      initializing: false,
+    }));
+  };
+
   useEffect(() => {
     const unsubscribe = auth().onAuthStateChanged(user => {
       if (user) {
@@ -28,7 +35,7 @@ const UserContextProvider = props => {
             if (documentSnapshot.exists) {
               setUserState({
                 user: user,
-                initializing: false,
+                //initializing: false,
                 data: documentSnapshot.data(),
               });
             } else {

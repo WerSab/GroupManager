@@ -13,7 +13,7 @@ import {Picker} from '@react-native-picker/picker';
 import FrameOnBlurTicketOrder from '../styles/FrameOnBlurTicketOrder';
 import {FlatList} from 'react-native-gesture-handler';
 
-export function TicketTypeCreator({route}) {
+function TicketTypeCreator({route}) {
   const navigation = useNavigation();
   const {navigateWithPrevParams} = useNavigateWithParams(route);
   const [ticketType, setTicketType] = useState({
@@ -182,6 +182,7 @@ export function TicketTypeCreator({route}) {
     </View>
   );
 }
+export default TicketTypeCreator;
 const styles = StyleSheet.create({
   mainBody: {
     flex: 1,
