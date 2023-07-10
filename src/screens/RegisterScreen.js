@@ -21,6 +21,7 @@ import {
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import {SCREEN} from './screens';
 import {FIRESTORE_COLLECTION} from '../config';
 import {Picker} from '@react-native-picker/picker';
 
@@ -50,7 +51,7 @@ const RegisterScreen = ({user, addUser, navigation, StackNavigator}) => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [role, setRole] = useState('player');
   const [errortext, setErrortext] = useState('');
-  const [isRegistered, setIsRegistered] = useState('');
+  const [isRegistered, setIsRegistered] = useState(false);
 
   const firstNameRef = createRef();
   const lastNameRef = createRef();
@@ -91,6 +92,8 @@ const RegisterScreen = ({user, addUser, navigation, StackNavigator}) => {
       .then(() => {
         console.log('User updated');
         setIsRegistered(true);
+        //userContext.setIsUserRegistered();
+        // userContext.setIsRegistered();
       })
       .catch(error => {
         alert(error);
@@ -199,9 +202,8 @@ const RegisterScreen = ({user, addUser, navigation, StackNavigator}) => {
             <TouchableOpacity
               style={styles.buttonStyle}
               activeOpacity={0.5}
-              disabled={isRegistered}
               onPress={() => {
-                onRegisterPress();
+                isRegistered ? undefined : onRegisterPress();
               }}
             >
               <Text style={styles.buttonTextStyle}>ZAREJESTRUJ</Text>
