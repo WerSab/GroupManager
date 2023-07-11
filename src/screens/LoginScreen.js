@@ -1,4 +1,4 @@
-import React, {useContext, useState, createRef} from 'react';
+import React, {useContext, useState, createRef, useEffect} from 'react';
 import {
   StyleSheet,
   TextInput,
@@ -23,9 +23,15 @@ const LoginScreen = ({navigation}) => {
   const [password, setPassword] = useState('');
   const [isLogging, setIsLogging] = useState('');
   const [error, setError] = useState(null);
-  const [isSigningOut, setIsSigningOut] = useState(false);
 
   const passwordInputRef = createRef();
+
+  useEffect(() => {
+    authContext.methods.setIsDuringAuthProcess(true);
+    return () => {
+      authContext.methods.setIsDuringAuthProcess(false);
+    };
+  }, []);
 
   const loginUser = () => {
     if (email === '' || password === '') {
@@ -36,6 +42,7 @@ const LoginScreen = ({navigation}) => {
     loginFireBaseUser(email, password)
       .then(() => {
         setError(null);
+        authContext.methods.setIsDuringAuthProcess(false);
       })
       .catch(setError)
       .finally(() => setIsLogging(false));

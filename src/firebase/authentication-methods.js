@@ -5,7 +5,6 @@ export const loginFireBaseUser = (email, password) =>
     auth()
       .signInWithEmailAndPassword(email, password)
       .then(credential => {
-        userContext.setIsUserLoggedIn();
         resolve(credential.authUser);
       })
       .catch(error => reject('incorrect credentials', error)),

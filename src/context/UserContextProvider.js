@@ -8,6 +8,7 @@ export const UserContext = createContext({
   user: null,
   initializing: true,
   data: null,
+  isDuringAuthProcess: false,
 });
 
 const UserContextProvider = props => {
@@ -15,52 +16,61 @@ const UserContextProvider = props => {
     user: null,
     initializing: true,
     data: null,
+    isDuringAuthProcess: false,
   });
 
-  const setIsUserRegistered = () => {
+  const setIsDuringAuthProcess = isDuringAuthProcess => {
     setUserState(prevState => ({
       ...prevState,
-      initializing: false,
+      isDuringAuthProcess,
     }));
   };
 
   useEffect(() => {
     const unsubscribe = auth().onAuthStateChanged(user => {
-      if (user) {
-        firestore()
-          .collection(FIRESTORE_COLLECTION.USERS)
-          .doc(user.uid)
-          .get()
-          .then(documentSnapshot => {
-            if (documentSnapshot.exists) {
-              setUserState({
-                user: user,
-                //initializing: false,
-                data: documentSnapshot.data(),
-              });
-            } else {
-              console.log('Document doesnt exist');
-            }
-          })
-          .catch(error => {
-            console.log('Blad: ', error);
-          });
-      } else {
-        setUserState({
+      if (!user) {
+        setUserState(prevState => ({
           user: null,
           initializing: false,
           data: null,
-        });
+          isDuringAuthProcess: prevState.isDuringAuthProcess,
+        }));
+        return;
       }
-      console.log('state: ', userState);
+      firestore()
+        .collection(FIRESTORE_COLLECTION.USERS)
+        .doc(user.uid)
+        .get()
+        .then(documentSnapshot => {
+          if (documentSnapshot.exists) {
+            setUserState(prevState => ({
+              user: user,
+              initializing: false,
+              data: documentSnapshot.data(),
+              isDuringAuthProcess: prevState.isDuringAuthProcess,
+            }));
+          } else {
+            console.log('Document doesnt exist');
+          }
+        })
+        .catch(error => {
+          console.log('Blad: ', error);
+        });
     });
     return () => {
       unsubscribe();
     };
   }, []);
 
+  const contextValue = {
+    ...userState,
+    methods: {
+      setIsDuringAuthProcess,
+    },
+  };
+
   return (
-    <UserContext.Provider value={userState}>
+    <UserContext.Provider value={contextValue}>
       {props.children}
     </UserContext.Provider>
   );
