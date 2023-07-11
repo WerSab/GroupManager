@@ -57,7 +57,7 @@ function StackContainer() {
       );
     }
 
-    if (!userContext.user) {
+    if (!userContext.user || userContext.isDuringAuthProcess) {
       return <StackAuthorizationContainer />;
     }
     switch (userContext.data.role) {

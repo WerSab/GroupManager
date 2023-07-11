@@ -5,7 +5,7 @@
 // jakasSuperZmienna - camelCase
 // JakasSuperZmienna - PascalCase
 // jakas_super_zmienna - kebab case
-import React, {useState, createRef} from 'react';
+import React, {useState, createRef, useContext, useEffect} from 'react';
 import {
   StyleSheet,
   TextInput,
@@ -24,6 +24,7 @@ import auth from '@react-native-firebase/auth';
 import {SCREEN} from './screens';
 import {FIRESTORE_COLLECTION} from '../config';
 import {Picker} from '@react-native-picker/picker';
+import {UserContext} from '../context/UserContextProvider';
 
 const Roles = [
   {
@@ -44,6 +45,7 @@ const Item = ({item, onPress, backgroundColor, textColor}) => (
 );
 
 const RegisterScreen = ({user, addUser, navigation, StackNavigator}) => {
+  const authContext = useContext(UserContext);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -58,6 +60,13 @@ const RegisterScreen = ({user, addUser, navigation, StackNavigator}) => {
   const emailRef = createRef();
   const passwordRef = createRef();
   const confirmPasswordRef = createRef();
+
+  useEffect(() => {
+    authContext.methods.setIsDuringAuthProcess(true);
+    return () => {
+      authContext.methods.setIsDuringAuthProcess(false);
+    };
+  }, []);
 
   const onRegisterPress = () => {
     if (password !== confirmPassword) {
@@ -92,8 +101,7 @@ const RegisterScreen = ({user, addUser, navigation, StackNavigator}) => {
       .then(() => {
         console.log('User updated');
         setIsRegistered(true);
-        //userContext.setIsUserRegistered();
-        // userContext.setIsRegistered();
+        authContext.methods.setIsDuringAuthProcess(false);
       })
       .catch(error => {
         alert(error);
