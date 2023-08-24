@@ -18,11 +18,25 @@ commity pushować na nowego brancha, tworzyć pull request i wysłać link do pu
 2. Ekran główny/inicjalizacja aplikacji dla zalogowanego usera(player)  
     2.1. Brakujący indeks dla metody getUserOrders
    FLOW poprawek:
+   2.3. tester testuje funkcjonalnosc
+   2.4. tester znajduje blad
+   2.5. tester zglasza blad (JIRA, TRELLO)
+   2.6. zgloszenia maja swoje numerki
 
-3. tester testuje funkcjonalnosc
-4. tester znajduje blad
-5. tester zglasza blad (JIRA, TRELLO)
-6. zgloszenia maja swoje numerki
+3. TournamentScreen
+   3.1 Sortowanie wydarzeń:
+   3.1.1 po dacie założenia,
+   3.1.2 po dacie eventu
+   3.1.3 alfabetycznie
+   3.2. Stworzenie archiwum
+   3.2.1 - Automatyczna archiwizacja 1 dzień po dacie zakończenia wydarzenia
+4. MyTournamentScreen - funkcja sort javascript (uważać na mutowanie tablicy przez funkcję sort)
+   4.1. Sortowanie wydarzeń:
+   4.1.1. wg daty eventu
+   4.1.2. alfabetycznie
+   4.1.3. moje wydarzenia - zaznaczanie wydarzeń, które mnie interesują i zapamiętywanie ich - ustawienie przypominania o zbliżających się wydarzeniach
+
+5. Ekran Tournament Creator -> po zapisaniu turnieju przekierowanie na inny ekran - żeby wyczyścił się tivcketbasket
 
 //Zmienić nazwy commitów wg zasady: This commit will ..., przez interaktywny rebase
 //Przeczytać jak zaaplikować pacha do VSC

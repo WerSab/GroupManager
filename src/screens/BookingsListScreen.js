@@ -182,11 +182,11 @@ const styles = StyleSheet.create({
 
   textBold: {
     color: '#005b98',
-    fontSize: 17,
+    fontSize: 22,
   },
   textDark: {
     color: '#005b98',
-    fontSize: 20,
+    fontSize: 25,
     padding: 20,
   },
 

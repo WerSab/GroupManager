@@ -13,7 +13,7 @@ import {
   TextInput,
   ScrollView,
 } from 'react-native';
-import addIcon from '../assets/icons/add.png';
+import addIcon from '../assets/icons/addDark.png';
 import {SCREEN} from '../navigation/screens';
 import deleteIcon from '../assets/icons/delete.png';
 import {Picker} from '@react-native-picker/picker';
@@ -99,7 +99,7 @@ const MessagesListScreen = () => {
           // }}
         >
           <Text style={styles.textDark}>
-            <Text>{item.category}: </Text>
+            <Text style={{fontWeight: 'bold'}}>{item.category}: </Text>
             <Text>{item.content}</Text>
           </Text>
         </TouchableOpacity>
@@ -126,7 +126,8 @@ const MessagesListScreen = () => {
             transparent={true}
             onRequestClose={() => setIsModalAddMessageVisible(false)}
             onBackdropPress={() => setIsModalAddMessageVisible(false)}
-            onBackButtonPress={() => setIsModalAddMessageVisible(false)}>
+            onBackButtonPress={() => setIsModalAddMessageVisible(false)}
+          >
             <View style={styles.modalView}>
               <Text style={styles.textHeader}>Dodaj nową wiadomość</Text>
               <ScrollView>
@@ -135,7 +136,8 @@ const MessagesListScreen = () => {
                   style={{height: 50, width: 150, color: '#005b98'}}
                   onValueChange={itemValue =>
                     setMessageCategoryInput(itemValue)
-                  }>
+                  }
+                >
                   <Picker.Item label="Kategoria" value="  " />
                   <Picker.Item label="News" value="news" />
                   <Picker.Item label="Ogłoszenie" value="ogłoszenie" />
@@ -154,26 +156,30 @@ const MessagesListScreen = () => {
                     justifyContent: 'space-around',
                     width: '100%',
                     padding: 10,
-                  }}>
+                  }}
+                >
                   <TouchableOpacity
                     style={styles.button}
                     onPress={() => {
                       setIsModalAddMessageVisible(!isModalAddMessageVisible);
-                    }}>
+                    }}
+                  >
                     <Text style={styles.textDark}>Zamknij</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={styles.button}
                     onPress={() => {
                       clearInputs();
-                    }}>
+                    }}
+                  >
                     <Text style={styles.textDark}>Wyczyść</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={styles.button}
                     onPress={() => {
                       onSavePress();
-                    }}>
+                    }}
+                  >
                     <Text style={styles.textDark}>Zapisz wydarzenie</Text>
                   </TouchableOpacity>
                 </View>
@@ -210,23 +216,24 @@ const styles = StyleSheet.create({
   },
   title: {
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: '#C5EEFF',
     width: '100%',
   },
   textHeader: {
     color: '#005b98',
-    fontSize: 20,
-    padding: 10,
+    fontSize: 25,
+    padding: 30,
   },
   text: {
     color: '#005b98',
-    fontSize: 20,
-    padding: 10,
+    fontSize: 25,
+    padding: 30,
   },
   textDark: {
     color: '#005b98',
-    fontSize: 16,
+    fontSize: 22,
     padding: 10,
     flexDirection: 'column',
   },
@@ -243,13 +250,13 @@ const styles = StyleSheet.create({
   },
   itemStyle: {
     flexDirection: 'row',
-    width: 250,
+    justifyContent: 'space-between',
+    width: '85%',
     padding: 2,
     marginBottom: 5,
     color: '#005b98',
     backgroundColor: 'white',
-    marginRight: 2,
-    marginLeft: 2,
+    margin: 5,
     borderRadius: 5,
     textAlign: 'center',
     fontSize: 16,
@@ -287,7 +294,7 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: 'white',
     borderWidth: 0,
-    borderColor: '#3175ab',
+    borderColor: '#005b98',
     height: 40,
     alignItems: 'center',
     borderRadius: 5,

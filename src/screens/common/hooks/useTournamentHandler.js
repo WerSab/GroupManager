@@ -4,7 +4,9 @@ import {validateTournament} from '../../../firebase/firestore-model-validators';
 export const useTournamentHandler = tournament => {
   const [nameInput, setNameInput] = useState(tournament?.name ?? '');
   const [placeInput, setPlaceInput] = useState(tournament?.place ?? '');
+  const [slotsInput, setSlotsInput] = useState(tournament?.slots ?? '');
   const [linkInput, setLinkInput] = useState(tournament?.link ?? '');
+  const [urlInput, setUrlInput] = useState(tournament?.url ?? '');
   const [tournamentCategoryInput, setTournamentCategoryInput] = useState(
     tournament?.category ?? '',
   );
@@ -20,7 +22,9 @@ export const useTournamentHandler = tournament => {
   const inputs = {
     name: [nameInput, setNameInput],
     place: [placeInput, setPlaceInput],
+    slots: [slotsInput, setSlotsInput],
     link: [linkInput, setLinkInput],
+    url: [urlInput, setUrlInput],
     category: [tournamentCategoryInput, setTournamentCategoryInput],
     startDate: [startDateInput, setStartDateInput],
     endDate: [endDateInput, setEndDateInput],
@@ -31,7 +35,9 @@ export const useTournamentHandler = tournament => {
     const tournament = {
       name: nameInput,
       place: placeInput,
+      slots: slotsInput,
       link: linkInput,
+      url: urlInput,
       category: tournamentCategoryInput,
       startDate: startDateInput,
       endDate: endDateInput,
@@ -41,7 +47,11 @@ export const useTournamentHandler = tournament => {
     } catch (error) {
       console.log('catch.validate:', error, typeof error);
       const {field, message} = error;
-      setValidationError({field, message});
+      throw {
+        field,
+        message,
+      };
+      //setValidationError({field, message});
     }
 
     return tournament;
@@ -50,10 +60,12 @@ export const useTournamentHandler = tournament => {
   const clearInputs = () => {
     setNameInput('');
     setPlaceInput('');
+    setSlotsInput('');
     setLinkInput('');
+    setUrlInput('');
     setTournamentCategoryInput('');
-    setStartDate(new Date());
-    setEndDate(new Date());
+    setStartDateInput(new Date());
+    setEndDateInput(new Date());
     // do zastanowienia sie
     setValidationError(undefined);
   };
