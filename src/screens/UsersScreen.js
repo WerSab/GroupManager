@@ -55,23 +55,24 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   text: {
-    color: '#015a92',
-    fontSize: 20,
+    color: '#005b98',
+    fontSize: 25,
     padding: 30,
   },
+
   container: {
     flex: 1,
   },
   listStyle: {
     padding: 15,
     marginBottom: 5,
-    color: '#015a92',
+    color: '#005b98',
     backgroundColor: 'white',
     marginRight: 20,
     marginLeft: 20,
     borderRadius: 5,
     borderWidth: 0,
     textAlign: 'left',
-    fontSize: 16,
+    fontSize: 22,
   },
 });

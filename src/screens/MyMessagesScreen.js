@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: '#005b98',
     borderWidth: 0,
-    borderColor: '#3175ab',
+    borderColor: '#005b98',
     height: 40,
     alignItems: 'center',
     borderRadius: 15,

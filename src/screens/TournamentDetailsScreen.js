@@ -35,7 +35,7 @@ import {parseEventDurationTime} from '../common/date-time-methods';
 import {getDateFromTimestamp} from '../firebase/firestore-helpers';
 import dayjs from 'dayjs';
 import {ThemeContext} from '../../App';
-import addIcon from '../assets/icons/add.png';
+import addDarkIcon from '../assets/icons/addDark.png';
 
 import editIcon from '../assets/icons/edit.png';
 import {TournamentTicketType} from '../components/TournamentTicketType';
@@ -61,6 +61,7 @@ const TournamentDetails = ({route}) => {
   const [ticketTypesData, loading, error, actions] =
     useTournamentTicketTypes(tournamentId);
   console.log('aaaaaaaaa', ticketTypesData);
+  console.log('bbbbbbbbbbbbbb', tournament);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -124,7 +125,7 @@ const TournamentDetails = ({route}) => {
         <ScrollView>
           <View style={styles.itemStyle}>
             <View style={styles.title}>
-              <Text style={styles.text}>{tournament.name}</Text>
+              <Text style={styles.textHeader}>{tournament.name}</Text>
               <TouchableOpacity
                 onPress={() =>
                   navigation.navigate(SCREEN.MODIFY_TOURNAMENT, {
@@ -150,7 +151,7 @@ const TournamentDetails = ({route}) => {
               Rezerwacje: {tournament.interval}
             </Text>
             <Text style={styles.textDark}>
-              Ilość wolnych miejsc: {tournament.interval}
+              Ilość miejsc: {tournament.slots}
             </Text>
             <TouchableOpacity
               onPress={() => Linking.openURL(tournament.link)} //(then i catch/ obsłużyć w promisie/sprawdzić Regex/https://regex101.com/https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url#:~:text=javascript%3Avoid%20%280%29%20is%20valid%20URL%2C%20although%20not%20an,DNS%29%20https%3A%2F%2Fexample..com%20is%20valid%20URL%2C%20same%20as%20above
@@ -170,18 +171,22 @@ const TournamentDetails = ({route}) => {
             <View>
               <View style={styles.itemStyle}>
                 <View style={styles.title}>
-                  <Text style={styles.text}> Bilety:</Text>
-                  <TouchableOpacity
-                    onPress={() => {
-                      navigateWithPrevParams(SCREEN.TICKETTYPE_CREATOR, {
-                        fromScreenName: SCREEN.TOURNAMENTDETAILS,
-                      }); //zmienić przekierowanie na takie z parametrem
-                    }}
-                  >
-                    <Image style={styles.icon_1} source={addIcon} />
-                  </TouchableOpacity>
+                  <Text style={styles.textHeader}> Bilety:</Text>
                 </View>
                 {parsedTicketTypesData}
+              </View>
+              <View style={styles.rowMenu}>
+                <TouchableOpacity
+                  style={styles.roundButtonWhite}
+                  onPress={() => {
+                    navigateWithPrevParams(SCREEN.TICKETTYPE_CREATOR, {
+                      fromScreenName: SCREEN.TOURNAMENTDETAILS,
+                    }); //zmienić przekierowanie na takie z parametrem
+                  }}
+                >
+                  <Image style={styles.icon} source={addDarkIcon} />
+                  <Text style={styles.buttonTextStyle}>Dodaj Bilet</Text>
+                </TouchableOpacity>
               </View>
             </View>
           )}
@@ -206,12 +211,13 @@ const styles = StyleSheet.create({
   title: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: 'white',
+    backgroundColor: '#005b98',
     width: '100%',
     alignItems: 'center',
+    borderRadius: 5,
   },
   textHeader: {
-    color: '#005b98',
+    color: 'white',
     fontSize: 20,
     padding: 10,
   },
@@ -270,7 +276,6 @@ const styles = StyleSheet.create({
   icon: {
     height: 25,
     width: 25,
-    justifyContent: 'flex-end',
   },
   deleteButton: {
     flexDirection: 'row',
@@ -296,7 +301,7 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: '#005b98',
     borderWidth: 0,
-    borderColor: '#3175ab',
+    borderColor: '#005b98',
     height: 40,
     alignItems: 'center',
     borderRadius: 15,
@@ -307,6 +312,26 @@ const styles = StyleSheet.create({
     margin: 10,
     justifyContent: 'center',
   },
+  roundButtonWhite: {
+    width: 100,
+    height: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+    borderRadius: 100,
+    backgroundColor: 'white',
+    borderWidth: 0.5,
+    margin: 10,
+  },
+  buttonTextStyle: {
+    color: '#005b98',
+    paddingVertical: 10,
+    fontSize: 16,
+    marginStart: 5,
+    marginEnd: 5,
+    textAlign: 'center',
+  },
+
   ticketStyle: {
     backgroundColor: '#e3ecf2',
     alignItems: 'center',
@@ -319,6 +344,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 20,
   },
+  rowMenu: {
+    flexDirection: 'row',
+    color: '#005b98',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
   datePicker: {
     paddingVertical: 40,
   },

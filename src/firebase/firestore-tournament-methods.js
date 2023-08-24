@@ -57,6 +57,7 @@ export function getTournaments() {
           // return collectionElement.data();
         });
         resolve(tournamentsList);
+        console.log('ccccccccccc', tournamentsList);
       })
       .catch(error => reject(error));
   });

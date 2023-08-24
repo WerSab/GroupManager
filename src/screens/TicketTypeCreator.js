@@ -5,27 +5,28 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  Image,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {SCREEN} from '../navigation/screens';
 import {useNavigateWithParams} from '../hooks/useNavigateWithParams';
-import {Picker} from '@react-native-picker/picker';
 import FrameOnBlurTicketOrder from '../styles/FrameOnBlurTicketOrder';
-import {FlatList} from 'react-native-gesture-handler';
+import {ScrollView} from 'react-native-gesture-handler';
 
-function TicketTypeCreator({route}) {
-  const navigation = useNavigation();
+import safeIcon from '../assets/icons/safe.png';
+
+function TicketTypeCreator({route, navigation}) {
+  const {allowedTicketTypeNames} = route.params;
   const {navigateWithPrevParams} = useNavigateWithParams(route);
   const [ticketType, setTicketType] = useState({
-    name: '',
     prices: null,
-    slots: null,
   });
+
+  console.log('ticketType', ticketType);
   const [discounts, setDiscounts] = useState([]);
+  console.log('usestate_discounts', discounts);
 
   const [error, setError] = useState({
     price: null,
-    slots: null,
+    type: null,
   });
   //23.03 - napisać funkcję do parsowania prices i wywołac ją przy dodawaniu biletu i przy modify/edit
   // 1. FOR LOOP
@@ -40,53 +41,23 @@ function TicketTypeCreator({route}) {
   };
 
   const handleAddTicketType = () => {
-    const result = {
-      name: ticketType.name,
-      prices: parseDiscountsToPrices(discounts),
-      slots: parseInt(ticketType.slots),
-    };
+    // const result = {
+    //   prices: parseDiscountsToPrices(discounts),
+    // };
 
+    if (!discount) {
+      return navigation.goBack();
+    }
     navigateWithPrevParams(
       route.params.fromScreenName,
       {
-        ticketType: result,
+        ticketType: discount,
       },
       ['fromScreenName'],
     );
   };
 
   const handleStateChange = (field, text) => {
-    switch (field) {
-      case 'price': {
-        if (isNaN(text)) {
-          setError(prev => ({
-            ...prev,
-            price: 'Cena musi być wartością liczbową',
-          }));
-        } else {
-          setError(prev => ({
-            ...prev,
-            price: null,
-          }));
-        }
-        break;
-      }
-      case 'slots': {
-        if (isNaN(text)) {
-          setError(prev => ({
-            ...prev,
-            slots: 'Ilośc miejsc musi być wartością liczbową',
-          }));
-        } else {
-          setError(prev => ({
-            ...prev,
-            slots: null,
-          }));
-        }
-        break;
-      }
-    }
-
     setTicketType(prev => ({
       ...prev,
       [field]: text,
@@ -97,88 +68,61 @@ function TicketTypeCreator({route}) {
     console.log('discounts:', discounts);
   }, [discounts]);
 
-  const renderItem = ({item, index}) => {
-    const handleDiscountChange = (type, price) => {
-      setDiscounts(prevDiscounts => {
-        return prevDiscounts.map((prevDiscount, prevDiscountIndex) => {
-          if (prevDiscountIndex === index) {
-            return {
-              type,
-              price,
-            };
-          }
-          return prevDiscount;
-        });
-      });
-    };
-
-    return (
-      <FrameOnBlurTicketOrder
-        type={item.type}
-        price={item.price}
-        onDiscountChange={handleDiscountChange}
-        shouldClearInputsAfterBlur={false}
-      />
-    );
-  };
-
-  const isBlurredElementChanged = (blurredElementIndex, type, price) => {
-    const blurredDiscount = discounts[blurredElementIndex];
-    if (blurredElementIndex === index) {
-      if (blurredDiscount)
-        return {
-          type,
-          price,
-        };
-    }
-  };
+  const [discount, setDiscount] = useState();
 
   const handleDiscountAdd = (type, price) => {
-    setDiscounts(prevArray => {
-      return [...prevArray, {type, price}];
+    setDiscount({
+      type,
+      price,
     });
+    // setDiscounts(prevDiscounts => {
+    //   const foundDiscount = prevDiscounts.find(
+    //     element => element.type === type,
+    //   );
+    //   if (!foundDiscount) {
+    //     const newDiscount = {type, price};
+    //     return [...prevDiscounts, newDiscount];
+    //   }
+    //   return prevDiscounts.map(prevDiscount => {
+    //     if (prevDiscount.type === type) {
+    //       return {
+    //         ...prevDiscount,
+    //         price,
+    //       };
+    //     }
+    //     return prevDiscount;
+    //   });
+    // });
   };
 
   const frameOnBlurTicketOrderRef = useRef();
 
   return (
     <View style={styles.mainBody}>
-      {error && <Text style={styles.textHeader}>Nowy bilet</Text>}
-      <View style={styles.listStyle}>
-        <TextInput
-          style={styles.textDark}
-          onChangeText={text => handleStateChange('name', text)}
-          value={ticketType.name}
-          placeholder="Nazwa biletu..."
-        />
+      <ScrollView>
         <View>
-          <Text>Dodane bilety:</Text>
-          <FlatList
-            data={discounts}
-            renderItem={renderItem}
-            keyExtractor={(item, index) => index.toString()}
-            style={styles.container}
-            withSearchbar={false}
-          />
+          {error && <Text style={styles.textHeader}>Nowy bilet</Text>}
+        </View>
+
+        <View style={styles.sectionStyle}>
           <FrameOnBlurTicketOrder
             onDiscountChange={handleDiscountAdd}
             ref={frameOnBlurTicketOrderRef}
             shouldClearInputsAfterBlur={true}
+            allowedTicketTypeNames={allowedTicketTypeNames}
           />
         </View>
 
-        <TextInput
-          style={styles.textDark}
-          onChangeText={text => handleStateChange('slots', text)}
-          value={ticketType.slots}
-          placeholder="Ilość miejsc..."
-        />
-        <View>
-          <TouchableOpacity style={styles.button} onPress={handleAddTicketType}>
-            <Text style={styles.textButton}>Dodaj bilet</Text>
+        <View style={styles.rowMenu}>
+          <TouchableOpacity
+            style={styles.roundButtonDark}
+            onPress={handleAddTicketType}
+          >
+            <Image source={safeIcon} style={styles.icon} />
+            <Text style={styles.textButton}>Dodaj bilet do koszyka</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
     </View>
   );
 }
@@ -186,57 +130,78 @@ export default TicketTypeCreator;
 const styles = StyleSheet.create({
   mainBody: {
     flex: 1,
-    //justifyContent: 'center',
+    flexDirection: 'column',
     backgroundColor: '#C5EEFF',
-    //alignItems: 'center',
+    alignItems: 'center',
+    //justifyContent: 'space-between',
   },
   textDark: {
     color: '#005b98',
     fontSize: 18,
     padding: 10,
   },
+
   textHeader: {
     color: '#005b98',
     fontSize: 20,
     padding: 10,
   },
 
-  listStyle: {
-    padding: 20,
-    marginBottom: 5,
-    color: '#27046d',
-    marginRight: 10,
-    marginLeft: 10,
+  roundButtonDark: {
+    width: 100,
+    height: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+    borderRadius: 100,
+    backgroundColor: '#005b98',
+    //opacity: 0.7,
+    margin: 10,
   },
 
   textButton: {
     color: 'white',
-    fontSize: 18,
-    padding: 10,
+    paddingVertical: 10,
+    fontSize: 16,
+    marginStart: 5,
+    marginEnd: 5,
+    textAlign: 'center',
   },
 
-  modalView: {
+  inputStyle: {
     flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center',
+    flexDirection: 'row',
+    color: '#005b98',
+    paddingLeft: 15,
+    paddingRight: 5,
+    paddingVertical: 20,
+    borderRadius: 5,
+    borderColor: 'white',
     backgroundColor: 'white',
-    borderRadius: 20,
     alignItems: 'center',
-    // elevation: 5,
-    margin: '2%',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  sectionStyle: {
+    flexDirection: 'column',
+    margin: 10,
   },
   button: {
     backgroundColor: '#005b98',
     alignItems: 'center',
     borderRadius: 5,
-    margin: 10,
+    margin: 2,
+    justifyContent: 'center',
+    height: 40,
+  },
+  rowMenu: {
+    flexDirection: 'row',
+    color: '#005b98',
+    alignItems: 'center',
     justifyContent: 'center',
   },
-  ticketFrame: {
-    flexDirection: 'column',
-    padding: 5,
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: '#005b98',
+  icon: {
+    height: 25,
+    width: 25,
   },
 });

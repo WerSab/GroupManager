@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
   SectionStyle: {
     flex: 1,
     flexDirection: 'column',
-    borderColor: '#3175ab',
+    borderColor: '#005b98',
   },
   buttonStyle: {
     backgroundColor: 'white',
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
     paddingRight: 15,
     borderWidth: 2,
     borderRadius: 5,
-    borderColor: '#3175ab',
+    borderColor: '#005b98',
     width: 20,
   },
   errorTextStyle: {

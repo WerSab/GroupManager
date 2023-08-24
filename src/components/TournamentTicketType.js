@@ -5,15 +5,13 @@ import {View, Text, TouchableOpacity, StyleSheet, Image} from 'react-native';
 import deleteIcon from '../assets/icons/delete.png';
 
 const PricesDisplayable = props => {
-  // petla i w petli:
-  // <PriceDisplayable {...params} />;
-
   const priceValues = Object.values(props.prices);
+  const typeValues = Object.values(props.prices);
   console.log('props.prices', props.prices);
   return (
-    <>
-      <Text>{priceValues}</Text>
-    </>
+    <View style={styles.listStyle}>
+      <Text style={styles.textDark}>Typ i cena biletu {priceValues}</Text>
+    </View>
   );
 };
 
@@ -36,7 +34,6 @@ export const TournamentTicketType = props => {
   return (
     <View style={styles.listStyle}>
       <View style={styles.listStyle}>
-        <Text style={styles.textDark}>Nazwa: {ticketType.name}</Text>
         <Text style={styles.textDark}>Ilość: {ticketType.slots}</Text>
         <PricesDisplayable prices={ticketType.prices} />
       </View>

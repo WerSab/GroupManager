@@ -5,8 +5,10 @@ export const mapFirestoreTournament = tournament => {
     startDate: getDateFromTimestamp(tournament.startDate),
     endDate: getDateFromTimestamp(tournament.endDate),
     link: tournament.link,
+    url: tournament.url,
     name: tournament.name,
     place: tournament.place,
-    tournamentCategory: tournament.tournamentCategory,
+    slots: tournament.slots,
+    category: tournament.category,
   };
 };

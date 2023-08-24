@@ -63,10 +63,11 @@ const PaidOrdersListScreen = () => {
         <Text style={styles.itemStyle}>
           {'\n'}
           <Text style={styles.textBold}>Kod zamówienia:</Text>
-          <Text> {item.id}</Text>
+          <Text style={styles.text}> {item.id}</Text>
           {'\n'}
           <Text style={styles.textBold}>Zapłacono:</Text>
-          <Text> {item.price}</Text> <Text>zł.</Text>
+          <Text style={styles.text}> {item.price}</Text>{' '}
+          <Text style={styles.text}>zł.</Text>
         </Text>
       </View>
     );
@@ -97,19 +98,19 @@ const styles = StyleSheet.create({
   },
 
   text: {
-    color: 'white',
+    color: '#005b98',
     fontSize: 25,
     padding: 10,
   },
   textBold: {
     color: '#005b98',
-    fontSize: 20,
+    fontSize: 22,
     padding: 10,
     fontWeight: 'bold',
   },
   textDark: {
     color: '#005b98',
-    fontSize: 20,
+    fontSize: 25,
     padding: 20,
   },
   container: {
