@@ -40,19 +40,17 @@
 export const parseBoughtTicketsToArray = boughtTickets => {
   const boughtTicketEntries = Object.entries(boughtTickets);
   const result = [];
-
+  console.log('ticket-order-methods_boughtTicketEntries', boughtTicketEntries);
   for (const boughtTicketEntry of boughtTicketEntries) {
-    const [ticketName, ticketMetaData] = boughtTicketEntry;
-    const {ticketTypeId, discounts} = ticketMetaData;
-    const discountEntries = Object.entries(discounts);
-    for (const [discountName, amount] of discountEntries) {
-      result.push({
-        name: ticketName,
-        ticketTypeId: ticketTypeId,
-        amount: amount,
-        type: discountName,
-      });
-    }
+    const [ticketTypeId, ticketMetaData] = boughtTicketEntry;
+    const {amount, ticketName, ticketPrice} = ticketMetaData;
+    result.push({
+      ticketTypeId,
+      amount,
+      ticketName,
+      ticketPrice,
+    });
   }
+  console.log('ticket-order-methods_result', result);
   return result;
 };

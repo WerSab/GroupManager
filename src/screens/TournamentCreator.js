@@ -320,11 +320,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     color: '#005b98',
-
     paddingRight: 15,
-
     borderRadius: 5,
-
     backgroundColor: 'white',
   },
 

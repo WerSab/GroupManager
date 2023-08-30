@@ -78,6 +78,7 @@ export function getTicketTypesForTournamentId(tournamentId) {
             ...document.data(),
           };
         });
+        console.log('ticketTypesList', ticketTypesList);
         resolve(ticketTypesList);
       })
       .catch(error => reject(error));

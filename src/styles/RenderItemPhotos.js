@@ -9,12 +9,22 @@ export const RENDER_ITEM_PHOTOS = item => {
   switch (item.name) {
     case 'Wydarzenia':
       return eventPhoto;
+    case 'Moje wydarzenia':
+      return eventPhoto;
     case 'Użytkownicy':
+      return usersPhoto;
+    case 'Mój profil':
       return usersPhoto;
     case 'Rezerwacje':
       return bookingsPhoto;
+    case 'Moje zamówienia':
+      return bookingsPhoto;
     case 'Wiadomości':
       return messagesPhoto;
+    case 'Moje wiadomości':
+      return messagesPhoto;
+    case 'Moje bilety':
+      return paidOrdersPhoto;
     case 'Zapłacone zamowienia':
       return paidOrdersPhoto;
   }

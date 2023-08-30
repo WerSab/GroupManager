@@ -1,6 +1,6 @@
 export const SCREEN = {
   PLAYER_TAB: {
-    MY_TOURNAMENTS: 'Moje turnieje',
+    MY_TOURNAMENTS: 'Moje wydarzenia',
     MY_MESSAGES: 'Moje wiadomości',
     MY_PROFILE: 'Mój profil',
     MY_TICKETS: 'Moje zamówienia',
