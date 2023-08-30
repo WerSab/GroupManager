@@ -156,7 +156,8 @@ const TicketOrderingScreen = ({route, props}) => {
 
       <Text style={styles.buttonTextStyle}>
         {' '}
-        Razem do zapłaty: {finalPrice} zł.{' '}
+        Razem do zapłaty:{' '}
+        <Text style={styles.boldTextStyle}>{finalPrice} </Text>zł.{' '}
       </Text>
 
       <View
@@ -219,6 +220,13 @@ const styles = StyleSheet.create({
     marginStart: 20,
     paddingVertical: 10,
     fontSize: 18,
+  },
+  boldTextStyle: {
+    color: '#005b98',
+    marginStart: 20,
+    paddingVertical: 10,
+    fontSize: 50,
+    fontWeight: 'bold',
   },
   buttonTextStyleDark: {
     flex: 1,

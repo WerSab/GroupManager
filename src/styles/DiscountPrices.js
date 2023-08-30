@@ -32,8 +32,8 @@ export default DiscountPrices = props => {
   return (
     <View style={styles.sectionStyle}>
       <View style={styles.whiteBackgroundStyle}>
-        <Text style={styles.textDarkBold}>
-          {ticketName} {price}zł.
+        <Text style={styles.textDark}>
+          {ticketName} <Text style={styles.textDarkBold}>{price}</Text> zł.
         </Text>
 
         <View>
@@ -57,9 +57,7 @@ export default DiscountPrices = props => {
 
 const styles = StyleSheet.create({
   whiteBackgroundStyle: {
-    width: '90%',
     marginTop: 10,
-    marginVertical: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
     color: '#005b98',
@@ -70,33 +68,20 @@ const styles = StyleSheet.create({
   },
   sectionStyle: {
     flexDirection: 'column',
-    marginStart: 20,
     justifyContent: 'center',
   },
   textDark: {
     color: '#005b98',
-    fontSize: 16,
+    fontSize: 20,
   },
   textDarkBold: {
     color: '#005b98',
-    fontSize: 18,
+    fontSize: 25,
+    fontWeight: 'bold',
   },
-  inputStyle: {
-    color: '#015a92',
-    paddingHorizontal: 5,
-    paddingLeft: 15,
-    borderWidth: 2,
-    borderRadius: 5,
-    borderColor: '#015a92',
-    fontSize: 18,
-  },
+
   rowStyle: {
     flexDirection: 'row',
     padding: 5,
   },
 });
-// key={`${discountName}${index}`} // ulgowy0, ulgowy1
-// discountName={discountName}
-// price={price}
-// handleAmountChange={undefined
-// }
