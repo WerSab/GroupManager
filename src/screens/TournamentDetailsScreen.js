@@ -40,6 +40,7 @@ import addDarkIcon from '../assets/icons/addDark.png';
 import editIcon from '../assets/icons/edit.png';
 import {TournamentTicketType} from '../components/TournamentTicketType';
 import {useNavigateWithParams} from '../hooks/useNavigateWithParams';
+import {openLinkfromURL} from '../common/linking-methods';
 
 const SUPPORTED_TICKET_TYPE_ACTION = {
   ADD: 'ADD',
@@ -113,6 +114,8 @@ const TournamentDetails = ({route}) => {
       }
     />
   ));
+
+  console.log('parsedTicketTypesData', parsedTicketTypesData);
   const startTimeFormated = dayjs(tournament.startDate).format(
     'DD/MM/YYYY HH:mm',
   );
@@ -148,13 +151,13 @@ const TournamentDetails = ({route}) => {
               Ilość sprzedanych biletów: {tournament.interval}
             </Text>
             <Text style={styles.textDark}>
-              Rezerwacje: {tournament.interval}
+              Ilość rezerwacji: {tournament.interval}
             </Text>
             <Text style={styles.textDark}>
               Ilość miejsc: {tournament.slots}
             </Text>
             <TouchableOpacity
-              onPress={() => Linking.openURL(tournament.link)} //(then i catch/ obsłużyć w promisie/sprawdzić Regex/https://regex101.com/https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url#:~:text=javascript%3Avoid%20%280%29%20is%20valid%20URL%2C%20although%20not%20an,DNS%29%20https%3A%2F%2Fexample..com%20is%20valid%20URL%2C%20same%20as%20above
+              onPress={() => openLinkfromURL(tournament.link)} //https://reactnative.dev/docs/linking//(then i catch/ obsłużyć w promisie/sprawdzić Regex/https://regex101.com/https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url#:~:text=javascript%3Avoid%20%280%29%20is%20valid%20URL%2C%20although%20not%20an,DNS%29%20https%3A%2F%2Fexample..com%20is%20valid%20URL%2C%20same%20as%20above
             >
               <Text style={styles.linkStyle}>
                 <Image source={linkIcon} style={styles.icon} />

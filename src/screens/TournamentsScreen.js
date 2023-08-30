@@ -30,6 +30,7 @@ const TournamentsScreen = () => {
   const [isModalSearchVisible, setIsModalSearchVisible] = useState(false);
   const [tournamentListToRender, setTournamentListToRender] =
     useState(tournamentList);
+  const [filterCulturePressed, setFilterCulturePressed] = useState(false);
   const [filterSportPressed, setFilterSportPressed] = useState(false);
   const categoryCulture = TOURNAMENT_CATEGORIES.CULTURE;
   const categorySport = TOURNAMENT_CATEGORIES.SPORT;
@@ -74,11 +75,19 @@ const TournamentsScreen = () => {
   };
 
   const categoryFilterFunction = selectedCategory => {
-    const newData = tournamentListToRender?.filter(item => {
-      const itemData = item.category;
-      return itemData === selectedCategory;
-    });
-    setTournamentListToRender(newData);
+    try {
+      clearInputs();
+      filterCulturePressed
+        ? setFilterSportPressed(false)
+        : setFilterSportPressed(true);
+      const newData = tournamentListToRender?.filter(item => {
+        const itemData = item.category;
+        return itemData === selectedCategory;
+      });
+      setTournamentListToRender(newData);
+    } catch (error) {
+      Alert.alert(error);
+    }
   };
 
   const renderItem = item => {
@@ -179,7 +188,6 @@ const TournamentsScreen = () => {
           <TouchableOpacity
             style={styles.button}
             onPress={() => {
-              setFilterSportPressed(false);
               setFilterCulturePressed(true);
               categoryFilterFunction(categoryCulture);
             }}
@@ -189,7 +197,6 @@ const TournamentsScreen = () => {
           <TouchableOpacity
             style={styles.button}
             onPress={() => {
-              setFilterCulturePressed(false);
               setFilterSportPressed(true);
               categoryFilterFunction(categorySport);
             }}
@@ -202,7 +209,7 @@ const TournamentsScreen = () => {
               clearInputs();
             }}
           >
-            <Text style={styles.textMenu}>Pokaż wszystko</Text>
+            <Text style={styles.textMenu}>Wyczyść filtry</Text>
           </TouchableOpacity>
         </View>
         <FlatList
@@ -278,24 +285,24 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 10,
     shadowColor: 'black',
-    elevation: 20,
+    elevation: 5,
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
   itemStyle: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
     width: '85%',
-    padding: 2,
-    marginBottom: 5,
+    //marginBottom: 5,
     color: '#005b98',
     backgroundColor: 'white',
-    margin: 5,
+    //margin: 5,
     borderRadius: 5,
     textAlign: 'center',
     fontSize: 16,
     alignItems: 'center',
-    shadowColor: 'black',
-    elevation: 20,
+    // shadowColor: 'black',
+    // elevation: 5,
   },
   deleteStyle: {
     justifyContent: 'flex-end',

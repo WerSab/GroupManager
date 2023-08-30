@@ -16,6 +16,7 @@ import {
   signOutFirebaseUser,
 } from '../firebase/authentication-methods';
 import {UserContext} from '../context/UserContextProvider';
+import {launchImageLibrary} from 'react-native-image-picker';
 
 const LoginScreen = ({navigation}) => {
   const authContext = useContext(UserContext);
@@ -25,6 +26,13 @@ const LoginScreen = ({navigation}) => {
   const [error, setError] = useState(null);
 
   const passwordInputRef = createRef();
+
+  const test = async () => {
+    const result = await launchImageLibrary({
+      selectionLimit: 0,
+    });
+    console.log(result.assets.map(el => el.uri));
+  };
 
   useEffect(() => {
     authContext.methods.setIsDuringAuthProcess(true);
@@ -48,37 +56,13 @@ const LoginScreen = ({navigation}) => {
       .finally(() => setIsLogging(false));
   };
 
-  /*
-    Startowe miejsce w aplikacji na podstawie auth usera nawiguje
-     do odpowiedniego screenu: wylogowany -> login screen, zalogowany -> home screen (na przykład) lub od razu sprawdzenie roli użytkownika
-      i w zależności od jego roli (firestore data) nawigować do odpowiedniego ekranu (np. ManagerHomeScreen lub PlayerHomeScreen etc).
-
-  */
-
-  /*
-    REJESTRAJCA UZYTKOWNIKA:
-    WYBOR ROLI:
-    Z selecta uzytkownik wybiera sobie role: np. manager, player - podczas rejestracji
-    zapisuje wybrana z selecta role do stanu komponentu
-    przy kliknieciu w przycisk "REJESTRUJ", przekazuje do bazy danych (firestore) role ze stanu.
-
-
-  */
-
   return (
     <View style={styles.mainBody}>
-      <Text style={styles.textStyle}>CKiS w Skawinie</Text>
-      <ScrollView
-        keyboardShouldPersistTaps="handled"
-        contentContainerStyle={{
-          flex: 1,
-          justifyContent: 'center',
-          alignContent: 'center',
-        }}
-      >
+      <KeyboardAvoidingView enabled>
+        <Text style={styles.textStyle}>CKiS w Skawinie</Text>
         <SafeAreaView>
-          <View>
-            <KeyboardAvoidingView enabled>
+          <ScrollView>
+            <View>
               <View style={styles.SectionStyle}>
                 <TextInput
                   style={styles.inputStyle}
@@ -141,10 +125,10 @@ const LoginScreen = ({navigation}) => {
               >
                 Zapomniałeś/łaś hasło?
               </Text>
-            </KeyboardAvoidingView>
-          </View>
+            </View>
+          </ScrollView>
         </SafeAreaView>
-      </ScrollView>
+      </KeyboardAvoidingView>
     </View>
   );
 };
@@ -215,7 +199,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 25,
     alignSelf: 'center',
-    padding: 60,
+    paddingTop: 20,
   },
   errorTextStyle: {
     color: 'red',

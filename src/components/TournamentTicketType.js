@@ -5,18 +5,22 @@ import {View, Text, TouchableOpacity, StyleSheet, Image} from 'react-native';
 import deleteIcon from '../assets/icons/delete.png';
 
 const PricesDisplayable = props => {
-  const priceValues = Object.values(props.prices);
-  const typeValues = Object.values(props.prices);
-  console.log('props.prices', props.prices);
+  console.log('props', props);
+  const priceValues = props.price;
+  const typeValues = props.type;
+  console.log('props.prices', props.price);
   return (
     <View style={styles.listStyle}>
-      <Text style={styles.textDark}>Typ i cena biletu {priceValues}</Text>
+      <Text style={styles.textDark}>
+        Typ: {typeValues}, Cena: {priceValues} zł.
+      </Text>
     </View>
   );
 };
 
 export const TournamentTicketType = props => {
   const {ticketType, onTicketTypeDelete} = props;
+  console.log('ticketType.props', props);
   const deleteAlert = useCallback(() => {
     const onDialogueConfirm = () => {
       onTicketTypeDelete();
@@ -34,10 +38,9 @@ export const TournamentTicketType = props => {
   return (
     <View style={styles.listStyle}>
       <View style={styles.listStyle}>
-        <Text style={styles.textDark}>Ilość: {ticketType.slots}</Text>
-        <PricesDisplayable prices={ticketType.prices} />
+        <PricesDisplayable price={ticketType.price} type={ticketType.type} />
       </View>
-      <View style={{backgroundColor: 'pink'}}>
+      <View>
         <TouchableOpacity onPress={deleteAlert}>
           <Image source={deleteIcon} style={styles.icon} />
         </TouchableOpacity>
@@ -49,7 +52,11 @@ export const TournamentTicketType = props => {
 const styles = StyleSheet.create({
   listStyle: {
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-between',
+    padding: 3,
+    alignItems: 'center',
+    shadowColor: 'black',
+    elevation: 20,
   },
   textDark: {
     color: '#005b98',

@@ -14,6 +14,7 @@ import {
   Linking,
 } from 'react-native';
 import InputSpinner from 'react-native-input-spinner';
+import {FIREBASE_STORAGE_DIRS} from '../config';
 import addIcon from '../assets/icons/add.png';
 import clearIcon from '../assets/icons/clear.png';
 import safeIcon from '../assets/icons/safe.png';
@@ -32,6 +33,8 @@ import FrameOnBlurTicketOrder from '../styles/FrameOnBlurTicketOrder';
 import {color, log} from 'react-native-reanimated';
 import addDarkIcon from '../assets/icons/addDark.png';
 import {TICKET_TYPE_NAMES} from '../config';
+import {putFirebaseFile, selectImage} from '../firebase/storage-methods';
+import {launchImageLibrary} from 'react-native-image-picker';
 const MIN_EVENT_DURATION_IN_MILLIS = 60 * 1000;
 
 // wrzucic tego typu funkcje do np. utils/stringUtils.js
@@ -90,7 +93,7 @@ const TournamentCreator = ({route}) => {
   const [category, setCategory] = inputs.category;
   const [place, setPlace] = inputs.place;
   const [slots, setSlots] = inputs.slots;
-  const validationError = inputs.validationError; // jezeli obslugujemy error w tym komopnencie to mozemy sie pozbyc z useTournamentHandler'a
+  const validationError = inputs.validationError;
   const [error, setError] = useState();
   useEffect(() => {
     console.log('inputs.val:', inputs.validationError);
@@ -98,19 +101,14 @@ const TournamentCreator = ({route}) => {
 
   const handleTournamentSavePress = async () => {
     try {
-      const tournament = onConfirm(); // ta funkcja "mogla" ustawic validationError (stan)
+      const tournament = onConfirm();
       await onSavePress(tournament, ticketsBasket);
     } catch (error) {
-      // moga sie pojawic "dwa" rodzaje bledow, poniewaz onConfirm() rzuca bledem informujacym o bledzie walidacji (np. nieprawidlowy link)
-      // natomiast onSavePress() moze rzucic wyjatek wtedy kiedy wystapi problem z serwerem lub nie bedzie dostepu do internetu
       console.error('catch error in promise.catch:', error);
       Alert.alert(
         'Wystąpił błąd',
         `Przepraszamy mamy problem z serwerem, prosze spróbować później`,
-        [
-          {text: 'Ok'},
-          //aktywuję przycisk onsavepress
-        ],
+        [{text: 'Ok'}],
       );
     }
   };
@@ -124,16 +122,13 @@ const TournamentCreator = ({route}) => {
     console.log('end date:', endDate);
   }, [endDate]);
   const onSavePress = async (tournament, ticketsBasket) => {
-    // cdezaktywuje przycisk
     await addNewTournamentToCollection(tournament, ticketsBasket);
     console.log('Tournament added');
-    //clearInputs();
+
     tournamentActions.requeryTournaments();
     console.log('torunaments requeried');
     console.log('navigating to tournament list');
     navigation.navigate(SCREEN.MANAGER_TAB.TOURNAMENT_LIST);
-    // const promiseResult = await addNewTournamentToCollection({},[]); // async/await sugar syntax for promise
-    // console.log(promiseResult);
   };
 
   return (
@@ -188,7 +183,7 @@ const TournamentCreator = ({route}) => {
             ></InputSpinner>
           </View>
         </View>
-        <View style={styles.sectionRowStyle}>
+        <View style={styles.sectionStyle}>
           <TextInput
             style={styles.inputStyle}
             onChangeText={setLinkInput}
@@ -196,31 +191,15 @@ const TournamentCreator = ({route}) => {
             placeholder="Link do strony..."
             placeholderTextColor="grey"
           />
-
-          <TouchableOpacity
-            style={styles.buttonSearchLink}
-            onPress={() => Linking.openURL('https://www.google.com')}
-          >
-            <Image source={searchIcon} style={styles.icon} />
-          </TouchableOpacity>
         </View>
-        <View style={styles.sectionRowStyle}>
-          <TextInput
+        <View style={styles.sectionStyle}>
+          <TouchableOpacity
             style={styles.inputStyle}
-            onChangeText={setUrlInput}
-            value={urlInput}
-            placeholder="Adres obrazka..."
-            placeholderTextColor="grey"
-          />
-
-          <TouchableOpacity
-            style={styles.buttonSearchLink}
-            onPress={() => Linking.openURL('https://www.google.com')}
+            onPress={() => selectImage()}
           >
-            <Image source={searchIcon} style={styles.icon} />
+            <Text style={styles.textGrey}>Załaduj obrazek</Text>
           </TouchableOpacity>
         </View>
-
         <Text style={styles.text}>Data rozpoczęcia</Text>
 
         <View style={styles.sectionStyle}>
@@ -317,7 +296,7 @@ const styles = StyleSheet.create({
 
   sectionStyle: {
     flexDirection: 'column',
-    margin: 10,
+    marginBottom: 10,
   },
   sectionRowStyle: {
     flexDirection: 'row',
