@@ -3,6 +3,7 @@
 // }; -> odpowiednik funkcyjny -> const [selectedStartDate, setSelectedStartDate] = useState(null);
 
 import React, {useContext, useState} from 'react';
+import ticketsIcon from '../assets/icons/tickets.png';
 import {
   View,
   Text,
@@ -61,15 +62,25 @@ const MyTournamentDetails = ({navigation, route}) => {
                 Link do wydarzenia
               </Text>
             </TouchableOpacity>
-            <Button
-              activeOpacity={2}
-              onPress={() => {
-                navigation.navigate(SCREEN.TICKET_ORDERING, {
-                  tournamentId: tournamentId,
-                });
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
               }}
-              title="Rezerwacja biletów"
-            />
+            >
+              <TouchableOpacity
+                style={styles.roundButtonDark}
+                onPress={() => {
+                  navigation.navigate(SCREEN.TICKET_ORDERING, {
+                    tournamentId: tournamentId,
+                  });
+                }}
+              >
+                <Image source={ticketsIcon} style={styles.icon1} />
+                <Text style={styles.textButton}>Rezerwacja biletów</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </Text>
       </ScrollView>
@@ -92,6 +103,15 @@ const styles = StyleSheet.create({
     color: '#005b98',
     fontSize: 16,
   },
+  textButton: {
+    color: 'white',
+    paddingVertical: 10,
+    fontSize: 16,
+    marginStart: 5,
+    marginEnd: 5,
+    textAlign: 'center',
+  },
+
   container: {
     flex: 1,
   },
@@ -103,7 +123,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     marginRight: 20,
     marginLeft: 20,
-
     textAlign: 'left',
     fontSize: 16,
   },
@@ -111,19 +130,7 @@ const styles = StyleSheet.create({
     color: '#fbb713',
     height: 40,
   },
-  buttonStyle: {
-    backgroundColor: 'white',
-    borderWidth: 0,
-    borderColor: '#005b98',
-    height: 40,
-    alignItems: 'center',
-    borderRadius: 15,
-    marginLeft: 35,
-    marginRight: 35,
-    marginTop: 20,
-    marginBottom: 25,
-    margin: 10,
-  },
+
   buttonTextStyle: {
     paddingVertical: 10,
     color: '#005b98',
@@ -146,4 +153,23 @@ const styles = StyleSheet.create({
   },
   image: {height: 70, width: 70, flexBasis: '20%'},
   icon: {height: 30, width: 30, flexBasis: '20%'},
+  icon1: {
+    height: 30,
+    width: 30,
+    margin: 2,
+  },
+  justifyButtonStyle: {
+    justifyContent: 'center',
+  },
+  roundButtonDark: {
+    width: 100,
+    height: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+    borderRadius: 100,
+    backgroundColor: '#005b98',
+    //opacity: 0.7,
+    margin: 10,
+  },
 });

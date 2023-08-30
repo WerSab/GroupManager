@@ -19,6 +19,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
+  Image,
   TextInput,
   KeyboardAvoidingView,
   SafeAreaView,
@@ -26,6 +27,7 @@ import {
   Button,
   ActivityIndicator,
 } from 'react-native';
+import safeIcon from '../assets/icons/safe.png';
 import {updateTicketOrdersToTournament} from '../firebase/firestore-tournament-methods';
 import {addNewTicketOrderToCollection} from '../firebase/firestore-ticket-methods';
 import {updateTicketOrdersToUser} from '../firebase/firestore-user-methods';
@@ -156,16 +158,25 @@ const TicketOrderingScreen = ({route, props}) => {
         {' '}
         Razem do zapłaty: {finalPrice} zł.{' '}
       </Text>
-      <Text style={styles.buttonTextStyleDark}>
-        <Button
-          activeOpacity={2}
-          title="Zarezerwuj"
-          disabled={isButtonSafeDisabled}
+
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <TouchableOpacity
+          style={styles.roundButtonDark}
           onPress={() => {
             finishOrder();
+            navigation.navigate(SCREEN.PLAYER_TAB.MY_TICKETS);
           }}
-        />
-      </Text>
+        >
+          <Image source={safeIcon} style={styles.icon1} />
+          <Text style={styles.textButton}>Zapisz</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -194,6 +205,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 30,
   },
+  textButton: {
+    color: 'white',
+    paddingVertical: 10,
+    fontSize: 16,
+    marginStart: 5,
+    marginEnd: 5,
+    textAlign: 'center',
+  },
+
   buttonTextStyle: {
     color: '#005b98',
     marginStart: 20,
@@ -207,6 +227,16 @@ const styles = StyleSheet.create({
     color: '#015a92',
     paddingVertical: 10,
     fontSize: 18,
+  },
+  roundButtonDark: {
+    width: 100,
+    height: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+    borderRadius: 100,
+    backgroundColor: '#005b98',
+    margin: 10,
   },
   inputStyle: {
     flex: 1,
@@ -229,5 +259,10 @@ const styles = StyleSheet.create({
   rowStyle: {
     flexDirection: 'row',
     padding: 5,
+  },
+  icon1: {
+    height: 30,
+    width: 30,
+    margin: 2,
   },
 });
