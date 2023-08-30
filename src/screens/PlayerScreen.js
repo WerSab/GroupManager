@@ -1,12 +1,20 @@
 import {useNavigation} from '@react-navigation/core';
 import React, {useEffect, useState, useContext} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  ImageBackground,
+} from 'react-native';
 
 import {UserContext} from '../context/UserContextProvider';
 import {FlatGrid, SectionGrid} from 'react-native-super-grid';
 import signedOut from '../assets/icons/signedOut.png';
 import {signOutFirebaseUser} from '../firebase/authentication-methods';
 import {SCREEN} from '../navigation/screens';
+import {RENDER_ITEM_PHOTOS} from '../styles/RenderItemPhotos';
 
 const SCREEN_TAB = Object.values(SCREEN.PLAYER_TAB).map(element => {
   return {
@@ -27,16 +35,20 @@ const PlayerScreen = () => {
   // }, {});
 
   const renderItem = item => {
+    const photo = RENDER_ITEM_PHOTOS(item);
+    console.log('photo', photo);
     return (
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate(item.name);
-        }}
-      >
-        <View style={[styles.itemContainer, {backgroundColor: 'white'}]}>
-          <Text style={styles.itemName}>{item.name}</Text>
-        </View>
-      </TouchableOpacity>
+      <View style={[styles.itemContainer]}>
+        <ImageBackground source={photo} style={styles.image}>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate(item.name);
+            }}
+          >
+            <Text style={styles.itemName}>{item.name}</Text>
+          </TouchableOpacity>
+        </ImageBackground>
+      </View>
     );
   };
   return (
@@ -111,13 +123,24 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 5,
-    padding: 10,
     height: 150,
-    backgroundColor: '#008DD2',
   },
   itemName: {
-    fontSize: 17,
-    color: '#015a92',
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: 'white',
     fontWeight: '600',
+    padding: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  image: {
+    elevation: 20,
+    shadowColor: 'black',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
+    borderRadius: 5,
   },
 });

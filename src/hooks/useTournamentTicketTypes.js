@@ -11,6 +11,7 @@ export const useTournamentTicketTypes = tournamentId => {
   const requeryTicketTypes = () => {
     getTicketTypesForTournamentId(tournamentId)
       .then(result => {
+        console.log('getTicketTypesForTournamentId_result', result);
         setTicketTypesData(result);
         setTicketTypesLoading(false);
       })

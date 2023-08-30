@@ -59,8 +59,8 @@ const TicketOrderingScreen = ({route, props}) => {
 
   const [isButtonSafeDisabled, setIsButtonSafeDisabled] = useState(false);
 
-  const handleRemoveDiscount = (ticketName, discountName) => {
-    delete boughtTickets.current[ticketName].discounts[discountName];
+  const handleRemoveDiscount = ticketName => {
+    delete boughtTickets.current[ticketName];
     const calculatedPrice = calculateFinalPrice(
       boughtTickets.current,
       ticketTypesData,
@@ -71,55 +71,38 @@ const TicketOrderingScreen = ({route, props}) => {
   const handleAmountChange = (
     ticketTypeId,
     ticketName,
-    discountName,
+    ticketPrice,
     amount,
   ) => {
     boughtTickets.current = {
       ...boughtTickets.current,
-      [ticketName]: {
-        ticketTypeId: ticketTypeId,
-        discounts: {
-          ...boughtTickets.current[ticketName]?.discounts,
-          [discountName]: amount,
-        },
+      [ticketTypeId]: {
+        // ...boughtTickets.current[ticketName],
+        ticketName,
+        ticketPrice,
+        amount,
       },
     };
+    console.log('boughtTickets.current', boughtTickets.current);
 
-    const calculatedPrice = calculateFinalPrice(
-      boughtTickets.current,
-      ticketTypesData,
-    );
+    const calculatedPrice = calculateFinalPrice(boughtTickets.current);
     setFinalPrice(calculatedPrice);
   };
 
   const renderTicketItem = ({item}) => {
+    console.log('renderTicketItem_item', item);
     const ticketTypeId = item.id;
 
-    const prices = item.prices ?? {};
     return (
-      <View>
-        <Text style={styles.buttonTextStyle}>Nazwa biletu: {item.name}</Text>
-        {Object.entries(prices).map(([discountName, price], index) => {
-          return (
-            <DiscountPrices
-              key={`${discountName}${index}`} //klucza nie da się wyświetlić, ulgowy0, ulgowy1
-              discountName={discountName}
-              ticketName={item.name}
-              price={price}
-              removeDiscount={() =>
-                handleRemoveDiscount(item.name, discountName)
-              }
-              onAmountChange={amount =>
-                handleAmountChange(
-                  ticketTypeId,
-                  item.name,
-                  discountName,
-                  amount,
-                )
-              }
-            />
-          );
-        })}
+      <View style={styles.SectionStyle}>
+        <DiscountPrices
+          ticketName={item.type}
+          price={item.price}
+          removeDiscount={() => handleRemoveDiscount(item.type)}
+          onAmountChange={amount =>
+            handleAmountChange(ticketTypeId, item.type, item.price, amount)
+          }
+        />
       </View>
     );
   };
@@ -130,7 +113,7 @@ const TicketOrderingScreen = ({route, props}) => {
 
   const finishOrder = () => {
     const tickets = parseBoughtTicketsToArray(boughtTickets.current);
-
+    console.log('finish-order_boughtTickets.current', boughtTickets.current);
     addNewTicketOrderToCollection({
       user: user,
       tournamentId: tournamentId,
@@ -171,7 +154,7 @@ const TicketOrderingScreen = ({route, props}) => {
 
       <Text style={styles.buttonTextStyle}>
         {' '}
-        Razem do zapłaty : {finalPrice} zł.{' '}
+        Razem do zapłaty: {finalPrice} zł.{' '}
       </Text>
       <Text style={styles.buttonTextStyleDark}>
         <Button
@@ -203,7 +186,7 @@ const styles = StyleSheet.create({
   SectionStyle: {
     flex: 1,
     flexDirection: 'column',
-    borderColor: '#005b98',
+    justifyContent: 'flex-start',
   },
   buttonStyle: {
     backgroundColor: 'white',
@@ -213,6 +196,7 @@ const styles = StyleSheet.create({
   },
   buttonTextStyle: {
     color: '#005b98',
+    marginStart: 20,
     paddingVertical: 10,
     fontSize: 18,
   },

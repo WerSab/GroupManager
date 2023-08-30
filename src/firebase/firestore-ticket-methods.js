@@ -129,16 +129,14 @@ export function addNewTicketOrderToCollection(data) {
           const ticketReference = ticketsCollectionReference.doc();
           ticketReferences.push(ticketReference);
           console.log('obj1:', {
-            name: ticket.name,
+            name: ticket.ticketName,
             ticketType: ticket.ticketTypeId,
             amount: ticket.amount,
-            type: ticket.type,
           });
           batch.set(ticketReference, {
-            name: ticket.name,
+            name: ticket.ticketName,
             ticketType: ticket.ticketTypeId,
             amount: ticket.amount,
-            type: ticket.type,
           });
           const tempid = getTicketTypeDocumentReferenceByTicketTypeId(
             data.tournamentId,
