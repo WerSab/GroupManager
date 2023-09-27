@@ -3,9 +3,6 @@ export function calculateFinalPrice(boughtTickets) {
     if (amount <= 0) {
       throw new Error('Tickets amount must be greater than 0');
     }
-    if (!Number.isInteger(amount)) {
-      throw new Error('Amount value must be an integer');
-    }
   };
   console.log('calculateFinalPrice_boughtTickets', boughtTickets);
 

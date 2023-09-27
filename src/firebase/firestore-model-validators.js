@@ -22,3 +22,14 @@ export function validateTournament(tournament) {
     });
   }
 }
+
+export function validateAsset(asset) {
+  // TODO: Implement me later
+  // e.x asset size can be validated
+  if (false) {
+    throw new ValidationError({
+      field: 'asset',
+      message: 'przykladowy error message',
+    });
+  }
+}

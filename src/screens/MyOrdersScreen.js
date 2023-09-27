@@ -59,7 +59,7 @@ const MyOrdersScreen = ({route}) => {
     loading,
   } = useAsync(deleteOutadatedTicketsAndFetchUserOrders);
 
-  console.log('myOrders', myOrders);
+  console.log('myOrders', myOrders[0].tournament.name);
 
   const now = getCurrentDate();
 
@@ -90,12 +90,12 @@ const MyOrdersScreen = ({route}) => {
     const orderId = item.id;
     return (
       <View style={styles.itemStyle} key={item.id}>
+        <Text style={styles.textName}>{myOrders[0].tournament.name}</Text>
         <Text style={styles.textDark}>
           Dane do przelewu (naciśnij aby skopiować):
         </Text>
 
         <View>
-          {/* <Text style={styles.textDark}>Numer konta:</Text> */}
           <TouchableOpacity
             style={styles.touchableOpacityView}
             onPress={() => {
@@ -109,7 +109,6 @@ const MyOrdersScreen = ({route}) => {
           </TouchableOpacity>
         </View>
         <View>
-          {/* <Text style={styles.textDark}>Nazwa i adres odbiorcy: </Text> */}
           <TouchableOpacity
             style={styles.touchableOpacityView}
             onPress={() => {
@@ -127,7 +126,6 @@ const MyOrdersScreen = ({route}) => {
         </View>
 
         <View>
-          {/* <Text style={styles.textDark}>Tytuł przelewu: </Text> */}
           <TouchableOpacity
             style={styles.touchableOpacityView}
             onPress={() => {
@@ -139,7 +137,6 @@ const MyOrdersScreen = ({route}) => {
           </TouchableOpacity>
         </View>
         <View>
-          {/* <Text style={styles.textDark}>Kwota do zapłaty:</Text> */}
           <TouchableOpacity
             style={styles.touchableOpacityView}
             onPress={() => {
@@ -219,10 +216,17 @@ const styles = StyleSheet.create({
     padding: 2,
     flexDirection: 'column',
   },
+  textName: {
+    color: '#005b98',
+    fontSize: 30,
+    fontWeight: 'bold',
+    padding: 2,
+    flexDirection: 'column',
+  },
 
   itemStyle: {
     flexDirection: 'column',
-    padding: 15,
+    padding: 20,
     marginStart: 10,
     marginEnd: 10,
     marginTop: 20,
@@ -241,8 +245,8 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   touchableOpacityView: {
-    //alignItems: 'flex-start',
     justifyContent: 'space-evenly',
+    marginBottom: 20,
     borderWidth: 1,
     borderColor: 'white',
     borderRadius: 5,

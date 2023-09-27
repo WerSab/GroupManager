@@ -1,5 +1,6 @@
-import {FIRESTORE_COLLECTION} from '../config';
+import {FIREBASE_STORAGE_DIRS, FIRESTORE_COLLECTION} from '../config';
 import {FirestoreDataContext} from './context/FirestoreDataProvider';
+import Logger from '../Logger';
 import {
   addToArray,
   getCollection,
@@ -9,6 +10,9 @@ import {
 } from './/firestore-helpers';
 import firestore from '@react-native-firebase/firestore';
 import {mapFirestoreTournament} from './firestore-mappers';
+import {putFirebaseFile} from './storage-methods';
+
+const TAG = 'firestore-tournament-methods.js';
 
 export const getTournamentReferenceById = tournamentId => {
   return getDocumentReferenceById(
@@ -106,15 +110,15 @@ export function deleteTournament(tournamentId) {
     .delete();
 }
 
-class Logger {
-  log(message) {
-    if (__DEV__) {
-      console.log(message);
-      return;
-    }
-    crashlytics().log(message);
-  }
-}
+// class Logger {
+//   log(message) {
+//     if (__DEV__) {
+//       console.log(message);
+//       return;
+//     }
+//     crashlytics().log(message);
+//   }
+// }
 
 // crashlytics().recordError();
 
@@ -198,7 +202,7 @@ const x: ITicketType = {
 //     xxx: 10,
 // })
 //05.12.2022 - mozliwość niewpisania adresu do strony- przesyłanie pustej wartości zamiast pustego stringa (zabezpieczyć ifami)
-export function addNewTournamentToCollection(tournament, ticketTypes) {
+export function addNewTournamentToCollection(tournament, ticketTypes, asset) {
   console.log('Test_addNewTournamentToCollection', ticketTypes);
   return new Promise((resolve, reject) => {
     const ticketTypesLength = ticketTypes.length;
@@ -208,6 +212,7 @@ export function addNewTournamentToCollection(tournament, ticketTypes) {
     ).doc();
 
     batch.set(newTournamentReference, tournament);
+
     const ticketTypesCollectionReference = newTournamentReference.collection(
       FIRESTORE_COLLECTION.SUB_COLLECTION.TICKET_TYPES,
     );
@@ -236,9 +241,32 @@ export function addNewTournamentToCollection(tournament, ticketTypes) {
       // [...a, {}]
     }
 
+    // wyniesc te metode do gory
+    const tryToDeleteTournamentWhenErrorOccurred = async tournamentId => {
+      try {
+        await deleteTournament(tournamentId);
+      } catch (error) {
+        console.log('Could not delete tournament after error', error);
+        // Moglibysmy zaimplementowac mechanizm, ktory probowalby w przypadku bledu przy
+        // uploadzie pliku usuwac turniej jeszcze raz (do skutku)
+        // 1. Musimy przechowac informacje o tym jakiego turnieju nie udalo sie usunac (tournamentId)
+        // np. storage w urzadzeniu
+        // np przy pobieraniu listy turniejow probowac usuwac ten turniej
+      }
+    };
+
     batch
       .commit()
-      .then(() => {
+      .then(async () => {
+        const uploadedFileSnapshot = await putFirebaseFile(
+          FIREBASE_STORAGE_DIRS.TOURNAMENTS,
+          asset.uri,
+          newTournamentReference.id,
+        );
+        Logger.log(
+          TAG,
+          `bytes transferred ${uploadedFileSnapshot.bytesTransferred}, total ${uploadedFileSnapshot.totalBytes}`,
+        );
         resolve({
           id: newTournamentReference.id,
           ...tournament,
@@ -248,7 +276,12 @@ export function addNewTournamentToCollection(tournament, ticketTypes) {
           `Added document with id ${newTournamentReference.id} to tournaments collection`,
         );
       })
-      .catch(error => {
+      .catch(async error => {
+        if (error instanceof FirebaseStorageFileUploadError) {
+          await tryToDeleteTournamentWhenErrorOccurred(
+            newTournamentReference.id,
+          );
+        }
         console.log(
           'Add new tournament with ticketTypes error occured:',
           error,

@@ -9,34 +9,18 @@ export const getFirebaseFileURL = async (directoryName, fileId) => {
     throw error;
   }
 };
-export const selectImage = async () => {
-  const result = await launchImageLibrary({
-    selectionLimit: 1,
-  });
-  console.log(result.assets.map(el => el.uri));
-};
-
-const wrapTaskWithPromise = task => {
-  return new Promise((resolve, reject) => {
-    task
-      .then(taskSnapshot => {
-        resolve(taskSnapshot);
-      })
-      .catch(error => {
-        reject(error);
-      });
-  });
+export const selectImage = async options => {
+  const result = await launchImageLibrary(options);
+  return result.assets;
 };
 
 export const putFirebaseFile = async (directoryName, filePath, fileName) => {
   try {
     const reference = storage().ref(`${directoryName}/${fileName}`);
-    const task = await reference.putFile(filePath);
-    const taskResult = await wrapTaskWithPromise(task);
-    console.log('taskResult:', taskResult);
+    const task = reference.putFile(filePath);
+    return await task;
   } catch (error) {
-    console.error(`putFirebaseFile: ${error}`);
-    throw error;
+    throw new FirebaseStorageFileUploadError(error);
   }
 };
 
