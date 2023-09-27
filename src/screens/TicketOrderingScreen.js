@@ -52,12 +52,12 @@ const TicketOrderingScreen = ({route, props}) => {
 
   const navigation = useNavigation();
   const {user} = userContext;
-  const [takenAmounts, setTakenAmounts] = useState([]);
+  const [totalTicketsAmount, setTicketsAmount] = useState(0);
   const [finalPrice, setFinalPrice] = useState('0');
   const [ticketTypesData, loading, error] =
     useTournamentTicketTypes(tournamentId);
 
-  const boughtTickets = useRef({});
+  const [boughtTickets, setBoughtTickets] = useState({});
 
   const [isButtonSafeDisabled, setIsButtonSafeDisabled] = useState(false);
 
@@ -70,25 +70,51 @@ const TicketOrderingScreen = ({route, props}) => {
     setFinalPrice(calculatedPrice);
   };
 
+  useEffect(() => {
+    const setTotalTicketsAmount = () => {
+      const initialTotalValue = 0;
+      const totalAmount = Object.values(boughtTickets).reduce(
+        (accumulator, ticketType) => {
+          return accumulator + ticketType.amount;
+        },
+        initialTotalValue,
+      );
+
+      // const tickets = Object.values(boughtTickets);
+      // let totalAmount = 0;
+      // for (let i = 0; i < tickets.length; i++) {
+      //   const ticketInIteration = tickets[i];
+      //   const amountInIteration = ticketInIteration.amount;
+      //   totalAmount = totalAmount + amountInIteration;
+      // }
+      setTicketsAmount(totalAmount);
+    };
+
+    const setTotalPrice = () => {
+      const calculatedPrice = calculateFinalPrice(boughtTickets);
+      setFinalPrice(calculatedPrice);
+    };
+    setTotalTicketsAmount();
+    setTotalPrice();
+  }, [boughtTickets]);
+
   const handleAmountChange = (
     ticketTypeId,
     ticketName,
     ticketPrice,
     amount,
   ) => {
-    boughtTickets.current = {
-      ...boughtTickets.current,
-      [ticketTypeId]: {
-        // ...boughtTickets.current[ticketName],
-        ticketName,
-        ticketPrice,
-        amount,
-      },
-    };
-    console.log('boughtTickets.current', boughtTickets.current);
-
-    const calculatedPrice = calculateFinalPrice(boughtTickets.current);
-    setFinalPrice(calculatedPrice);
+    setBoughtTickets(prevState => {
+      return {
+        ...prevState,
+        [ticketTypeId]: {
+          // ...boughtTickets.current[ticketName],
+          ticketName,
+          ticketPrice,
+          amount,
+        },
+      };
+    });
   };
 
   const renderTicketItem = ({item}) => {
@@ -102,6 +128,7 @@ const TicketOrderingScreen = ({route, props}) => {
           price={item.price}
           removeDiscount={() => handleRemoveDiscount(item.type)}
           onAmountChange={amount =>
+            console.log('anon amount:', amount) ||
             handleAmountChange(ticketTypeId, item.type, item.price, amount)
           }
         />
@@ -114,8 +141,8 @@ const TicketOrderingScreen = ({route, props}) => {
   };
 
   const finishOrder = () => {
-    const tickets = parseBoughtTicketsToArray(boughtTickets.current);
-    console.log('finish-order_boughtTickets.current', boughtTickets.current);
+    const tickets = parseBoughtTicketsToArray(boughtTickets);
+    console.log('finish-order_boughtTickets.current', boughtTickets);
     addNewTicketOrderToCollection({
       user: user,
       tournamentId: tournamentId,
@@ -153,6 +180,13 @@ const TicketOrderingScreen = ({route, props}) => {
         style={styles.container}
         keyExtractor={keyExtractor}
       />
+
+      <Text style={styles.buttonTextStyle}>
+        {' '}
+        Ilość biletów:{' '}
+        <Text style={styles.boldTextStyle}>{totalTicketsAmount} </Text>
+        zł.{' '}
+      </Text>
 
       <Text style={styles.buttonTextStyle}>
         {' '}

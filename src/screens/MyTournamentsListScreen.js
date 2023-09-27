@@ -14,6 +14,9 @@ import {
 import {SCREEN} from '../navigation/screens';
 import {TournamentContext} from '../context/TournamentContextProvider';
 import {ScrollView} from 'react-native-gesture-handler';
+import {Button} from 'react-native-elements';
+import {putFirebaseFile, selectImage} from '../firebase/storage-methods';
+import {FIREBASE_STORAGE_DIRS} from '../config';
 
 const MyTournamentsListScreen = () => {
   const {tournamentList} = useContext(TournamentContext);
@@ -28,21 +31,49 @@ const MyTournamentsListScreen = () => {
             navigation.navigate(SCREEN.MY_TOURNAMENTDETAILS, {
               tournamentId: item.id,
             });
-          }}>
+          }}
+        >
           <Text style={styles.itemStyle}>{item.name}</Text>
         </TouchableOpacity>
       </View>
     );
   };
 
+  const [assetPath, setAssetPath] = useState();
+  const onLoginPress = async () => {
+    const assets = await selectImage({
+      selectionLimit: 1,
+    });
+    const [asset] = assets;
+    setAssetPath(asset.uri);
+  };
+
+  const renderSelectinImageForTest = () => {
+    console.log('path:', assetPath);
+    return (
+      <View>
+        {!assetPath ? null : (
+          <Image
+            style={{backgroundColor: 'pink', width: 100, height: 100}}
+            width={100}
+            height={100}
+            source={{
+              uri: assetPath,
+            }}
+          />
+        )}
+        <Button onPress={onLoginPress} title={'put file to firebase'} />
+      </View>
+    );
+  };
+
   return (
     <>
-      {/*<CustomHeader/>*/}
       <View style={styles.mainBody}>
         <View style={styles.title}>
           <Text style={styles.textDark}>Lista wydarzeń </Text>
         </View>
-
+        {renderSelectinImageForTest()}
         <FlatList
           data={tournamentList}
           renderItem={({item}) => renderItem(item)} //do renderItem przekazujemy wartośc funkcji renderItem

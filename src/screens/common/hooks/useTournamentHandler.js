@@ -1,12 +1,15 @@
 import {useState} from 'react';
-import {validateTournament} from '../../../firebase/firestore-model-validators';
+import {
+  validateAsset,
+  validateTournament,
+} from '../../../firebase/firestore-model-validators';
 
 export const useTournamentHandler = tournament => {
   const [nameInput, setNameInput] = useState(tournament?.name ?? '');
   const [placeInput, setPlaceInput] = useState(tournament?.place ?? '');
   const [slotsInput, setSlotsInput] = useState(tournament?.slots ?? '');
   const [linkInput, setLinkInput] = useState(tournament?.link ?? '');
-  const [urlInput, setUrlInput] = useState(tournament?.url ?? '');
+  const [asset, setAsset] = useState();
   const [tournamentCategoryInput, setTournamentCategoryInput] = useState(
     tournament?.category ?? '',
   );
@@ -24,7 +27,7 @@ export const useTournamentHandler = tournament => {
     place: [placeInput, setPlaceInput],
     slots: [slotsInput, setSlotsInput],
     link: [linkInput, setLinkInput],
-    url: [urlInput, setUrlInput],
+    asset: [asset, setAsset],
     category: [tournamentCategoryInput, setTournamentCategoryInput],
     startDate: [startDateInput, setStartDateInput],
     endDate: [endDateInput, setEndDateInput],
@@ -37,13 +40,13 @@ export const useTournamentHandler = tournament => {
       place: placeInput,
       slots: slotsInput,
       link: linkInput,
-      url: urlInput,
       category: tournamentCategoryInput,
       startDate: startDateInput,
       endDate: endDateInput,
     };
     try {
       validateTournament(tournament);
+      validateAsset(asset);
     } catch (error) {
       console.log('catch.validate:', error, typeof error);
       const {field, message} = error;
@@ -62,11 +65,10 @@ export const useTournamentHandler = tournament => {
     setPlaceInput('');
     setSlotsInput('');
     setLinkInput('');
-    setUrlInput('');
+    setAsset(undefined);
     setTournamentCategoryInput('');
     setStartDateInput(new Date());
     setEndDateInput(new Date());
-    // do zastanowienia sie
     setValidationError(undefined);
   };
 

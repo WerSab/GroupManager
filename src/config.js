@@ -34,8 +34,6 @@ export const TICKET_TYPE_NAMES = {
   Different: 'inny',
 };
 
-export const RENDER_ITEM_COLORS = ['#005b98', '#005b98', '#005b98'];
-
 export const FIREBASE_STORAGE_DIRS = {
   USERS: 'users/profilePictures',
   TOURNAMENTS: 'tournamentPictures',

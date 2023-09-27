@@ -23,6 +23,7 @@ export default DiscountPrices = props => {
         props.removeDiscount();
         return; //return przerywa działanie funkcji
       }
+      console.log('amount useEffect:', amount);
       props.onAmountChange(parsedAmount);
     } else {
       props.removeDiscount();

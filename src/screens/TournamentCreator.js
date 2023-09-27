@@ -1,6 +1,6 @@
 //19.01.23 - validacja turnieju przy dodawaniu nowego turnieju
 //wyświetlić listę istniejących biletów
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -35,6 +35,7 @@ import addDarkIcon from '../assets/icons/addDark.png';
 import {TICKET_TYPE_NAMES} from '../config';
 import {putFirebaseFile, selectImage} from '../firebase/storage-methods';
 import {launchImageLibrary} from 'react-native-image-picker';
+import {ButtonGroup} from 'react-native-elements';
 const MIN_EVENT_DURATION_IN_MILLIS = 60 * 1000;
 
 // wrzucic tego typu funkcje do np. utils/stringUtils.js
@@ -86,7 +87,7 @@ const TournamentCreator = ({route}) => {
   });
   const [nameInput, setNameInput] = inputs.name;
   const [linkInput, setLinkInput] = inputs.link;
-  const [urlInput, setUrlInput] = inputs.url;
+  const [asset, setAsset] = inputs.asset;
   const [startDate, setStartDate] = inputs.startDate;
   const [endDate, setEndDate] = inputs.endDate;
 
@@ -95,6 +96,15 @@ const TournamentCreator = ({route}) => {
   const [slots, setSlots] = inputs.slots;
   const validationError = inputs.validationError;
   const [error, setError] = useState();
+
+  const onSelectImagePress = async () => {
+    const assets = await selectImage({
+      selectionLimit: 1,
+    });
+    const [asset] = assets;
+    setAsset(asset);
+  };
+
   useEffect(() => {
     console.log('inputs.val:', inputs.validationError);
   }, [inputs.validationError]);
@@ -116,19 +126,52 @@ const TournamentCreator = ({route}) => {
   const clearData = () => {
     clearTicketTypes();
     clearInputs();
+    setAsset(undefined);
   };
 
   useEffect(() => {
     console.log('end date:', endDate);
   }, [endDate]);
   const onSavePress = async (tournament, ticketsBasket) => {
-    await addNewTournamentToCollection(tournament, ticketsBasket);
+    await addNewTournamentToCollection(tournament, ticketsBasket, asset);
     console.log('Tournament added');
 
     tournamentActions.requeryTournaments();
     console.log('torunaments requeried');
     console.log('navigating to tournament list');
     navigation.navigate(SCREEN.MANAGER_TAB.TOURNAMENT_LIST);
+  };
+
+  const renderImage = useCallback(() => {
+    if (!asset) {
+      return null;
+    }
+    return (
+      <Image
+        style={{backgroundColor: 'pink', width: 100, height: 100}}
+        width={100}
+        height={100}
+        source={{
+          uri: asset.uri,
+        }}
+      />
+    );
+  }, [asset]);
+
+  const renderSelectinImageForTest = () => {
+    console.log('path:', asset);
+
+    return (
+      <View>
+        {renderImage()}
+        <TouchableOpacity
+          style={styles.inputStyle}
+          onPress={onSelectImagePress}
+        >
+          <Text style={styles.textGrey}>Załaduj obrazek</Text>
+        </TouchableOpacity>
+      </View>
+    );
   };
 
   return (
@@ -192,14 +235,7 @@ const TournamentCreator = ({route}) => {
             placeholderTextColor="grey"
           />
         </View>
-        <View style={styles.sectionStyle}>
-          <TouchableOpacity
-            style={styles.inputStyle}
-            onPress={() => selectImage()}
-          >
-            <Text style={styles.textGrey}>Załaduj obrazek</Text>
-          </TouchableOpacity>
-        </View>
+        <View style={styles.sectionStyle}>{renderSelectinImageForTest()}</View>
         <Text style={styles.text}>Data rozpoczęcia</Text>
 
         <View style={styles.sectionStyle}>
