@@ -11,6 +11,7 @@ import {
 import firestore from '@react-native-firebase/firestore';
 import {mapFirestoreTournament} from './firestore-mappers';
 import {putFirebaseFile} from './storage-methods';
+import {FirebaseStorageFileUploadError} from '../errors/FirebaseStorageFileUploadError';
 
 const TAG = 'firestore-tournament-methods.js';
 

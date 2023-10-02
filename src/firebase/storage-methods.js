@@ -1,5 +1,6 @@
 import storage from '@react-native-firebase/storage';
 import {launchImageLibrary} from 'react-native-image-picker';
+import {FirebaseStorageFileUploadError} from '../errors/FirebaseStorageFileUploadError';
 
 export const getFirebaseFileURL = async (directoryName, fileId) => {
   try {
