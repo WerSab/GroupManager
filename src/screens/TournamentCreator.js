@@ -101,7 +101,10 @@ const TournamentCreator = ({route}) => {
     const assets = await selectImage({
       selectionLimit: 1,
     });
-    const [asset] = assets;
+    if (!assets) {
+      return;
+    }
+    const [asset] = assets; // assets[0]
     setAsset(asset);
   };
 
