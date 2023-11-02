@@ -5,7 +5,7 @@ class Logger {
 
   log(tag, message) {
     if (__DEV__) {
-      console.log(`[${tag} ${getCurrentTimeDisplayable()}] ${message}`);
+      console.log(`[${tag} ${this.getCurrentTimeDisplayable()}] ${message}`);
       return;
     }
   }

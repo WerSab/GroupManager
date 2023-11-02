@@ -7,7 +7,7 @@ export const getFirebaseFileURL = async (directoryName, fileId) => {
     return await storage().ref(`${directoryName}/${fileId}`).getDownloadURL();
   } catch (error) {
     console.error(`getFirebaseFileURL: ${error}`);
-    throw error;
+    return;
   }
 };
 export const selectImage = async options => {

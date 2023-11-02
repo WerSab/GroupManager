@@ -57,12 +57,13 @@ const TournamentDetails = ({route}) => {
   const {navigateWithPrevParams} = useNavigateWithParams(route);
   const tournamentContext = useContext(TournamentContext);
   const tournamentId = route.params.id;
+  const tournamentURL = route.params.url;
+  console.log('tournamentURL', tournamentURL);
 
   const tournament = getTournamentFromContext(tournamentContext, tournamentId);
   const [ticketTypesData, loading, error, actions] =
     useTournamentTicketTypes(tournamentId);
-  console.log('aaaaaaaaa', ticketTypesData);
-  console.log('bbbbbbbbbbbbbb', tournament);
+
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -139,6 +140,7 @@ const TournamentDetails = ({route}) => {
                 <Image style={styles.icon_1} source={editIcon} />
               </TouchableOpacity>
             </View>
+            <Image source={{uri: tournamentURL}} style={styles.image} />
             <Text style={styles.textDark}>Miejsce: {tournament.place}</Text>
             <Text style={styles.textDark}>
               Termin rozpoczęcia: {startTimeFormated}
@@ -217,7 +219,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#005b98',
     width: '100%',
     alignItems: 'center',
-    borderRadius: 5,
+    borderTopLeftRadius: 5,
+    borderTopRightRadius: 5,
   },
   textHeader: {
     color: 'white',
@@ -263,6 +266,12 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     borderRadius: 5,
     fontSize: 16,
+  },
+  image: {
+    height: '20%',
+    width: '100%',
+    borderBottomLeftRadius: 5,
+    borderBottomRightRadius: 5,
   },
   icon_1: {
     height: 40,
